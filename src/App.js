@@ -5,6 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import styled from 'styled-components'
 
 import Header from './Header'
 import Home from './Home'
@@ -13,6 +14,7 @@ import ENSDistribution from "./ENSDistribution";
 import ENSConstitution from "./ENSConstitution";
 import ClaimENSToken from "./ClaimENSToken";
 import ChooseYourDelegate from "./ChooseYourDelegate";
+import JoinENS from "./JoinENS";
 
 import './App.css';
 
@@ -20,12 +22,16 @@ const steps = [
     ','
 ]
 
+const AppContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+`
+
 function App() {
   return (
       <Router>
-        <div>
-          <Header />
-
+        <Header />
+        <AppContainer>
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
           <Switch>
@@ -44,11 +50,14 @@ function App() {
             <Route path="/claim">
               <ClaimENSToken />
             </Route>
+            <Route path="/join">
+              <JoinENS />
+            </Route>
             <Route path="/">
               <Home />
             </Route>
           </Switch>
-        </div>
+        </AppContainer>
       </Router>
   );
 }
