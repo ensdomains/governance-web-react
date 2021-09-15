@@ -12,7 +12,7 @@ const HeaderContainer = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100px;
+    height: 150px;
     background: lightpink;
 `
 
@@ -35,8 +35,11 @@ const Header = () => {
                 <Route path="/claim">
                     <div>Claim $ENS</div>
                 </Route>
-                <Route path="/">
+                <Route path="/join">
                     <div>Join the decentralisation of ENS</div>
+                </Route>
+                <Route path="/">
+                    <div>Home</div>
                 </Route>
             </Switch>
         </HeaderContainer>

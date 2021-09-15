@@ -1,5 +1,9 @@
 import React from 'react';
 import styled from 'styled-components'
+import { useHistory } from "react-router-dom";
+
+import Footer from './components/Footer'
+import Gap from './components/Gap'
 
 const copy = [
     {
@@ -30,9 +34,14 @@ const copy = [
 const BoxContainer = styled.div`
       background: lightgreen;
       width: 300px;
+      padding: 20px;
+      box-container: border-box;
 `
 
-const BoxTitle = styled.div``
+const BoxTitle = styled.div`
+    font-size: 48px;
+    text-align: center;
+`
 
 const BoxContent = styled.div``
 
@@ -43,8 +52,14 @@ const Box = ({x: {title, content}}) => {
     return (
         <BoxContainer>
             <BoxTitle>{title}</BoxTitle>
+            <Gap height={6} />
             <BoxContentContainer>
-                {content.map(text => <BoxContent>{text}</BoxContent>)}
+                {content.map(text =>
+                    <>
+                        <BoxContent>{text}</BoxContent>
+                        <Gap height={4} />
+                     </>
+                )}
             </BoxContentContainer>
         </BoxContainer>
     )
@@ -52,15 +67,23 @@ const Box = ({x: {title, content}}) => {
 
 const Container = styled.div`
     display: flex;
-    
+    justify-content: space-around;
 `
 
-const Join = () => {
+const JoinENS = () => {
+    const history = useHistory();
+
     return (
+        <>
         <Container>
             {copy.map(x => <Box {...{ x }}/>)}
         </Container>
+            <Footer
+                rightButtonText="Get Started"
+                rightButtonCallback={() => {history.push('/governance')}}
+            />
+        </>
     );
 };
 
-export default Join;
+export default JoinENS;
