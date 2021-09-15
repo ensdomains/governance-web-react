@@ -30,15 +30,23 @@ const copy = [
             'We firmly belive now is the time',
         ]
     },
+    {
+        src: 'https://place-hold.it/150/150',
+        content: [
+            'Over the past 12 months ENS has seen massive growth',
+            'We firmly belive now is the time',
+        ]
+    },
 ]
 
 const BoxContainer = styled.div`
-      background: lightgreen;
-      width: 300px;
+      width: 250px;
+      height: 400px;
       padding: 20px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
+      margin: 20px 10px;
 `
 
 const BoxTitle = styled.div`
@@ -76,15 +84,10 @@ const Box = ({x: {src, content}}) => {
 
 const Container = styled.div`
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
-
-    
-    ${largerThan.sMobile`
-        flex-direction: row;
-    `}
-    
+    justify-content: center;
+    flex-wrap: wrap;
+    background: lightgreen;
 `
 
 const ENSGovernance = () => {
