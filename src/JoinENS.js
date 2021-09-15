@@ -1,7 +1,8 @@
 import React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useHistory } from "react-router-dom";
 
+import { largerThan} from "./utils/styledComponents";
 import Footer from './components/Footer'
 import Gap from './components/Gap'
 
@@ -34,8 +35,10 @@ const copy = [
 const BoxContainer = styled.div`
       background: lightgreen;
       width: 300px;
+      height: 300px;
       padding: 20px;
-      box-container: border-box;
+      box-sizing: border-box;
+      margin: 20px 10px;
 `
 
 const BoxTitle = styled.div`
@@ -66,8 +69,13 @@ const Box = ({x: {title, content}}) => {
 }
 
 const Container = styled.div`
+    align-items: center;
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
+    
+    ${largerThan.sMobile`
+    `}
 `
 
 const JoinENS = () => {

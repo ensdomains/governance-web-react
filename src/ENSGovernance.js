@@ -1,9 +1,10 @@
 import React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { useHistory } from "react-router-dom";
 
 import Footer from './components/Footer'
 import Gap from './components/Gap'
+import {largerThan} from "./utils/styledComponents";
 
 const copy = [
     {
@@ -75,7 +76,15 @@ const Box = ({x: {src, content}}) => {
 
 const Container = styled.div`
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: space-around;
+
+    
+    ${largerThan.sMobile`
+        flex-direction: row;
+    `}
+    
 `
 
 const ENSGovernance = () => {

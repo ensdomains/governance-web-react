@@ -5,7 +5,7 @@ import {
     Route,
     Link
 } from "react-router-dom";
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 const HeaderContainer = styled.div`
     display: flex;
