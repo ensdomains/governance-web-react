@@ -60,12 +60,14 @@ const Box = ({x: {src, content}}) => {
             <BoxImg src={src}/>
             <Gap height={12} />
             <BoxContentContainer>
-                {content.map(text =>
-                    <>
-                        <BoxContent>{text}</BoxContent>
-                        <Gap height={4} />
-                    </>
-                )}
+                <ul>
+                    {content.map(text =>
+                        <>
+                            <li>{text}</li>
+                            <Gap height={4} />
+                        </>
+                    )}
+                </ul>
             </BoxContentContainer>
         </BoxContainer>
     )
@@ -86,7 +88,7 @@ const ENSGovernance = () => {
             </Container>
             <Footer
                 rightButtonText="Get Started"
-                rightButtonCallback={() => {history.push('/governance')}}
+                rightButtonCallback={() => {history.push('/distribution')}}
             />
         </>
     );
