@@ -1,11 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import styled from 'styled-components/macro'
+import {ethers} from 'ethers'
 
 import Header from './Header'
 import Home from './Home'
@@ -18,22 +18,23 @@ import JoinENS from "./JoinENS";
 
 import './App.css';
 
-const steps = [
-    ','
-]
-
 const AppContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
 `
 
+const useInitApp = () => {
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+  }, [])
+}
+
 function App() {
+  useInitApp()
   return (
       <Router>
         <Header />
         <AppContainer>
-          {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
           <Switch>
             <Route path="/governance">
               <ENSGovernance />
