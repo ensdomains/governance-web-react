@@ -1,6 +1,7 @@
 import {ApolloClient, InMemoryCache, makeVar} from "@apollo/client";
 
-const addressReactive = makeVar(null)
+export const addressReactive = makeVar(null)
+export const isConnected = makeVar(false)
 
 const typePolicies = {
     Query: {
@@ -8,6 +9,11 @@ const typePolicies = {
             address: {
                 read() {
                     return addressReactive()
+                }
+            },
+            isConnected: {
+                read() {
+                    return isConnected()
                 }
             }
         }

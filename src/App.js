@@ -15,8 +15,8 @@ import ENSConstitution from "./ENSConstitution";
 import ClaimENSToken from "./ClaimENSToken";
 import ChooseYourDelegate from "./ChooseYourDelegate";
 import JoinENS from "./JoinENS";
+import {addressReactive, isConnected} from "./apollo";
 
-import './App.css';
 
 const AppContainer = styled.div`
   max-width: 1200px;
@@ -25,7 +25,22 @@ const AppContainer = styled.div`
 
 const useInitApp = () => {
   useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const run = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const signer = provider?.getSigner()
+      let address;
+      try {
+        address = await signer.getAddress()
+      } catch (e) {}
+      if(address) {
+        isConnected(true)
+        addressReactive(address)
+        return
+      }
+      isConnected(false)
+      addressReactive(null)
+    }
+    run()
   }, [])
 }
 

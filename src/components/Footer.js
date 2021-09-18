@@ -1,26 +1,27 @@
 import React from 'react';
 import styled from 'styled-components/macro'
 
-import Button from './Button'
+import { CTAButton } from './buttons'
 
 const FooterContainer = styled.div`
     width: 100%;
-    background: lightgrey;
     height: 100px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
 `
 
 const Footer = ({ rightButtonText, rightButtonCallback, leftButtonText, leftButtonCallback}) => {
     return (
         <FooterContainer>
             {leftButtonText
-                ? <Button text={leftButtonText} onClick={leftButtonCallback} />
+                ? <CTAButton text={leftButtonText} onClick={leftButtonCallback} />
                 : <div></div>
             }
             {rightButtonText
-                ? <Button text={rightButtonText} onClick={rightButtonCallback} />
+                ? <CTAButton text={rightButtonText} onClick={rightButtonCallback} />
                 : <div></div>
             }
         </FooterContainer>

@@ -5,6 +5,9 @@ import { useHistory } from "react-router-dom";
 import { largerThan} from "./utils/styledComponents";
 import Footer from './components/Footer'
 import Gap from './components/Gap'
+import {Header, Content, SubsubTitle, Statistic} from './components/text'
+import { NarrowColumn } from "./components/layout";
+import { ContentBox, InnerContentBox} from "./components/layout";
 
 const copy = [
     {
@@ -68,29 +71,45 @@ const Box = ({x: {title, content}}) => {
     )
 }
 
-const Container = styled.div`
-    align-items: center;
+const StatsContainer = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
-    
-    ${largerThan.sMobile`
-    `}
 `
 
 const JoinENS = () => {
     const history = useHistory();
 
     return (
-        <>
-        <Container>
-            {copy.map(x => <Box {...{ x }}/>)}
-        </Container>
+        <NarrowColumn>
+            <ContentBox>
+                <Header>The story so far...</Header>
+                <Gap height={3} />
+                <Content>
+                    The Ethereum Name Service was created to build a
+                    human-readable name system for Ethereum, with the goal
+                    of becoming widely adopted. Since then, the protocol has
+                    seen tremendous growth in usage.
+                </Content>
+                <Gap height={5} />
+                <StatsContainer>
+                    <InnerContentBox>
+                        <SubsubTitle>Names created</SubsubTitle>
+                        <Gap height={2} />
+                        <Statistic>3,405,411</Statistic>
+                    </InnerContentBox>
+                    <InnerContentBox>
+                        <SubsubTitle>Years registered</SubsubTitle>
+                        <Gap height={2} />
+                        <Statistic>4,500.41</Statistic>
+                    </InnerContentBox>
+                </StatsContainer>
+            </ContentBox>
             <Footer
-                rightButtonText="Get Started"
+                rightButtonText="Next"
                 rightButtonCallback={() => {history.push('/governance')}}
             />
-        </>
+        </NarrowColumn>
     );
 };
 
