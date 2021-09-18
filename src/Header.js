@@ -1,11 +1,8 @@
 import React from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
 import styled from 'styled-components/macro'
+
+import { CTAButton } from './components/buttons'
+import HeaderENSLogo from './assets/imgs/HeaderENSLogo.svg'
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -13,35 +10,31 @@ const HeaderContainer = styled.div`
     justify-content: center;
     width: 100%;
     height: 150px;
-    background: lightpink;
 `
+
+const HeaderContainerInner = styled.div`
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`
+
+const LeftContainer = styled.div``
+
+const RightContainer = styled.div``
 
 const Header = () => {
     return (
         <HeaderContainer>
-            <Switch>
-                <Route path="/governance">
-                    <div>How it works</div>
-                </Route>
-                <Route path="/distribution">
-                    <div>How it works</div>
-                </Route>
-                <Route path="/constitution">
-                    <div>ENS Constitution</div>
-                </Route>
-                <Route path="/delegates">
-                    <div>Choose your delegate</div>
-                </Route>
-                <Route path="/claim">
-                    <div>Claim $ENS</div>
-                </Route>
-                <Route path="/join">
-                    <div>Join the decentralisation of ENS</div>
-                </Route>
-                <Route path="/">
-                    <div>Home</div>
-                </Route>
-            </Switch>
+            <HeaderContainerInner>
+                <LeftContainer>
+                    <img src={HeaderENSLogo} />
+                </LeftContainer>
+                <RightContainer>
+                    <CTAButton text={"Connect"} />
+                </RightContainer>
+            </HeaderContainerInner>
         </HeaderContainer>
     );
 };
