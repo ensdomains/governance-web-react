@@ -22,7 +22,7 @@ const ChooseYourDelegate = () => {
             </ContentBox>
             <Footer
                 rightButtonText="Next"
-                rightButtonCallback={() => {history.push('/whynow')}}
+                rightButtonCallback={() => {history.push('/claim')}}
                 leftButtonText="Back"
                 leftButtonCallback={() => {history.push('/join')}}
             />

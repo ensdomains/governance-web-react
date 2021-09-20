@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/macro'
 
-import { CTAButton } from './buttons'
+import {CTAButton} from './buttons'
 import HeaderENSLogo from '../assets/imgs/HeaderENSLogo.svg'
+import {gql} from "graphql-tag";
+import {useEffect} from "react";
+import {useQuery} from "@apollo/client";
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -24,7 +27,23 @@ const LeftContainer = styled.div``
 
 const RightContainer = styled.div``
 
+const HEADER_QUERY = gql`
+    query getHeaderData {
+        
+        isConnected @client 
+    }
+`
+
+const useWeb3User = (isConnected, address) => {
+    useEffect(() => {
+
+    }, [isConnected, address])
+}
+
 const Header = () => {
+    const { data: { isConnected, address } } = useQuery(HEADER_QUERY)
+    useWeb3User(isConnected, address)
+
     return (
         <HeaderContainer>
             <HeaderContainerInner>
@@ -32,7 +51,13 @@ const Header = () => {
                     <img src={HeaderENSLogo} />
                 </LeftContainer>
                 <RightContainer>
-                    <CTAButton text={"Connect"} />
+                    {isConnected
+                        ? (
+                            <div>connected</div>
+                        )
+                        : (
+                            <CTAButton text={"Connect"} />
+                        )}
                 </RightContainer>
             </HeaderContainerInner>
         </HeaderContainer>
