@@ -18,9 +18,16 @@ code {
     monospace;
 }
 
-html, body, #root {
+html, body {
   width: 100%;
   height: 100%;
+  overflow-y: auto;
+}
+
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin-bottom: 200px;
 }
 
 @font-face {
