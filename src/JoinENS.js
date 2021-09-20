@@ -74,7 +74,28 @@ const Box = ({x: {title, content}}) => {
 const StatsContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
+    
+    ${largerThan.sMobile`
+        flex-direction: row;    
+    `}
+`
+
+const WrappedInnerContentBox = styled(InnerContentBox)`
+    &:first-child {
+            margin-bottom: 20px;
+        }
+
+    ${largerThan.sMobile`
+        &:first-child {
+            margin-right: 10px;
+            margin-bottom: 0px;
+        }
+        
+        &:last-child {
+            margin-left: 10px;
+        }
+    `}
 `
 
 const JoinENS = () => {
@@ -93,16 +114,16 @@ const JoinENS = () => {
                 </Content>
                 <Gap height={5} />
                 <StatsContainer>
-                    <InnerContentBox>
+                    <WrappedInnerContentBox>
                         <SubsubTitle>Names created</SubsubTitle>
                         <Gap height={2} />
                         <Statistic>3,405,411</Statistic>
-                    </InnerContentBox>
-                    <InnerContentBox>
+                    </WrappedInnerContentBox>
+                    <WrappedInnerContentBox>
                         <SubsubTitle>Years registered</SubsubTitle>
                         <Gap height={2} />
                         <Statistic>4,500.41</Statistic>
-                    </InnerContentBox>
+                    </WrappedInnerContentBox>
                 </StatsContainer>
             </ContentBox>
             <Footer
