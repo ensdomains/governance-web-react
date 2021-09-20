@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/macro'
 
-import { Link, Title, SubTitle } from './components/text'
-import Gap from './components/Gap'
-import { CTAButton } from "./components/buttons";
+import { Link, Title, SubTitle } from '../components/text'
+import Gap from '../components/Gap'
+import { CTAButton } from "../components/buttons";
 
-import SplashENSLogo from './assets/imgs/SplashENSLogo.svg'
+import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
 import {useHistory} from "react-router-dom";
 
 const HomeContainer = styled.div`
