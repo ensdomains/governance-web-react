@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components/macro'
 import { useHistory } from "react-router-dom";
 
-import { largerThan} from "./utils/styledComponents";
-import Footer from './components/Footer'
-import Gap from './components/Gap'
-import {Header, Content, SubsubTitle, Statistic} from './components/text'
-import { NarrowColumn } from "./components/layout";
-import { ContentBox, InnerContentBox} from "./components/layout";
+import { largerThan} from "../utils/styledComponents";
+import Footer from '../components/Footer'
+import Gap from '../components/Gap'
+import {Header, Content, SubsubTitle, Statistic} from '../components/text'
+import { NarrowColumn } from "../components/layout";
+import { ContentBox, InnerContentBox} from "../components/layout";
 
 const copy = [
     {
@@ -128,7 +128,7 @@ const JoinENS = () => {
             </ContentBox>
             <Footer
                 rightButtonText="Next"
-                rightButtonCallback={() => {history.push('/governance')}}
+                rightButtonCallback={() => {history.push('/why')}}
             />
         </NarrowColumn>
     );

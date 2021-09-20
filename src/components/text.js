@@ -81,3 +81,8 @@ export const Statistic = styled.div`
     letter-spacing: -0.01em;
     color: #000000;
 `
+
+export const TokenText = styled.span`
+    color: ${theme.colors.blue};
+    font-weight: bold;
+`

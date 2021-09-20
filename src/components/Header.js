@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/macro'
 
-import { CTAButton } from './components/buttons'
-import HeaderENSLogo from './assets/imgs/HeaderENSLogo.svg'
+import { CTAButton } from './buttons'
+import HeaderENSLogo from '../assets/imgs/HeaderENSLogo.svg'
 
 const HeaderContainer = styled.div`
     display: flex;

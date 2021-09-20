@@ -2,13 +2,14 @@ import React from 'react';
 import styled from 'styled-components/macro'
 import { useHistory } from "react-router-dom";
 
-import Footer from './components/Footer'
-import Gap from './components/Gap'
-import {largerThan} from "./utils/styledComponents";
+import Footer from '../components/Footer'
+import Gap from '../components/Gap'
+import {largerThan} from "../utils/styledComponents";
 
 const copy = [
     {
-        src: 'https://place-hold.it/100/100',
+        title: 'title1',
+        src: 'https://place-hold.it/350/100',
         content: [
             'The ethereum name service was launched in 2017',
             'Since launch, over 1 million names have been registered',
@@ -16,7 +17,8 @@ const copy = [
         ]
     },
     {
-        src: 'https://place-hold.it/100/100',
+        title: '',
+        src: false,
         content: [
             'ENS is launching the token in order to continue',
             '$ENS represents the first step in handing over control',
@@ -24,14 +26,8 @@ const copy = [
         ]
     },
     {
-        src: 'https://place-hold.it/100/100',
-        content: [
-            'Over the past 12 months ENS has seen massive growth',
-            'We firmly belive now is the time',
-        ]
-    },
-    {
-        src: 'https://place-hold.it/100/100',
+        title: 'title3',
+        src: 'https://place-hold.it/350/100',
         content: [
             'Over the past 12 months ENS has seen massive growth',
             'We firmly belive now is the time',
@@ -40,8 +36,8 @@ const copy = [
 ]
 
 const BoxContainer = styled.div`
-      width: 250px;
-      height: 400px;
+      width: 350px;
+      height: 480px;
       padding: 20px;
       box-sizing: border-box;
       display: flex;
@@ -52,6 +48,8 @@ const BoxContainer = styled.div`
 const BoxTitle = styled.div`
     font-size: 48px;
     text-align: center;
+    height: 56px;
+    margin-bottom: 10px;
 `
 
 const BoxContent = styled.div``
@@ -61,13 +59,20 @@ const BoxContentContainer = styled.div`
 
 const BoxImg = styled.img`
     margin: 0 auto;
+    height: 200px;
+    width: 100%;
+    margin-bottom: 12px;
 `
 
-const Box = ({x: {src, content}}) => {
+const Box = ({x: {title, src, content}}) => {
     return (
         <BoxContainer>
-            <BoxImg src={src}/>
-            <Gap height={12} />
+            <BoxTitle>{title}</BoxTitle>
+            {src &&
+            <>
+                <BoxImg src={src}/>
+                <Gap height={12} />
+            </>}
             <BoxContentContainer>
                 <ul>
                     {content.map(text =>
@@ -90,7 +95,7 @@ const Container = styled.div`
     background: lightgreen;
 `
 
-const ENSGovernance = () => {
+const ENSDistribution = () => {
     const history = useHistory();
 
     return (
@@ -106,4 +111,4 @@ const ENSGovernance = () => {
     );
 };
 
-export default ENSGovernance;
+export default ENSDistribution;
