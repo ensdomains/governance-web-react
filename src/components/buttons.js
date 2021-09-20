@@ -18,6 +18,7 @@ const ButtonContainer = styled.div`
     line-height: 22px;
     text-align: center;
     letter-spacing: -0.01em;
+    cursor: pointer;
 `
 
 export const CTAButton = (props) => {

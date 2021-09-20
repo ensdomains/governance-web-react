@@ -5,7 +5,6 @@ import {
   Route
 } from "react-router-dom";
 import styled from 'styled-components/macro'
-import {ethers} from 'ethers'
 
 import Header from './components/Header'
 import Home from './pages/Home'
@@ -17,8 +16,7 @@ import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import JoinENS from "./pages/JoinENS";
 import Why from "./pages/Why";
 import WhyNow from "./pages/WhyNow";
-import {addressReactive, isConnected} from "./apollo";
-import {connect} from "./web3modal";
+import {initWeb3} from "./web3modal";
 
 
 const AppContainer = styled.div`
@@ -33,34 +31,11 @@ const AppContainerOuter = styled.div`
   display: flex;
 `
 
+
+
 const useInitWeb3 = () => {
   useEffect(() => {
-    const run = async () => {
-      const web3Provider = await connect();
-
-      let provider
-      try {
-        provider = new ethers.providers.Web3Provider(web3Provider)
-      } catch (e) {}
-
-      const signer = provider?.getSigner()
-      let address;
-
-      if(signer) {
-        try {
-          address = await signer.getAddress()
-        } catch (e) {}
-      }
-
-      if(address) {
-        isConnected(true)
-        addressReactive(address)
-        return
-      }
-      isConnected(false)
-      addressReactive(null)
-    }
-    run()
+    initWeb3()
   }, [])
 }
 
