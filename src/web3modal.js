@@ -1,3 +1,6 @@
+import {ethers} from "ethers";
+import {addressReactive, isConnected} from "./apollo";
+
 const INFURA_ID =
     window.location.host === 'app.ens.domains'
         ? '90f210707d3c450f847659dc9a3436ea'
@@ -74,3 +77,29 @@ export const disconnect = async function() {
 }
 
 export const getProvider = () => provider;
+
+export const initWeb3 = async () => {
+    const web3Provider = await connect();
+
+    let provider
+    try {
+        provider = new ethers.providers.Web3Provider(web3Provider)
+    } catch (e) {}
+
+    const signer = provider?.getSigner()
+    let address;
+
+    if(signer) {
+        try {
+            address = await signer.getAddress()
+        } catch (e) {}
+    }
+
+    if(address) {
+        isConnected(true)
+        addressReactive(address)
+        return
+    }
+    isConnected(false)
+    addressReactive(null)
+}

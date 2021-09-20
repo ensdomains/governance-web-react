@@ -6,6 +6,7 @@ import HeaderENSLogo from '../assets/imgs/HeaderENSLogo.svg'
 import {gql} from "graphql-tag";
 import {useEffect} from "react";
 import {useQuery} from "@apollo/client";
+import {initWeb3} from "../web3modal";
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -56,7 +57,7 @@ const Header = () => {
                             <div>connected</div>
                         )
                         : (
-                            <CTAButton text={"Connect"} />
+                            <CTAButton onClick={initWeb3} text={"Connect"} />
                         )}
                 </RightContainer>
             </HeaderContainerInner>
