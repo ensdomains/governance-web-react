@@ -1,7 +1,5 @@
 html {
   background: radial-gradient(50% 34.34% at 50% 50.05%, #F5F9FF 0%, #F7F7F7 100%), #F6F6F6;
-  padding: 0 20px;
-  box-sizing: border-box;
 }
 
 body {
@@ -11,6 +9,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 code {
@@ -27,7 +27,6 @@ html, body {
 #root {
   width: 100%;
   min-height: 100%;
-  margin-bottom: 200px;
 }
 
 @font-face {
