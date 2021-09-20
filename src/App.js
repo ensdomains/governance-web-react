@@ -18,6 +18,7 @@ import JoinENS from "./pages/JoinENS";
 import Why from "./pages/Why";
 import WhyNow from "./pages/WhyNow";
 import {addressReactive, isConnected} from "./apollo";
+import {connect} from "./web3modal";
 
 
 const AppContainer = styled.div`
@@ -32,15 +33,25 @@ const AppContainerOuter = styled.div`
   display: flex;
 `
 
-const useInitApp = () => {
+const useInitWeb3 = () => {
   useEffect(() => {
     const run = async () => {
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const web3Provider = await connect();
+
+      let provider
+      try {
+        provider = new ethers.providers.Web3Provider(web3Provider)
+      } catch (e) {}
+
       const signer = provider?.getSigner()
       let address;
-      try {
-        address = await signer.getAddress()
-      } catch (e) {}
+
+      if(signer) {
+        try {
+          address = await signer.getAddress()
+        } catch (e) {}
+      }
+
       if(address) {
         isConnected(true)
         addressReactive(address)
@@ -54,7 +65,7 @@ const useInitApp = () => {
 }
 
 function App() {
-  useInitApp()
+  useInitWeb3()
   return (
       <Router>
         <Header />
