@@ -31,8 +31,6 @@ const AppContainerOuter = styled.div`
   display: flex;
 `
 
-
-
 const useInitWeb3 = () => {
   useEffect(() => {
     initWeb3()
@@ -71,7 +69,6 @@ function App() {
               <Route path="/claim">
                 <ClaimENSToken />
               </Route>
-
               <Route path="/">
                 <Home />
               </Route>
