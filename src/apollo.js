@@ -15,7 +15,7 @@ const typePolicies = {
             },
             address: {
                 read() {
-                    return addressReactive()
+                    return addressReactive() ? addressReactive().toLowerCase() : addressReactive()
                 }
             },
         }

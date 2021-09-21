@@ -31,7 +31,16 @@ const RightContainer = styled.div`
 const AvatarImg = styled.img`
     border-radius: 50%;
     width: 50px;
+    height: 50px;
     margin-right: 10px;
+`
+
+const EmptyAvatar = styled.div`
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    background: linear-gradient(157.05deg, #9FC6FF -5%, #256EDA 141.71%);
 `
 
 const EnsNameText = styled.div`
@@ -81,7 +90,11 @@ const Profile = ({address}) => {
     return (
         <ProfileContainer>
             <LeftContainer>
-                <AvatarImg src={profileDetails.avatar} />
+                {profileDetails.avatar
+                    ?   <AvatarImg src={profileDetails.avatar} />
+                    :   <EmptyAvatar />
+                }
+
             </LeftContainer>
             <RightContainer>
                 {profileDetails.ensName && (<EnsNameText>{profileDetails.ensName}</EnsNameText>)}
