@@ -1,4 +1,6 @@
 import {ethers} from "ethers";
+import {setupENS} from '@ensdomains/ui'
+
 import {addressReactive, isConnected} from "./apollo";
 
 const INFURA_ID =
@@ -10,6 +12,8 @@ const PORTIS_ID = '57e5d6ca-e408-4925-99c4-e7da3bdb8bf5'
 
 let provider
 let web3Modal
+let ensInstance
+let ethersProvider
 
 const option = {
     network: 'mainnet', // optional
@@ -66,7 +70,7 @@ export const connect = async () => {
     }
 }
 
-export const disconnect = async function() {
+export const disconnect = async function () {
     if (web3Modal) {
         await web3Modal.clearCachedProvider()
     }
@@ -76,30 +80,39 @@ export const disconnect = async function() {
     }
 }
 
-export const getProvider = () => provider;
-
 export const initWeb3 = async () => {
     const web3Provider = await connect();
 
-    let provider
     try {
-        provider = new ethers.providers.Web3Provider(web3Provider)
-    } catch (e) {}
-
-    const signer = provider?.getSigner()
-    let address;
-
-    if(signer) {
-        try {
-            address = await signer.getAddress()
-        } catch (e) {}
+        ethersProvider = new ethers.providers.Web3Provider(web3Provider)
+    } catch (e) {
     }
 
-    if(address) {
+    const signer = ethersProvider?.getSigner()
+    let address;
+
+    if (signer) {
+        try {
+            address = await signer.getAddress()
+        } catch (e) {
+        }
+    }
+
+    if (address) {
         isConnected(true)
         addressReactive(address)
         return
     }
     isConnected(false)
     addressReactive(null)
+
+    if (ethersProvider) {
+        ensInstance = await setupENS({
+            customProvider: ethersProvider
+        })
+    }
 }
+
+export const getProvider = () => provider
+export const getEnsInstance = () => ensInstance
+export const getEthersProvider = () => ethersProvider

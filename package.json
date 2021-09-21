@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "3.4.11",
+    "@ensdomains/ui": "3.3.4",
     "@ensdomains/web3modal": "1.9.4",
     "@myetherwallet/mewconnect-web-client": "2.2.0-beta.13",
     "@portis/web3": "4.0.5",
