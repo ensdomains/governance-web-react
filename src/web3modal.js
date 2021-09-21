@@ -2,6 +2,7 @@ import {ethers} from "ethers";
 import {setupENS} from '@ensdomains/ui'
 
 import {addressReactive, isConnected} from "./apollo";
+import {getEnv} from "./utils/utils";
 
 const INFURA_ID =
     window.location.host === 'app.ens.domains'
@@ -14,6 +15,7 @@ let provider
 let web3Modal
 let ensInstance
 let ethersProvider
+let jsonRpcProvider
 
 const option = {
     network: 'mainnet', // optional
@@ -84,7 +86,11 @@ export const initWeb3 = async () => {
     const web3Provider = await connect();
 
     try {
+        if(getEnv() === 'dev') {
+            jsonRpcProvider = new ethers.providers.JsonRpcProvider();
+        }
         ethersProvider = new ethers.providers.Web3Provider(web3Provider)
+
     } catch (e) {
     }
 
@@ -116,3 +122,4 @@ export const initWeb3 = async () => {
 export const getProvider = () => provider
 export const getEnsInstance = () => ensInstance
 export const getEthersProvider = () => ethersProvider
+export const getJsonRpcProvider = () => jsonRpcProvider
