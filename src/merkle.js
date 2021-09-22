@@ -66,4 +66,4 @@ class ShardedMerkleTree {
     }
 }
 
-module.exports = { ShardedMerkleTree };
+export default ShardedMerkleTree

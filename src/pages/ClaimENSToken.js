@@ -2,25 +2,24 @@ import React, {useEffect, useState} from 'react';
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import {formatTokenAmount} from "../utils/utils";
+import Footer from "../components/Footer";
+import {Contract, BigNumber} from "ethers";
 
-const getFirstNameRegistration = () => {
+import ENSTokenAbi from '../assets/abis/ENSToken'
+import {getJsonRpcProvider} from "../web3modal";
+import ShardedMerkleTree from "../merkle";
 
-}
+import merkleRoot from '../assets/root'
+import merkleRootHH from '../assets/hardhatroot'
 
-const getTotalTimeRegistered = () => {
+const ENS_TOKEN_CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
 
-}
-
-const getNumberOfNamesRegistered = () => {
-
-}
-
-const getLastNameExpiry = () => {
-
-}
+// const generateMerkleShardUrl = (address) => {
+//     return `/airdrops/mainnet/${address?.slice(2, 4)}.json`
+// }
 
 const generateMerkleShardUrl = (address) => {
-    return `/airdrops/mainnet/${address?.slice(2, 4)}.json`
+    return `/airdrops/hardhat/1.json`
 }
 
 const useGetAddressDetails = (address) => {
@@ -30,18 +29,14 @@ const useGetAddressDetails = (address) => {
         const run = async () => {
             const response = await fetch(generateMerkleShardUrl(address))
             if (!response.ok) {
-                console.error('error getting shard data')
+                throw new Error('error getting shard data')
             }
-            const shardData = await response.json()
+            const shardData = await response.json({encoding: 'utf-8'})
             setAddressDetails(shardData?.entries[address])
         }
 
         if (address) {
-            try {
-                run()
-            } catch (e) {
-                console.error(e)
-            }
+            run().catch(e => console.error(e))
         }
     }, [address])
 
@@ -57,16 +52,10 @@ query domainByLabelhash($labelhash: [String]) {
 }
 `
 
-const useClaimData = () => {
-    const {data: {address}} = useQuery(gql`
-        query getHeaderData @client {
-            address
-        }
-    `)
-
+const useClaimData = (address) => {
     const addressDetails = useGetAddressDetails(address)
 
-    const { data } = useQuery(
+    const {data} = useQuery(
         LABELHASH_QUERY,
         {
             variables: {
@@ -86,19 +75,64 @@ const useClaimData = () => {
     const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
     const balance = formatTokenAmount(addressDetails?.balance)
 
-    console.log('addressDetails: ', addressDetails)
-
     return ({
         lastExpiringName,
         longestOwnedName,
         pastTokens,
         futureTokens,
-        balance
+        balance,
+        rawBalance: addressDetails?.balance
     })
 }
 
+const submitClaim = async (balance, proof) => {
+    const jsonRpcProvider = getJsonRpcProvider();
+    const jsonRpcSigner = jsonRpcProvider.getSigner('0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65')
+    const ENSTokenContract = new Contract(ENS_TOKEN_CONTRACT_ADDRESS, ENSTokenAbi.abi, jsonRpcSigner);
+    ENSTokenContract.connect(jsonRpcSigner)
+    const result = await ENSTokenContract.claimTokens(
+        balance,
+        '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65',
+        proof
+    )
+    console.log('result: ', result)
+}
+
+const handleClaim = (address) => async () => {
+    try {
+        const response = await fetch(generateMerkleShardUrl(address))
+        if (!response.ok) {
+            throw new Error('error getting shard data')
+        }
+        const shardJson = await response.json({encoding: 'utf-8'})
+        const {root, shardNybbles, total} = merkleRootHH;
+        const shardedMerkleTree = new ShardedMerkleTree(
+            () => shardJson,
+            shardNybbles,
+            root,
+            BigNumber.from(total)
+        )
+        const [entry, proof] = shardedMerkleTree.getProof('0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65')
+        submitClaim(entry.balance, proof)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 const ClaimEnsToken = () => {
-    const { lastExpiringName, longestOwnedName, pastTokens, futureTokens, balance } = useClaimData()
+    const {data: {address}} = useQuery(gql`
+        query getHeaderData @client {
+            address
+        }
+    `)
+    const {
+        lastExpiringName,
+        longestOwnedName,
+        pastTokens,
+        futureTokens,
+        balance,
+        rawBalance
+    } = useClaimData(address)
     return (
         <div>
             <div>
@@ -119,6 +153,11 @@ const ClaimEnsToken = () => {
             <div>
                 <span>Balance: </span><span>{balance}</span>
             </div>
+            <Footer
+                rightButtonText="Claim your tokens"
+                rightButtonCallback={handleClaim(address, rawBalance)}
+                leftButtonText="Choose your delegate"
+            />
         </div>
     );
 };

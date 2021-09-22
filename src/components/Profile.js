@@ -82,9 +82,8 @@ const Profile = ({address}) => {
                 avatar
             })
         }
-        try{
-            run()
-        } catch (e) { console.error(e) }
+
+        run().catch(e => {console.error(e)})
     }, [address])
 
     return (
