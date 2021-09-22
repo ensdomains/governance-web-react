@@ -10,21 +10,24 @@
       "future_tokens": "500000000000000000000000",
       "longest_owned_name": "0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6",
       "last_expiring_name": "0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6",
-      "balance": "1000000000000000000000000"
+      "balance": "1000000000000000000000000",
+      "has_reverse_record": true
     },
     "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955": {
       "past_tokens": "500000000000000000000000",
       "future_tokens": "500000000000000000000000",
       "longest_owned_name": "0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6",
       "last_expiring_name": "0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6",
-      "balance": "1000000000000000000000000"
+      "balance": "1000000000000000000000000",
+      "has_reverse_record": false
     },
     "0x1CBd3b2770909D4e10f157cABC84C7264073C9Ec": {
       "past_tokens": "500000000000000000000000",
       "future_tokens": "500000000000000000000000",
       "longest_owned_name": "0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6",
       "last_expiring_name": "0x04f740db81dc36c853ab4205bddd785f46e79ccedca351fc6dfcbd8cc9a33dd6",
-      "balance": "1000000000000000000000000"
+      "balance": "1000000000000000000000000",
+      "has_reverse_record": false
     }
   }
 }
