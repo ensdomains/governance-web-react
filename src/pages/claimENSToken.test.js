@@ -1,5 +1,7 @@
 describe('ClaimENSToken', () => {
     it.todo('shoudl do something if tokens are already claimed')
+    it.todo('should show a message if the user is eligible to claim')
+    it.todo('should show a message if the user is not ¡eligible to claim')
 })
 
 describe('generateMerkleShardUrl', () => {
