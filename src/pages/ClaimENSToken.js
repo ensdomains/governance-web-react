@@ -152,6 +152,18 @@ const ENSLogo = styled.img`
     margin-left: 10px;
 `
 
+const StatsSubtitle = styled.div`
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: -0.01em;
+    
+    color: #717171;
+    
+    opacity: 0.6;
+`
+
 const ClaimEnsToken = () => {
     const {data: {address}} = useQuery(gql`
         query getHeaderData @client {
@@ -171,9 +183,7 @@ const ClaimEnsToken = () => {
     return (
         <ClaimEnsTokenContainer>
             <LeftContainer>
-                <div>
-                    Claim
-                </div>
+                <StatsSubtitle>Rewards</StatsSubtitle>
                 <div>
                     <span>Last expiring name: </span><span>{lastExpiringName}</span>
                 </div>
@@ -189,6 +199,7 @@ const ClaimEnsToken = () => {
                 <div>
                     <span>Balance: </span><span>{balance}</span>
                 </div>
+                <StatsSubtitle>Fun facts</StatsSubtitle>
             </LeftContainer>
             <RightContainer>
                 <NarrowColumn>
