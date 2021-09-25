@@ -1,4 +1,5 @@
 describe('ClaimENSToken', () => {
+    it.todo('shoudl do something if tokens are already claimed')
 })
 
 describe('generateMerkleShardUrl', () => {

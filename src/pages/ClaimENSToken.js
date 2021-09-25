@@ -1,26 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
-import {formatTokenAmount} from "../utils/utils";
+import {formatTokenAmount, getENSTokenContractAddress, isDev} from "../utils/utils";
 import Footer from "../components/Footer";
 import {Contract, BigNumber} from "ethers";
 
 import ENSTokenAbi from '../assets/abis/ENSToken'
-import {getJsonRpcProvider} from "../web3modal";
+import {getEthersProvider, getJsonRpcProvider} from "../web3modal";
 import ShardedMerkleTree from "../merkle";
 
 import merkleRoot from '../assets/root'
-import merkleRootHH from '../assets/hardhatroot'
 
-const ENS_TOKEN_CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+const generateMerkleShardUrl = (address) => `/airdrops/mainnet/${address?.slice(2, 4)}.json`
 
-// const generateMerkleShardUrl = (address) => {
-//     return `/airdrops/mainnet/${address?.slice(2, 4)}.json`
-// }
-
-const generateMerkleShardUrl = (address) => {
-    return `/airdrops/hardhat/1.json`
-}
 
 const useGetAddressDetails = (address) => {
     const [addressDetails, setAddressDetails] = useState(null)
@@ -85,17 +77,21 @@ const useClaimData = (address) => {
     })
 }
 
-const submitClaim = async (balance, proof) => {
-    const jsonRpcProvider = getJsonRpcProvider();
-    const jsonRpcSigner = jsonRpcProvider.getSigner('0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65')
-    const ENSTokenContract = new Contract(ENS_TOKEN_CONTRACT_ADDRESS, ENSTokenAbi.abi, jsonRpcSigner);
-    ENSTokenContract.connect(jsonRpcSigner)
-    const result = await ENSTokenContract.claimTokens(
-        balance,
-        '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65',
-        proof
-    )
-    console.log('result: ', result)
+const submitClaim = async (balance, proof, address) => {
+    try{
+        const provider = getEthersProvider()
+        const signer = provider.getSigner()
+        const ENSTokenContract = new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer);
+        ENSTokenContract.connect(signer)
+        const result = await ENSTokenContract.claimTokens(
+            balance,
+            address,
+            proof
+        )
+        console.log('result: ', result)
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 const handleClaim = (address) => async () => {
@@ -105,15 +101,15 @@ const handleClaim = (address) => async () => {
             throw new Error('error getting shard data')
         }
         const shardJson = await response.json({encoding: 'utf-8'})
-        const {root, shardNybbles, total} = merkleRootHH;
+        const {root, shardNybbles, total} = merkleRoot;
         const shardedMerkleTree = new ShardedMerkleTree(
             () => shardJson,
             shardNybbles,
             root,
             BigNumber.from(total)
         )
-        const [entry, proof] = shardedMerkleTree.getProof('0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65')
-        submitClaim(entry.balance, proof)
+        const [entry, proof] = shardedMerkleTree.getProof(address)
+        submitClaim(entry.balance, proof, address)
     } catch (e) {
         console.error(e)
     }

@@ -1,5 +1,4 @@
 import {ApolloClient, InMemoryCache, makeVar} from "@apollo/client";
-import {gql} from "graphql-tag";
 
 export const addressReactive = makeVar(null)
 export const isConnected = makeVar(false)
