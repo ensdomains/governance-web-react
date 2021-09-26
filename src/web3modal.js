@@ -1,5 +1,4 @@
 import {ethers} from "ethers";
-import {setupENS} from '@ensdomains/ui'
 
 import {addressReactive, isConnected} from "./apollo";
 import {getEnv} from "./utils/utils";
@@ -112,14 +111,8 @@ export const initWeb3 = async () => {
     isConnected(false)
     addressReactive(null)
 
-    if (ethersProvider) {
-        ensInstance = await setupENS({
-            customProvider: ethersProvider
-        })
-    }
 }
 
 export const getProvider = () => provider
-export const getEnsInstance = () => ensInstance
 export const getEthersProvider = () => ethersProvider
 export const getJsonRpcProvider = () => jsonRpcProvider

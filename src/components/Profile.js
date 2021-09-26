@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components'
 
-import {getEnsInstance, getEthersProvider, getProvider} from "../web3modal";
+import {getEthersProvider} from "../web3modal";
 
 const ProfileContainer = styled.div`
     display: flex;
