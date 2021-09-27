@@ -28,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "deploy": "DISABLE_ESLINT_PLUGIN=true yarn build && cp _headers ./build",
+    "deploy": "DISABLE_ESLINT_PLUGIN=true yarn build && cp _headers ./build && cp _redirects ./build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
