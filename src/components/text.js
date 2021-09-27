@@ -80,6 +80,7 @@ export const Statistic = styled.div`
     line-height: 141%;
     letter-spacing: -0.01em;
     color: #000000;
+    display: flex;
 `
 
 export const TokenText = styled.span`

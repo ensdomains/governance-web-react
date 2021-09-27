@@ -5,7 +5,9 @@ export const isDev = () => getEnv() === 'dev'
 export const formatTokenAmount = (tokenAmount, length = 9) =>
     new Intl.NumberFormat(
         'en-US',
-        {maximumSignificantDigits: length}
+        {
+            maximumFractionDigits: 2,
+        }
     ).format(Number(tokenAmount) / Math.pow(10, 18))
 
 export const getENSTokenContractAddress = () =>
