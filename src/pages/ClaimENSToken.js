@@ -76,8 +76,6 @@ const useClaimData = (address) => {
     const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
     const balance = formatTokenAmount(addressDetails?.balance)
 
-    console.log('addressDetails: ', addressDetails)
-
     return ({
         lastExpiringName,
         longestOwnedName,
@@ -161,6 +159,7 @@ const SmallENSLogo = styled(ENSLogo)`
     width: 25px;
     margin-top: 1px;
     margin-left: 5px;
+    margin-right: -4px;
 `
 
 const StatsSubtitle = styled.div`
@@ -291,7 +290,7 @@ const ClaimEnsToken = () => {
                         <InnerContentBox>
                             <SubsubTitle>You will receive</SubsubTitle>
                             <Gap height={1}/>
-                            <Statistic>3,405,411 <ENSLogo src={SplashENSLogo}/></Statistic>
+                            <Statistic>{balance}<ENSLogo src={SplashENSLogo}/></Statistic>
                         </InnerContentBox>
                         <Gap height={5}/>
                         <Content>
