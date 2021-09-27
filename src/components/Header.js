@@ -8,6 +8,7 @@ import {initWeb3} from "../web3modal";
 import Profile from './Profile'
 
 import HeaderENSLogo from '../assets/imgs/HeaderENSLogo.svg'
+import {Link} from "react-router-dom";
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -19,7 +20,7 @@ const HeaderContainer = styled.div`
 
 const HeaderContainerInner = styled.div`
     width: 100%;
-    max-width: 1200px;
+    max-width: 1024px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -41,7 +42,9 @@ const Header = () => {
         <HeaderContainer>
             <HeaderContainerInner>
                 <LeftContainer>
-                    <img src={HeaderENSLogo}/>
+                    <Link to={"/"}>
+                        <img src={HeaderENSLogo}/>
+                    </Link>
                 </LeftContainer>
                 <RightContainer>
                     {isConnected
