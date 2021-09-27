@@ -3,11 +3,11 @@ import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from 'styled-components';
 
-import {formatTokenAmount, getENSTokenContractAddress, isDev} from "../utils/utils";
+import {formatTokenAmount, getENSTokenContractAddress} from "../utils/utils";
 import Footer from "../components/Footer";
 import {Contract, BigNumber} from "ethers";
 import ENSTokenAbi from '../assets/abis/ENSToken'
-import {getEthersProvider, getJsonRpcProvider} from "../web3modal";
+import {getEthersProvider} from "../web3modal";
 import ShardedMerkleTree from "../merkle";
 
 import merkleRoot from '../assets/root'
@@ -18,6 +18,7 @@ import {useHistory} from "react-router-dom";
 import {largerThan} from "../utils/styledComponents";
 
 import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
+import Divider from "../components/Divider";
 
 const generateMerkleShardUrl = (address) => `/airdrops/mainnet/${address?.slice(2, 4)}.json`
 
@@ -75,12 +76,15 @@ const useClaimData = (address) => {
     const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
     const balance = formatTokenAmount(addressDetails?.balance)
 
+    console.log('addressDetails: ', addressDetails)
+
     return ({
         lastExpiringName,
         longestOwnedName,
         pastTokens,
         futureTokens,
         balance,
+        hasReverseRecord: addressDetails?.has_reverse_record,
         rawBalance: addressDetails?.balance
     })
 }
@@ -134,6 +138,7 @@ const ClaimEnsTokenContainer = styled.div`
 
 const LeftContainer = styled.div`
     margin-bottom: 50px;
+    min-width: 350px;
     
     ${largerThan.tablet`
         margin-bottom: 0px;
@@ -152,6 +157,12 @@ const ENSLogo = styled.img`
     margin-left: 10px;
 `
 
+const SmallENSLogo = styled(ENSLogo)`
+    width: 25px;
+    margin-top: 1px;
+    margin-left: 5px;
+`
+
 const StatsSubtitle = styled.div`
     font-style: normal;
     font-weight: normal;
@@ -162,6 +173,40 @@ const StatsSubtitle = styled.div`
     color: #717171;
     
     opacity: 0.6;
+`
+
+const RowLabel = styled.div`
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: -0.01em;
+    color: #717171;
+`
+
+const StatsRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+`
+
+const StatsSection = styled.div`
+  margin-bottom: 35px;  
+`
+
+const StatsNumber = styled.div`
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: -0.01em;
+    color: #000000;
+`
+
+const NumberWithLogoContainer = styled.div`
+   display: flex;
+   align-items: center; 
 `
 
 const ClaimEnsToken = () => {
@@ -176,30 +221,62 @@ const ClaimEnsToken = () => {
         pastTokens,
         futureTokens,
         balance,
-        rawBalance
+        rawBalance,
+        hasReverseRecord
     } = useClaimData(address)
     const history = useHistory();
 
     return (
         <ClaimEnsTokenContainer>
             <LeftContainer>
-                <StatsSubtitle>Rewards</StatsSubtitle>
-                <div>
-                    <span>Last expiring name: </span><span>{lastExpiringName}</span>
-                </div>
-                <div>
-                    <span>Longest owned name: </span><span>{longestOwnedName}</span>
-                </div>
-                <div>
-                    <span>Past tokens: </span><span>{pastTokens}</span>
-                </div>
-                <div>
-                    <span>Future tokens: </span><span>{futureTokens}</span>
-                </div>
-                <div>
-                    <span>Balance: </span><span>{balance}</span>
-                </div>
-                <StatsSubtitle>Fun facts</StatsSubtitle>
+                <StatsSection>
+                    <StatsRow>
+                        <StatsSubtitle>Rewards</StatsSubtitle>
+                    </StatsRow>
+                    <StatsRow>
+                        <RowLabel>Historical activity: </RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>{pastTokens}</StatsNumber><SmallENSLogo src={SplashENSLogo}/>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                    <Divider/>
+                    <StatsRow>
+                        <RowLabel>Future registrations: </RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>{futureTokens}</StatsNumber><SmallENSLogo src={SplashENSLogo}/>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                    {hasReverseRecord && (
+                        <>
+                            <Divider/>
+                            <StatsRow>
+                                <RowLabel>Reverse record is set: </RowLabel>
+                                <NumberWithLogoContainer>
+                                    <StatsNumber>2x</StatsNumber>
+                                </NumberWithLogoContainer>
+                            </StatsRow>
+                        </>
+                    )}
+                </StatsSection>
+
+                <StatsSection>
+                    <StatsRow>
+                        <StatsSubtitle>Fun facts</StatsSubtitle>
+                    </StatsRow>
+                    <StatsRow>
+                        <RowLabel>Longest owned: </RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>{longestOwnedName}</StatsNumber>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                    <Divider/>
+                    <StatsRow>
+                        <RowLabel>Longest renewed: </RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>{lastExpiringName}</StatsNumber>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                </StatsSection>
             </LeftContainer>
             <RightContainer>
                 <NarrowColumn>
@@ -214,13 +291,12 @@ const ClaimEnsToken = () => {
                         <InnerContentBox>
                             <SubsubTitle>You will receive</SubsubTitle>
                             <Gap height={1}/>
-                            <Statistic>3,405,411
-                                <ENSLogo src={SplashENSLogo} />
-                            </Statistic>
+                            <Statistic>3,405,411 <ENSLogo src={SplashENSLogo}/></Statistic>
                         </InnerContentBox>
                         <Gap height={5}/>
                         <Content>
-                            You have received these rewards for being an early and active participant of the ENS community. We hope that you use the power granted by these tokens wisely!
+                            You have received these rewards for being an early and active participant of the ENS
+                            community. We hope that you use the power granted by these tokens wisely!
                         </Content>
                         <Gap height={5}/>
                     </ContentBox>
