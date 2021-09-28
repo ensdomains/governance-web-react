@@ -19,6 +19,7 @@ import {largerThan} from "../utils/styledComponents";
 
 import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
 import Divider from "../components/Divider";
+import Pill from "../components/Pill";
 
 const generateMerkleShardUrl = (address) => `/airdrops/mainnet/${address?.slice(2, 4)}.json`
 
@@ -228,6 +229,7 @@ const ClaimEnsToken = () => {
     return (
         <ClaimEnsTokenContainer>
             <LeftContainer>
+
                 <StatsSection>
                     <StatsRow>
                         <StatsSubtitle>Rewards</StatsSubtitle>
@@ -276,9 +278,17 @@ const ClaimEnsToken = () => {
                         </NumberWithLogoContainer>
                     </StatsRow>
                 </StatsSection>
+
             </LeftContainer>
+
             <RightContainer>
+
                 <NarrowColumn>
+                    {rawBalance
+                        ? <Pill text={"You are eligible for the airdrop!"} />
+                        : <Pill error text={"You are not eligible for the airdrop"} />
+                    }
+
                     <ContentBox>
                         <Header>Claim your tokens</Header>
                         <Gap height={3}/>
@@ -305,6 +315,7 @@ const ClaimEnsToken = () => {
                         leftButtonText="Choose your delegate"
                     />
                 </NarrowColumn>
+
             </RightContainer>
         </ClaimEnsTokenContainer>
     );
