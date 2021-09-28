@@ -1,7 +1,8 @@
 import {ethers} from "ethers";
 
-import {addressReactive, isConnected} from "./apollo";
-import {getEnv} from "./utils/utils";
+import {addressReactive, apolloClientInstance, isConnected, addressDetails} from "./apollo";
+import {formatTokenAmount, generateMerkleShardUrl} from "./utils/utils";
+import {gql} from "graphql-tag";
 
 const INFURA_ID =
     window.location.host === 'app.ens.domains'
@@ -14,7 +15,6 @@ let provider
 let web3Modal
 let ensInstance
 let ethersProvider
-let jsonRpcProvider
 
 const option = {
     network: 'mainnet', // optional
@@ -81,16 +81,68 @@ export const disconnect = async function () {
     }
 }
 
+const LABELHASH_QUERY = gql`
+    query domainByLabelhash($labelhash: [String]) {
+        domains(where:{ labelhash_in: $labelhash }) {
+            name
+            labelhash
+          }
+}
+`
+
+const getClaimData = async (address) => {
+    const response = await fetch(generateMerkleShardUrl(address))
+    if (!response.ok) {
+        throw new Error('error getting shard data')
+    }
+    const shardData = await response.json({encoding: 'utf-8'})
+    const addressDetails = shardData?.entries[address]
+
+    const {data} = await apolloClientInstance
+        .query({
+            query: LABELHASH_QUERY,
+            variables: {
+                labelhash: [addressDetails?.last_expiring_name, addressDetails?.longest_owned_name]
+            }
+        })
+
+    const longestOwnedName = data
+        ?.domains
+        .find(x => x.labelhash === addressDetails?.longest_owned_name)
+        ?.name
+    const lastExpiringName = data
+        ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
+        ?.name
+    const pastTokens = formatTokenAmount(addressDetails?.past_tokens)
+    const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
+    const balance = formatTokenAmount(addressDetails?.balance)
+
+    return ({
+        lastExpiringName,
+        longestOwnedName,
+        pastTokens,
+        futureTokens,
+        balance,
+        hasReverseRecord: addressDetails?.has_reverse_record,
+        rawBalance: addressDetails?.balance
+    })
+}
+
 export const initWeb3 = async () => {
     const web3Provider = await connect();
 
-    try {
-        if(getEnv() === 'dev') {
-            jsonRpcProvider = new ethers.providers.JsonRpcProvider();
-        }
-        ethersProvider = new ethers.providers.Web3Provider(web3Provider)
+    web3Provider?.on('chainChanged', async _chainId => {
+        window.location.reload();
+    })
 
+    web3Provider?.on('accountsChanged', async accounts => {
+        window.location.reload();
+    })
+
+    try {
+        ethersProvider = new ethers.providers.Web3Provider(web3Provider)
     } catch (e) {
+        console.error(e)
     }
 
     const signer = ethersProvider?.getSigner()
@@ -98,21 +150,22 @@ export const initWeb3 = async () => {
 
     if (signer) {
         try {
-            address = await signer.getAddress()
+            address = (await signer.getAddress()).toLowerCase()
         } catch (e) {
+            console.error(e)
         }
     }
 
     if (address) {
         isConnected(true)
         addressReactive(address)
+        const claimData = await getClaimData(address)
+        addressDetails(claimData)
         return
     }
     isConnected(false)
     addressReactive(null)
-
 }
 
 export const getProvider = () => provider
 export const getEthersProvider = () => ethersProvider
-export const getJsonRpcProvider = () => jsonRpcProvider

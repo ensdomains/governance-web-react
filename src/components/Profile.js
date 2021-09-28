@@ -66,7 +66,7 @@ const Profile = ({address}) => {
         const run = async () => {
             const ethersProvider = getEthersProvider()
 
-            if(!ethersProvider) {
+            if (!ethersProvider) {
                 console.error('no ethers provider')
                 return;
             }
@@ -90,8 +90,8 @@ const Profile = ({address}) => {
         <ProfileContainer>
             <LeftContainer>
                 {profileDetails.avatar
-                    ?   <AvatarImg src={profileDetails.avatar} />
-                    :   <EmptyAvatar />
+                    ? <AvatarImg src={profileDetails.avatar}/>
+                    : <EmptyAvatar/>
                 }
 
             </LeftContainer>

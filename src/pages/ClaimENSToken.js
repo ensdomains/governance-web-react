@@ -3,7 +3,7 @@ import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from 'styled-components';
 
-import {formatTokenAmount, getENSTokenContractAddress} from "../utils/utils";
+import {formatTokenAmount, generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
 import Footer from "../components/Footer";
 import {Contract, BigNumber} from "ethers";
 import ENSTokenAbi from '../assets/abis/ENSToken'
@@ -21,72 +21,6 @@ import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
 import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 
-const generateMerkleShardUrl = (address) => `/airdrops/mainnet/${address?.slice(2, 4)}.json`
-
-
-const useGetAddressDetails = (address) => {
-    const [addressDetails, setAddressDetails] = useState(null)
-
-    useEffect(() => {
-        const run = async () => {
-            const response = await fetch(generateMerkleShardUrl(address))
-            if (!response.ok) {
-                throw new Error('error getting shard data')
-            }
-            const shardData = await response.json({encoding: 'utf-8'})
-            setAddressDetails(shardData?.entries[address])
-        }
-
-        if (address) {
-            run().catch(e => console.error(e))
-        }
-    }, [address])
-
-    return addressDetails
-}
-
-const LABELHASH_QUERY = gql`
-query domainByLabelhash($labelhash: [String]) {
-    domains(where:{ labelhash_in: $labelhash }) {
-        name
-        labelhash
-      }
-}
-`
-
-const useClaimData = (address) => {
-    const addressDetails = useGetAddressDetails(address)
-
-    const {data} = useQuery(
-        LABELHASH_QUERY,
-        {
-            variables: {
-                labelhash: [addressDetails?.last_expiring_name, addressDetails?.longest_owned_name]
-            }
-        }
-    )
-
-    const longestOwnedName = data
-        ?.domains
-        .find(x => x.labelhash === addressDetails?.longest_owned_name)
-        ?.name
-    const lastExpiringName = data
-        ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
-        ?.name
-    const pastTokens = formatTokenAmount(addressDetails?.past_tokens)
-    const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
-    const balance = formatTokenAmount(addressDetails?.balance)
-
-    return ({
-        lastExpiringName,
-        longestOwnedName,
-        pastTokens,
-        futureTokens,
-        balance,
-        hasReverseRecord: addressDetails?.has_reverse_record,
-        rawBalance: addressDetails?.balance
-    })
-}
 
 const submitClaim = async (balance, proof, address) => {
     try {
@@ -210,9 +144,10 @@ const NumberWithLogoContainer = styled.div`
 `
 
 const ClaimEnsToken = () => {
-    const {data: {address}} = useQuery(gql`
+    const {data: {address, addressDetails}} = useQuery(gql`
         query getHeaderData @client {
             address
+            addressDetails
         }
     `)
     const {
@@ -223,7 +158,8 @@ const ClaimEnsToken = () => {
         balance,
         rawBalance,
         hasReverseRecord
-    } = useClaimData(address)
+    } = addressDetails
+
     const history = useHistory();
 
     return (
