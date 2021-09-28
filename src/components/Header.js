@@ -32,11 +32,13 @@ const RightContainer = styled.div``
 
 const Header = () => {
     const {data: {isConnected, address}} = useQuery(gql`
-    query getHeaderData @client {
-        address
-        isConnected
-    }
-`)
+        query getHeaderData @client {
+            address
+            isConnected
+        }
+    `)
+
+    console.log('address: ', address)
 
     return (
         <HeaderContainer>
