@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components/macro'
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
+import {Client} from '@snapshot-labs/snapshot.js'
 
-import { largerThan} from "../utils/styledComponents";
 import Footer from '../components/Footer'
 import Gap from '../components/Gap'
-import {Header, Content } from '../components/text'
-import { NarrowColumn } from "../components/layout";
-import { ContentBox, InnerContentBox} from "../components/layout";
+import {Header, Content} from '../components/text'
+import {NarrowColumn} from "../components/layout";
+import {ContentBox} from "../components/layout";
+import {getEthersProvider} from "../web3modal";
+import {useQuery} from "@apollo/client";
+import {gql} from "graphql-tag";
 
 const BoxContainer = styled.div`
       background: lightgreen;
@@ -32,12 +35,12 @@ const Box = ({x: {title, content}}) => {
     return (
         <BoxContainer>
             <BoxTitle>{title}</BoxTitle>
-            <Gap height={6} />
+            <Gap height={6}/>
             <BoxContentContainer>
                 {content.map(text =>
                     <>
                         <BoxContent>{text}</BoxContent>
-                        <Gap height={4} />
+                        <Gap height={4}/>
                     </>
                 )}
             </BoxContentContainer>
@@ -46,26 +49,52 @@ const Box = ({x: {title, content}}) => {
 }
 
 
-const WhyNow = () => {
+const ENSConstitution = () => {
     const history = useHistory();
+
+    const {data: {isConnected, address}} = useQuery(gql`
+        query getHeaderData @client {
+            address
+            isConnected
+        }
+    `)
+
+    useEffect(() => {
+        if (address) {
+            const snapshotClient = new Client()
+            const ethersProvider = getEthersProvider()
+            // snapshotClient.vote(
+            //     ethersProvider,
+            //     address,
+            //     'bananana.eth',
+            //     {proposal: 'QmSEspbHEcD5o2MGNwjr4mj218CRwAimt1eXjLNcLP2CN6', choice: [1, 2, 3]}
+            // )
+        }
+    }, [address])
 
     return (
         <NarrowColumn>
             <ContentBox>
                 <Header>Constitution</Header>
-                <Gap height={3} />
+                <Gap height={3}/>
                 <Content>
-                    Over the past 12 months, ENS has seen <b>massive growth</b> in both the registration and usage of ENS names. We firmly believe that now is the time for the protocol to start to become entirely self-sufficient and community owned.
+                    Over the past 12 months, ENS has seen <b>massive growth</b> in both the registration and usage of
+                    ENS names. We firmly believe that now is the time for the protocol to start to become entirely
+                    self-sufficient and community owned.
                 </Content>
             </ContentBox>
             <Footer
                 rightButtonText="Next"
-                rightButtonCallback={() => {history.push('/delegates')}}
+                rightButtonCallback={() => {
+                    history.push('/delegates')
+                }}
                 leftButtonText="Back"
-                leftButtonCallback={() => {history.push('/governance')}}
+                leftButtonCallback={() => {
+                    history.push('/governance')
+                }}
             />
         </NarrowColumn>
     );
 };
 
-export default WhyNow;
+export default ENSConstitution;

@@ -38,8 +38,6 @@ const Header = () => {
         }
     `)
 
-    console.log('address: ', address)
-
     return (
         <HeaderContainer>
             <HeaderContainerInner>
