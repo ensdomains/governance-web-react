@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from 'styled-components';
 
-import {formatTokenAmount, generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
+import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
 import Footer from "../components/Footer";
 import {Contract, BigNumber} from "ethers";
 import ENSTokenAbi from '../assets/abis/ENSToken'
@@ -33,9 +33,10 @@ const submitClaim = async (balance, proof, address) => {
             address,
             proof
         )
-        console.log('result: ', result)
+        const transactionReceipt = await result.wait(1)
+        console.log('transaction receipt: ', transactionReceipt)
     } catch (e) {
-        console.log(e)
+        console.error(e)
     }
 }
 
@@ -54,6 +55,8 @@ const handleClaim = (address) => async () => {
             BigNumber.from(total)
         )
         const [entry, proof] = shardedMerkleTree.getProof(address)
+        console.log('entry.balance: ', entry.balance)
+        // submitClaim("0003391299489722269696", proof, address)
         submitClaim(entry.balance, proof, address)
     } catch (e) {
         console.error(e)
@@ -150,6 +153,7 @@ const ClaimEnsToken = () => {
             addressDetails
         }
     `)
+
     const {
         lastExpiringName,
         longestOwnedName,

@@ -1,7 +1,8 @@
 describe('ClaimENSToken', () => {
     it.todo('shoudl do something if tokens are already claimed')
     it.todo('should show a message if the user is eligible to claim')
-    it.todo('should show a message if the user is not ¡eligible to claim')
+    it.todo('should show a message if the user is not ¡neligible to claim')
+    it.todo('should not allow user to try and claim if they have already claimed')
 })
 
 describe('generateMerkleShardUrl', () => {
@@ -20,6 +21,6 @@ describe('handleClaim', () => {
 })
 
 describe('submitClaim', () => {
-    it.todo('should use jsonRpc when on localhost')
-    it.todo('use web3 provider when not on localhost')
+    it.todo('should return error message if transaction fails')
+    it.todo('should submit vote once claim transaction is complete')
 })

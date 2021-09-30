@@ -12,7 +12,7 @@ export const formatTokenAmount = (tokenAmount, length = 9) =>
 
 export const getENSTokenContractAddress = () =>
     isDev()
-        ? '0xdd1e7E6B7A29FEf08ac43077E7FE48eac8e73A89'
+        ? '0x87CE9B06Ae14F757FC591148E75970343B72a4fa'
         : '0x33071c57DE0660d61b638Fa533100Cdf94Ebd323'
 
 export const generateMerkleShardUrl = (address) => `/airdrops/mainnet/${address?.slice(2, 4)}.json`
