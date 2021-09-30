@@ -11,6 +11,7 @@ import {ContentBox} from "../components/layout";
 import {getEthersProvider} from "../web3modal";
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
+import {PROPOSAL_ID} from "../utils/consts";
 
 const BoxContainer = styled.div`
       background: lightgreen;
@@ -48,16 +49,41 @@ const Box = ({x: {title, content}}) => {
     )
 }
 
+const GET_USER_VOTES = gql`
+    query Votes($voter: String!) {
+      votes(
+        where: {
+          voter: $voter
+          proposal: "${PROPOSAL_ID}"
+        }
+      ) {
+        choice
+      }
+    }
+`
+
 
 const ENSConstitution = () => {
     const history = useHistory();
 
-    const {data: {isConnected, address}} = useQuery(gql`
+    const {data: {address}} = useQuery(gql`
         query getHeaderData @client {
             address
-            isConnected
         }
     `)
+
+    const {data} = useQuery(
+        GET_USER_VOTES,
+        {
+            skip: !address,
+            variables: {
+                voter: address
+            }
+        }
+    )
+
+    const previousVote = data?.votes?.[0]?.choice
+    console.log('previousVote: ', previousVote)
 
     useEffect(() => {
         if (address) {
@@ -67,7 +93,7 @@ const ENSConstitution = () => {
             //     ethersProvider,
             //     address,
             //     'bananana.eth',
-            //     {proposal: 'QmSEspbHEcD5o2MGNwjr4mj218CRwAimt1eXjLNcLP2CN6', choice: [1, 2, 3]}
+            //     {proposal: PROPOSAL_ID, choice: [1, 2, 3]}
             // )
         }
     }, [address])
