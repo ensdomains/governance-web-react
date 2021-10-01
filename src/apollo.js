@@ -3,6 +3,7 @@ import {ApolloClient, HttpLink, InMemoryCache, makeVar} from "@apollo/client";
 export const addressReactive = makeVar(null)
 export const isConnected = makeVar(false)
 export const addressDetails = makeVar({})
+export const signedVote = makeVar(null)
 
 export let apolloClientInstance
 
@@ -24,13 +25,17 @@ const typePolicies = {
                     return addressDetails()
                 }
             },
+            signedVote: {
+                read() {
+                    return signedVote()
+                }
+            },
         }
     }
 }
 
 const getGraphqlUri = (operation) => {
     const { operationName } = operation
-    console.log('operationName: ', operationName)
     if(operationName === 'Votes') {
         return 'https://hub.snapshot.org/graphql'
     }
