@@ -10,7 +10,7 @@ import Header from './components/Header'
 import Home from './pages/Home'
 import ENSGovernance from "./pages/ENSGovernance";
 import ENSDistribution from "./pages/ENSDistribution";
-import ENSConstitution from "./pages/ENSConstitution";
+import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
 import ClaimENSToken from "./pages/ClaimENSToken";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import JoinENS from "./pages/JoinENS";
