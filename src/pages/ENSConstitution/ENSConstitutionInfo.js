@@ -1,23 +1,22 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import styled from 'styled-components/macro'
-import {useHistory} from "react-router-dom";
+import {Route, Switch, useHistory} from "react-router-dom";
 import {Client, Utils} from '@snapshot-labs/snapshot.js'
-import { hexlify } from '@ethersproject/bytes';
+import {hexlify} from '@ethersproject/bytes';
 
 
-import Footer from '../components/Footer'
-import Gap from '../components/Gap'
-import {Header, Content} from '../components/text'
-import {ContentBoxWithHeader, NarrowColumn} from "../components/layout";
-import {ContentBox} from "../components/layout";
-import {getEthersProvider} from "../web3modal";
+import Footer from '../../components/Footer'
+import Gap from '../../components/Gap'
+import {Header, Content} from '../../components/text'
+import {ContentBox, ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
+import {getEthersProvider} from "../../web3modal";
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
-import {PROPOSAL_ID} from "../utils/consts";
-import Divider from "../components/Divider";
+import {PROPOSAL_ID} from "../../utils/consts";
+import SectionHeader from "./SectionHeader";
 
+import {getEarliestUnvotedArticle, getTotalNumberOfArticles} from "./constitutionHelpers";
 
-const wrappedDivider = styled(Divider)``
 
 export async function signMessage(web3, msg, address) {
     msg = hexlify(new Buffer(msg, 'utf8'));
@@ -42,7 +41,8 @@ const GET_USER_VOTES = gql`
 `
 
 
-const ENSConstitution = () => {
+
+const ENSConstitutionInfo = () => {
     const history = useHistory();
 
     const {data: {address}} = useQuery(gql`
@@ -79,21 +79,17 @@ const ENSConstitution = () => {
 
     return (
         <NarrowColumn>
-            <ContentBoxWithHeader
-                HeaderComponent={() => {
-                    return <Header>Constitution</Header>
-                }}
-            >
+            <ContentBox>
                 <Content>
                     Over the past 12 months, ENS has seen <b>massive growth</b> in both the registration and usage of
                     ENS names. We firmly believe that now is the time for the protocol to start to become entirely
                     self-sufficient and community owned.
                 </Content>
-            </ContentBoxWithHeader>
+            </ContentBox>
             <Footer
                 rightButtonText="Next"
                 rightButtonCallback={() => {
-                    history.push('/delegates')
+                    history.push('/constitution/vote')
                 }}
                 leftButtonText="Back"
                 leftButtonCallback={() => {
@@ -104,4 +100,5 @@ const ENSConstitution = () => {
     );
 };
 
-export default ENSConstitution;
+
+export default ENSConstitutionInfo;

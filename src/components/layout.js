@@ -40,7 +40,7 @@ export const ContentBoxWithHeader = ({HeaderComponent, children}) => {
     return (
         <ContentBoxWithHeaderContainer>
            <ContentBoxHeader>
-                <HeaderComponent />
+               {HeaderComponent}
            </ContentBoxHeader>
            <Divider />
            <ContentBoxBody>
