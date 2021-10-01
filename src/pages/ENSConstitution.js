@@ -1,52 +1,31 @@
 import React, {useEffect} from 'react';
 import styled from 'styled-components/macro'
 import {useHistory} from "react-router-dom";
-import {Client} from '@snapshot-labs/snapshot.js'
+import {Client, Utils} from '@snapshot-labs/snapshot.js'
+import { hexlify } from '@ethersproject/bytes';
+
 
 import Footer from '../components/Footer'
 import Gap from '../components/Gap'
 import {Header, Content} from '../components/text'
-import {NarrowColumn} from "../components/layout";
+import {ContentBoxWithHeader, NarrowColumn} from "../components/layout";
 import {ContentBox} from "../components/layout";
 import {getEthersProvider} from "../web3modal";
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import {PROPOSAL_ID} from "../utils/consts";
+import Divider from "../components/Divider";
 
-const BoxContainer = styled.div`
-      background: lightgreen;
-      width: 300px;
-      height: 300px;
-      padding: 20px;
-      box-sizing: border-box;
-      margin: 20px 10px;
-`
 
-const BoxTitle = styled.div`
-    font-size: 48px;
-    text-align: center;
-`
+const wrappedDivider = styled(Divider)``
 
-const BoxContent = styled.div``
+export async function signMessage(web3, msg, address) {
+    msg = hexlify(new Buffer(msg, 'utf8'));
+    return await web3.send('personal_sign', [msg, address]);
+}
 
-const BoxContentContainer = styled.div`
-`
+const createSignedMessage = () => {
 
-const Box = ({x: {title, content}}) => {
-    return (
-        <BoxContainer>
-            <BoxTitle>{title}</BoxTitle>
-            <Gap height={6}/>
-            <BoxContentContainer>
-                {content.map(text =>
-                    <>
-                        <BoxContent>{text}</BoxContent>
-                        <Gap height={4}/>
-                    </>
-                )}
-            </BoxContentContainer>
-        </BoxContainer>
-    )
 }
 
 const GET_USER_VOTES = gql`
@@ -100,15 +79,17 @@ const ENSConstitution = () => {
 
     return (
         <NarrowColumn>
-            <ContentBox>
-                <Header>Constitution</Header>
-                <Gap height={3}/>
+            <ContentBoxWithHeader
+                HeaderComponent={() => {
+                    return <Header>Constitution</Header>
+                }}
+            >
                 <Content>
                     Over the past 12 months, ENS has seen <b>massive growth</b> in both the registration and usage of
                     ENS names. We firmly believe that now is the time for the protocol to start to become entirely
                     self-sufficient and community owned.
                 </Content>
-            </ContentBox>
+            </ContentBoxWithHeader>
             <Footer
                 rightButtonText="Next"
                 rightButtonCallback={() => {
