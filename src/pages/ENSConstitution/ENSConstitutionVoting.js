@@ -47,14 +47,40 @@ const useConstitutionSteps = () => {
     return ({currentStep, setCurrentStep, totalSteps})
 }
 
+const Voting = ({currentStep, setCurrentStep, totalSteps, article, handleBack, handleApproveVote, handleRejectVote}) => (
+    <>
+        <ContentBoxWithHeader
+            HeaderComponent={<SectionHeader {...{currentStep, setCurrentStep, totalSteps}}/>}
+        >
+            <ContentContainer>
+                <AritcleHeader>{article.title}</AritcleHeader>
+                <ArticleContent>{article.content}</ArticleContent>
+                <ArticleContent><b>Permissable: </b>{article.positiveExample}</ArticleContent>
+                <ArticleContent><b>Not permissable: </b>{article.negativeExample}</ArticleContent>
+            </ContentContainer>
+        </ContentBoxWithHeader>
+        <Footer
+            backCallback={handleBack}
+            approveVoteCallback={handleApproveVote}
+            rejectVoteCallback={handleRejectVote}
+        />
+    </>
+)
+
+const Summary = () => {
+    return (
+        <div>Summary</div>
+    )
+}
+
 const EnsConstitutionVoting = () => {
     const history = useHistory();
     const {currentStep, setCurrentStep, totalSteps} = useConstitutionSteps()
     const article = getConstitution()?.[currentStep]
 
     const handleBack = () => {
-        if(currentStep > 0) {
-            setCurrentStep(currentStep - 1)
+        if (currentStep > 0) {
+            setCurrentStep(currentStep)
             return;
         }
         history.push('/constitution')
@@ -62,8 +88,9 @@ const EnsConstitutionVoting = () => {
 
     const handleVote = (vote) => {
         voteOnArticle(currentStep, vote)
-        if(currentStep >= totalSteps - 1) {
-            history.push('/constitution/summary')
+        if (currentStep >= totalSteps - 1) {
+            //history.push('/constitution/summary')
+            return
         }
         setCurrentStep(currentStep + 1)
     }
@@ -76,23 +103,22 @@ const EnsConstitutionVoting = () => {
         handleVote(false)
     }
 
+    console.log('currentStep: ', currentStep)
+
     return (
         <NarrowColumn>
-            <ContentBoxWithHeader
-                HeaderComponent={<SectionHeader {...{currentStep, setCurrentStep, totalSteps}}/>}
-            >
-                <ContentContainer>
-                    <AritcleHeader>{article.title}</AritcleHeader>
-                    <ArticleContent>{article.content}</ArticleContent>
-                    <ArticleContent><b>Permissable: </b>{article.positiveExample}</ArticleContent>
-                    <ArticleContent><b>Not permissable: </b>{article.negativeExample}</ArticleContent>
-                </ContentContainer>
-            </ContentBoxWithHeader>
-            <Footer
-                backCallback={handleBack}
-                approveVoteCallback={handleApproveVote}
-                rejectVoteCallback={handleRejectVote}
-            />
+            {(currentStep >= totalSteps)
+                ? <Summary />
+                : <Voting {...{
+                    currentStep,
+                    setCurrentStep,
+                    totalSteps,
+                    article,
+                    handleBack,
+                    handleApproveVote,
+                    handleRejectVote
+                }}/>
+            }
         </NarrowColumn>
     );
 };
