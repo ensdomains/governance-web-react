@@ -4,13 +4,31 @@ import styled from 'styled-components/macro'
 import theme from './theme'
 
 const ButtonContainer = styled.div`
-    background: ${theme.colors.blue};
+    background: ${p => {
+            switch(p.type) {
+            case 'approve':
+                return theme.colors.green
+            case 'reject':
+                return theme.colors.red
+            case 'deny':
+                return theme.colors.grey
+            default:
+                return theme.colors.blue
+            }
+    }};
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
     border-radius: 12px;
-    color: white;
+    color: ${p => {
+    switch(p.type) {
+        case 'deny':
+            return '#63666A'
+        default:
+            return 'white'
+        }
+    }};
     padding: 14px 16px;
     font-style: normal;
     font-weight: bold;

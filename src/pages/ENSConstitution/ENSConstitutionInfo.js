@@ -62,7 +62,6 @@ const ENSConstitutionInfo = () => {
     )
 
     const previousVote = data?.votes?.[0]?.choice
-    console.log('previousVote: ', previousVote)
 
     useEffect(() => {
         if (address) {
