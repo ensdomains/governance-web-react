@@ -19,6 +19,7 @@ export const getEarliestUnvotedArticle = () => {
     for(let i = 0; i < cons.length; i++) {
         if(cons[i].vote === null) return i
     }
+    return cons.length - 1
 }
 
 export const hasVotedOnEachArticle = () => {
