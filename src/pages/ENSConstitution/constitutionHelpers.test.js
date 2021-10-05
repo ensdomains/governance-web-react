@@ -10,3 +10,7 @@ describe('hasVotedOnEachArticle',() => {
 describe('getTotalNumberOfArticles', () => {
     it.todo('should return the number of articles')
 })
+
+describe('voteOnArticle', () => {
+    it.todo('should vote on the correct article based on the index provided')
+})

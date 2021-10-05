@@ -17,7 +17,7 @@ const Footer = ({ rightButtonText, rightButtonCallback, leftButtonText, leftButt
     return (
         <FooterContainer>
             {leftButtonText
-                ? <CTAButton text={leftButtonText} onClick={leftButtonCallback} />
+                ? <CTAButton text={leftButtonText} onClick={leftButtonCallback} type="deny"  />
                 : <div></div>
             }
             {rightButtonText
