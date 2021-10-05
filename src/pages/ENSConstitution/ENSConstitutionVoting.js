@@ -38,7 +38,7 @@ const ContentContainer = styled.div`
 
 const useConstitutionSteps = () => {
     const [currentStep, setCurrentStep] = useState(0)
-    const totalSteps = useCallback(() => getTotalNumberOfArticles(), [])
+    const totalSteps = getTotalNumberOfArticles()
 
     useEffect(() => {
         setCurrentStep(getEarliestUnvotedArticle())
@@ -62,7 +62,7 @@ const EnsConstitutionVoting = () => {
 
     const handleVote = (vote) => {
         voteOnArticle(currentStep, vote)
-        if(currentStep + 1 > totalSteps) {
+        if(currentStep >= totalSteps - 1) {
             history.push('/constitution/summary')
         }
         setCurrentStep(currentStep + 1)
