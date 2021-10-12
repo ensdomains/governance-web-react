@@ -24,6 +24,7 @@ const AppContainer = styled.div`
   margin: auto;
   padding-bottom: 100px;
   box-sizing: border-box;
+  flex-grow: 1;
 `
 
 const AppContainerOuter = styled.div`

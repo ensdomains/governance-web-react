@@ -14,3 +14,8 @@ describe('getTotalNumberOfArticles', () => {
 describe('voteOnArticle', () => {
     it.todo('should vote on the correct article based on the index provided')
 })
+
+describe('isCompleted', () => {
+    it.todo('should return true if all articles have been voted on')
+    it.todo('should return false if all articles have not been voted on')
+})

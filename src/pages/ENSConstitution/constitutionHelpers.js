@@ -51,3 +51,13 @@ export const voteOnArticle = (n, vote) => {
     constitution[n].vote = vote;
     saveConstitution(constitution)
 }
+
+export const isCompleted = () => {
+    const constitution = getConstitution()
+    const length = constitution.length;
+    const completed = constitution.reduce((accum, next) => {
+        if(next.vote !== null) return accum + 1
+        return accum
+    }, 0)
+    return length === completed
+}

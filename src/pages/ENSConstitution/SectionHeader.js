@@ -17,6 +17,7 @@ const Step = styled.div`
     border-radius: 50%;
     width: 20px;
     height: 20px;
+    cursor: pointer;
     background: ${p => {
         if(p.currentStep) return `#878787`
         if(p.vote === true) return theme.colors.green
@@ -30,9 +31,8 @@ const Step = styled.div`
     
 `
 
-const SectionHeader = ({totalSteps, currentStep}) => {
+const SectionHeader = ({currentStep, setCurrentStep}) => {
     const constitution = getConstitution()
-    const article = constitution[currentStep]
 
     return (
         <SectionHeaderContainer>
@@ -41,6 +41,7 @@ const SectionHeader = ({totalSteps, currentStep}) => {
                 {constitution.map((article, idx) => {
                     return (
                         <Step
+                            onClick={() => setCurrentStep(idx)}
                             currentStep={currentStep === idx}
                             vote={article.vote}
                         />
