@@ -66,6 +66,8 @@ const handleClaim = (address) => async () => {
 const ClaimEnsTokenContainer = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     
     ${largerThan.tablet`
         flex-direction: row;
