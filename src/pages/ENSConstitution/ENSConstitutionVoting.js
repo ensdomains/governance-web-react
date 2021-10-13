@@ -13,7 +13,7 @@ import SectionHeader from "./SectionHeader";
 import ComponentFooter from "../../components/Footer";
 import Footer from "./ENSConstitutionFooter";
 import theme from "../../components/theme";
-
+import Summary from "./ENSConstitutionSummary";
 
 const AritcleHeader = styled.div`
     font-style: normal;
@@ -69,105 +69,7 @@ const Voting = ({currentStep, setCurrentStep, totalSteps, article, handleBack, h
     </>
 )
 
-const SummaryArticleContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`
 
-const SummaryArticleLeftContianer = styled.div`
-
-`
-
-const SummaryArticleRightContianer = styled.div`
-    font-style: normal;
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 141%;
-    /* identical to box height, or 23px */
-    
-    text-align: right;
-    letter-spacing: -0.01em;
-    
-    color: #B8B8B8;
-`
-
-const SummaryArticleTitle = styled.div`
-    font-style: normal;
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 18px;
-    
-    display: flex;
-    align-items: center;
-    letter-spacing: -0.01em;
-    
-    color: #989898;
-    margin-bottom: 5px;
-`
-
-const SummaryArticleSummary = styled.div`
-    max-width: 240px;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 17px;
-    line-height: 130%;
-    
-    letter-spacing: -0.01em;
-    
-    color: #424242;
-`
-
-const Divider = styled.div`
-    opacity: 0.05;
-    border-bottom: 1px solid #000000;
-    height: 0px;
-    width: 100%;
-`
-
-const ForAgainst = styled.span`
-    color: ${p => p.for ? theme.colors.green : theme.colors.red};
-`
-
-const SummaryArticle = ({title, vote}, idx, arr) => {
-    return (
-        <>
-            <SummaryArticleContainer>
-                <SummaryArticleLeftContianer>
-                    <SummaryArticleTitle>
-                        Article {idx + 1}
-                    </SummaryArticleTitle>
-                    <SummaryArticleSummary>
-                        {title}
-                    </SummaryArticleSummary>
-                </SummaryArticleLeftContianer>
-                <SummaryArticleRightContianer>
-                    Voted <ForAgainst for={vote}>{vote ? 'for' : 'against'}</ForAgainst>
-                </SummaryArticleRightContianer>
-            </SummaryArticleContainer>
-            {!(idx === arr.length-1) && <Divider/>}
-        </>
-    )
-}
-
-const Summary = ({currentStep, setCurrentStep, constitution}) => {
-    return (
-        <>
-            <ContentBoxWithHeader
-                HeaderComponent={<SectionHeader {...{currentStep, setCurrentStep}}/>}
-            >
-                <ContentContainer>
-                    {constitution.map(SummaryArticle)}
-                </ContentContainer>
-            </ContentBoxWithHeader>
-            {/*<Footer*/}
-            {/*    backCallback={handleBack}*/}
-            {/*    approveVoteCallback={handleApproveVote}*/}
-            {/*    rejectVoteCallback={handleRejectVote}*/}
-            {/*/>*/}
-        </>
-    )
-}
 
 const EnsConstitutionVoting = () => {
     const history = useHistory();
@@ -176,7 +78,6 @@ const EnsConstitutionVoting = () => {
     const article = constitution?.[currentStep]
 
     const handleBack = () => {
-        console.log('handleBack: ', currentStep)
         if (currentStep > 0) {
             setCurrentStep(currentStep - 1)
             return;
@@ -186,10 +87,6 @@ const EnsConstitutionVoting = () => {
 
     const handleVote = (vote) => {
         voteOnArticle(currentStep, vote)
-        if (currentStep >= totalSteps - 1) {
-            //history.push('/constitution/summary')
-            return
-        }
         setCurrentStep(currentStep + 1)
     }
 
