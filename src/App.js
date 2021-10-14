@@ -9,7 +9,6 @@ import styled from 'styled-components/macro'
 import Header from './components/Header'
 import Home from './pages/Home'
 import ENSGovernance from "./pages/ENSGovernance";
-import ENSDistribution from "./pages/ENSDistribution";
 import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
 import ClaimENSToken from "./pages/ClaimENSToken";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
@@ -49,9 +48,6 @@ function App() {
               </Route>
               <Route path="/governance">
                 <ENSGovernance />
-              </Route>
-              <Route path="/distribution">
-                <ENSDistribution />
               </Route>
               <Route path="/constitution">
                 <ENSConstitution />

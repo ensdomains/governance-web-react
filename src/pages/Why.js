@@ -118,11 +118,11 @@ const Why = () => {
             <Footer
                 rightButtonText="Next"
                 rightButtonCallback={() => {
-                    history.push('/whynow')
+                    history.push('/governance')
                 }}
                 leftButtonText="Back"
                 leftButtonCallback={() => {
-                    history.push('/join')
+                    history.push('/claim')
                 }}
             />
         </Container>

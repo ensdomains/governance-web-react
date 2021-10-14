@@ -22,9 +22,9 @@ const ChooseYourDelegate = () => {
             </ContentBox>
             <Footer
                 rightButtonText="Next"
-                rightButtonCallback={() => {history.push('/claim')}}
+                rightButtonCallback={() => {history.push('/constitution')}}
                 leftButtonText="Back"
-                leftButtonCallback={() => {history.push('/join')}}
+                leftButtonCallback={() => {history.push('/governance')}}
             />
         </NarrowColumn>
     );
