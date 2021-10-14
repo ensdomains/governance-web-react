@@ -5,6 +5,7 @@ describe('App', () => {
   it.todo('should redirect to last completed step when user lands')
   it.todo('should save last completed step to local storage')
   it.todo('should render correct styles depending on breakpoint')
+  it.todo('should redirect to claim page if user is ineligible')
 })
 
 describe('useInitApp', () => {

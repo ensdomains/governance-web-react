@@ -20,6 +20,7 @@ import {largerThan} from "../utils/styledComponents";
 import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
 import Divider from "../components/Divider";
 import Pill from "../components/Pill";
+import {CTAButton} from "../components/buttons";
 
 
 const submitClaim = async (balance, proof, address) => {
@@ -250,12 +251,13 @@ const ClaimEnsToken = () => {
                             community. We hope that you use the power granted by these tokens wisely!
                         </Content>
                         <Gap height={5}/>
+                        <CTAButton text="Start claim process" onClick={() => history.push('/why')} />
                     </ContentBox>
-                    <Footer
-                        rightButtonText="Claim your tokens"
-                        rightButtonCallback={handleClaim(address, rawBalance)}
-                        leftButtonText="Choose your delegate"
-                    />
+                    {/*<Footer*/}
+                    {/*    rightButtonText="Claim your tokens"*/}
+                    {/*    rightButtonCallback={handleClaim(address, rawBalance)}*/}
+                    {/*    leftButtonText="Choose your delegate"*/}
+                    {/*/>*/}
                 </NarrowColumn>
 
             </RightContainer>
