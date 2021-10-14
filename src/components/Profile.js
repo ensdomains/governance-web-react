@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components'
 
 import {getEthersProvider} from "../web3modal";
+import {imageUrl} from "../utils/utils";
 
 const ProfileContainer = styled.div`
     display: flex;
@@ -71,15 +72,18 @@ const Profile = ({address}) => {
                 return;
             }
 
+            const networkId = await ethersProvider.getNetwork()
+
             const ensName = await ethersProvider.lookupAddress(address)
             if (!ensName) return
 
-            const resolver = await ethersProvider.getResolver(ensName);
+            const resolver = await ethersProvider.getResolver(ensName)
             const avatar = await resolver.getText('avatar')
 
             setProfileDetails({
                 ensName,
-                avatar
+                avatar,
+                networkId
             })
         }
 
@@ -90,7 +94,11 @@ const Profile = ({address}) => {
         <ProfileContainer>
             <LeftContainer>
                 {profileDetails.avatar
-                    ? <AvatarImg src={profileDetails.avatar}/>
+                    ? <AvatarImg src={imageUrl(
+                        profileDetails.avatar,
+                        profileDetails.ensName,
+                        profileDetails.networkId
+                    )}/>
                     : <EmptyAvatar/>
                 }
 
