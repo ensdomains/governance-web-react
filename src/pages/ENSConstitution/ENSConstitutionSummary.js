@@ -107,7 +107,7 @@ const Summary = ({currentStep, setCurrentStep, constitution}) => {
             </ContentBoxWithHeader>
             <Footer
                 rightButtonText="Next"
-                rightButtonCallback={() => {history.push('/claim')}}
+                rightButtonCallback={() => {history.push('/summary')}}
                 leftButtonText="Back"
                 leftButtonCallback={() => {
                     setCurrentStep(currentStep-1)

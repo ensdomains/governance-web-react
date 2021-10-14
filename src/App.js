@@ -14,6 +14,7 @@ import ClaimENSToken from "./pages/ClaimENSToken";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Why from "./pages/Why";
 import {initWeb3} from "./web3modal";
+import ENSSummary from "./pages/ENSSummary";
 
 
 const AppContainer = styled.div`
@@ -57,6 +58,9 @@ function App() {
               </Route>
               <Route path="/claim">
                 <ClaimENSToken />
+              </Route>
+              <Route path="/summary">
+                <ENSSummary />
               </Route>
               <Route path="/">
                 <Home />
