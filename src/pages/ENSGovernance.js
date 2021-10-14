@@ -4,9 +4,9 @@ import {useHistory} from "react-router-dom";
 
 import Footer from '../components/Footer'
 import Gap from '../components/Gap'
-import {Header, Content, SubsubTitle, Statistic} from '../components/text'
+import {Header, Content} from '../components/text'
 import {NarrowColumn} from "../components/layout";
-import {ContentBox, InnerContentBox} from "../components/layout";
+import {ContentBox} from "../components/layout";
 
 import DistPng from '../assets/imgs/Distribution.png'
 

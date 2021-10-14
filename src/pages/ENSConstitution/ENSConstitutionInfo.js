@@ -5,7 +5,7 @@ import {hexlify} from '@ethersproject/bytes';
 import SectionHeader from "./SectionHeader";
 import Footer from '../../components/Footer'
 import {Content, Header} from '../../components/text'
-import {ContentBox, ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
+import {ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
 import Gap from "../../components/Gap";
 
 

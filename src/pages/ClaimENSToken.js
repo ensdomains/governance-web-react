@@ -4,7 +4,6 @@ import {gql} from "graphql-tag";
 import styled from 'styled-components';
 
 import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
-import Footer from "../components/Footer";
 import {Contract, BigNumber} from "ethers";
 import ENSTokenAbi from '../assets/abis/ENSToken'
 import {getEthersProvider} from "../web3modal";
@@ -165,7 +164,8 @@ const ClaimEnsToken = () => {
         futureTokens,
         balance,
         rawBalance,
-        hasReverseRecord
+        hasReverseRecord,
+        eligible
     } = addressDetails
 
     const history = useHistory();
@@ -173,7 +173,6 @@ const ClaimEnsToken = () => {
     return (
         <ClaimEnsTokenContainer>
             <LeftContainer>
-
                 {address && <Profile large {...{address}}/>}
 
                 <StatsSection>
@@ -224,11 +223,9 @@ const ClaimEnsToken = () => {
                         </NumberWithLogoContainer>
                     </StatsRow>
                 </StatsSection>
-
             </LeftContainer>
 
             <RightContainer>
-
                 <NarrowColumn>
                     {rawBalance
                         ? <Pill text={"You are eligible for the airdrop!"}/>
@@ -249,20 +246,18 @@ const ClaimEnsToken = () => {
                             <Statistic>{balance}<ENSLogo src={SplashENSLogo}/></Statistic>
                         </InnerContentBox>
                         <Gap height={5}/>
-                        <Content>
-                            You have received these rewards for being an early and active participant of the ENS
-                            community. We hope that you use the power granted by these tokens wisely!
-                        </Content>
-                        <Gap height={5}/>
-                        <CTAButton text="Start claim process" onClick={() => history.push('/why')}/>
+                        {eligible && (
+                            <>
+                                <Content>
+                                    You have received these rewards for being an early and active participant of the ENS
+                                    community. We hope that you use the power granted by these tokens wisely!
+                                </Content>
+                                <Gap height={5}/>
+                                <CTAButton text="Start claim process" onClick={() => history.push('/why')}/>
+                            </>
+                        )}
                     </ContentBox>
-                    {/*<Footer*/}
-                    {/*    rightButtonText="Claim your tokens"*/}
-                    {/*    rightButtonCallback={handleClaim(address, rawBalance)}*/}
-                    {/*    leftButtonText="Choose your delegate"*/}
-                    {/*/>*/}
                 </NarrowColumn>
-
             </RightContainer>
         </ClaimEnsTokenContainer>
     );
