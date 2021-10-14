@@ -13,9 +13,7 @@ import ENSDistribution from "./pages/ENSDistribution";
 import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
 import ClaimENSToken from "./pages/ClaimENSToken";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
-import JoinENS from "./pages/JoinENS";
 import Why from "./pages/Why";
-import WhyNow from "./pages/WhyNow";
 import {initWeb3} from "./web3modal";
 
 
@@ -46,14 +44,8 @@ function App() {
         <AppContainerOuter>
           <AppContainer>
             <Switch>
-              <Route path="/join">
-                <JoinENS />
-              </Route>
               <Route path="/why">
                 <Why />
-              </Route>
-              <Route path="/whynow">
-                <WhyNow />
               </Route>
               <Route path="/governance">
                 <ENSGovernance />

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro'
 
 import { CTAButton } from './buttons'
+import {largerThan} from "../utils/styledComponents";
 
 const FooterContainer = styled.div`
     width: 100%;
@@ -11,6 +12,11 @@ const FooterContainer = styled.div`
     justify-content: space-between;
     padding: 0 20px;
     box-sizing: border-box;
+    
+    ${largerThan.tablet`
+        grid-column-start: 1;
+        grid-column-end: 3;    
+    `}
 `
 
 const Footer = ({ rightButtonText, rightButtonCallback, leftButtonText, leftButtonCallback}) => {
