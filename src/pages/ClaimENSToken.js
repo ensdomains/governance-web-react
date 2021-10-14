@@ -21,6 +21,7 @@ import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
 import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import {CTAButton} from "../components/buttons";
+import Profile from "../components/Profile";
 
 
 const submitClaim = async (balance, proof, address) => {
@@ -173,6 +174,8 @@ const ClaimEnsToken = () => {
         <ClaimEnsTokenContainer>
             <LeftContainer>
 
+                {address && <Profile large {...{address}}/>}
+
                 <StatsSection>
                     <StatsRow>
                         <StatsSubtitle>Rewards</StatsSubtitle>
@@ -228,8 +231,8 @@ const ClaimEnsToken = () => {
 
                 <NarrowColumn>
                     {rawBalance
-                        ? <Pill text={"You are eligible for the airdrop!"} />
-                        : <Pill error text={"You are not eligible for the airdrop"} />
+                        ? <Pill text={"You are eligible for the airdrop!"}/>
+                        : <Pill error text={"You are not eligible for the airdrop"}/>
                     }
 
                     <ContentBox>
@@ -251,7 +254,7 @@ const ClaimEnsToken = () => {
                             community. We hope that you use the power granted by these tokens wisely!
                         </Content>
                         <Gap height={5}/>
-                        <CTAButton text="Start claim process" onClick={() => history.push('/why')} />
+                        <CTAButton text="Start claim process" onClick={() => history.push('/why')}/>
                     </ContentBox>
                     {/*<Footer*/}
                     {/*    rightButtonText="Claim your tokens"*/}
