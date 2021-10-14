@@ -37,7 +37,7 @@ const Home = () => {
                 We are launching a governance token to begin handing over control over the protocol to the community.
             </WrappedSubTitle>
             <Gap height={8}/>
-            <CTAButton text={"Get Started"} onClick={() => {history.push('/join')}}/>
+            <CTAButton text={"Get Started"} onClick={() => {history.push('/claim')}}/>
         </HomeContainer>
     );
 };

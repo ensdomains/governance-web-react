@@ -13,7 +13,7 @@ const ButtonContainer = styled.div`
             case 'deny':
                 return theme.colors.grey
             default:
-                return theme.colors.blue
+                return 'linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%)'
             }
     }};
     display: flex;

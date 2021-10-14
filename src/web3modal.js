@@ -97,33 +97,42 @@ const getClaimData = async (address) => {
     const shardData = await response.json({encoding: 'utf-8'})
     const addressDetails = shardData?.entries[address]
 
-    const {data} = await apolloClientInstance
-        .query({
-            query: LABELHASH_QUERY,
-            variables: {
-                labelhash: [addressDetails?.last_expiring_name, addressDetails?.longest_owned_name]
-            }
-        })
+    console.log('addressDetails:', addressDetails)
 
-    const longestOwnedName = data
-        ?.domains
-        .find(x => x.labelhash === addressDetails?.longest_owned_name)
-        ?.name
-    const lastExpiringName = data
-        ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
-        ?.name
-    const pastTokens = formatTokenAmount(addressDetails?.past_tokens)
-    const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
-    const balance = formatTokenAmount(addressDetails?.balance)
+    if(addressDetails) {
+        const {data} = await apolloClientInstance
+            .query({
+                query: LABELHASH_QUERY,
+                variables: {
+                    labelhash: [addressDetails?.last_expiring_name, addressDetails?.longest_owned_name]
+                }
+            })
+
+        const longestOwnedName = data
+            ?.domains
+            .find(x => x.labelhash === addressDetails?.longest_owned_name)
+            ?.name
+        const lastExpiringName = data
+            ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
+            ?.name
+        const pastTokens = formatTokenAmount(addressDetails?.past_tokens)
+        const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
+        const balance = formatTokenAmount(addressDetails?.balance)
+
+        return ({
+            lastExpiringName,
+            longestOwnedName,
+            pastTokens,
+            futureTokens,
+            balance,
+            hasReverseRecord: addressDetails?.has_reverse_record,
+            rawBalance: addressDetails?.balance,
+            eligible: true
+        })
+    }
 
     return ({
-        lastExpiringName,
-        longestOwnedName,
-        pastTokens,
-        futureTokens,
-        balance,
-        hasReverseRecord: addressDetails?.has_reverse_record,
-        rawBalance: addressDetails?.balance
+        eligible: false
     })
 }
 
