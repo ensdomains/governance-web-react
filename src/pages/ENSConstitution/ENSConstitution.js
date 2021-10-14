@@ -12,12 +12,12 @@ const ENSConstitution = () => {
             <Route path="/constitution/summary">
                 <ENSConstitutionSummary/>
             </Route>
-            <Route path="/constitution/vote">
+            <Route path="/constitution">
                 <ENSConstitutionVoting/>
             </Route>
-            <Route path="/constitution/">
-                <ENSConstitutionInfo/>
-            </Route>
+            {/*<Route path="/constitution/">*/}
+            {/*    <ENSConstitutionInfo/>*/}
+            {/*</Route>*/}
         </Switch>
     )
 }

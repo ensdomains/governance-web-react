@@ -10,10 +10,9 @@ import {
 } from "./constitutionHelpers";
 import {ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
 import SectionHeader from "./SectionHeader";
-import ComponentFooter from "../../components/Footer";
 import Footer from "./ENSConstitutionFooter";
-import theme from "../../components/theme";
 import Summary from "./ENSConstitutionSummary";
+import ENSConstitutionInfo from "./ENSConstitutionInfo";
 
 const AritcleHeader = styled.div`
     font-style: normal;
@@ -39,11 +38,13 @@ const ContentContainer = styled.div`
 `
 
 const useConstitutionSteps = () => {
-    const [currentStep, setCurrentStep] = useState(0)
+    const [currentStep, setCurrentStep] = useState(-1)
     const totalSteps = getTotalNumberOfArticles()
 
     useEffect(() => {
-        setCurrentStep(getEarliestUnvotedArticle())
+        if(getEarliestUnvotedArticle() > 0) {
+            setCurrentStep(getEarliestUnvotedArticle())
+        }
     }, [])
 
     return ({currentStep, setCurrentStep, totalSteps})
@@ -70,7 +71,6 @@ const Voting = ({currentStep, setCurrentStep, totalSteps, article, handleBack, h
 )
 
 
-
 const EnsConstitutionVoting = () => {
     const history = useHistory();
     const {currentStep, setCurrentStep, totalSteps} = useConstitutionSteps()
@@ -78,11 +78,15 @@ const EnsConstitutionVoting = () => {
     const article = constitution?.[currentStep]
 
     const handleBack = () => {
-        if (currentStep > 0) {
+        if (currentStep > -1) {
             setCurrentStep(currentStep - 1)
             return;
         }
-        history.push('/constitution')
+        history.push('/delegates')
+    }
+
+    const handleNext = () => {
+        setCurrentStep(currentStep + 1)
     }
 
     const handleVote = (vote) => {
@@ -104,15 +108,16 @@ const EnsConstitutionVoting = () => {
         }
     }, [])
 
-    return (
-        <NarrowColumn>
-            {(currentStep >= totalSteps)
-                ? <Summary {...{
-                    currentStep,
-                    setCurrentStep,
-                    constitution,
-                }}/>
-                : <Voting {...{
+    if (currentStep < 0) {
+        return (
+            <ENSConstitutionInfo {...{handleBack, handleNext, currentStep, setCurrentStep}} />
+        )
+    }
+
+    if (currentStep >= 0 && currentStep < totalSteps) {
+        return (
+            <NarrowColumn>
+                <Voting {...{
                     currentStep,
                     setCurrentStep,
                     totalSteps,
@@ -121,9 +126,21 @@ const EnsConstitutionVoting = () => {
                     handleApproveVote,
                     handleRejectVote
                 }}/>
-            }
-        </NarrowColumn>
-    );
+            </NarrowColumn>
+        )
+    }
+
+    if (currentStep >= 0 && currentStep >= totalSteps) {
+        return (
+            <NarrowColumn>
+                <Summary {...{
+                    currentStep,
+                    setCurrentStep,
+                    constitution,
+                }}/>
+            </NarrowColumn>
+        )
+    }
 };
 
 export default EnsConstitutionVoting;
