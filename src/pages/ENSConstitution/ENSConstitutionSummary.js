@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 
-import {ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
+import {ContentBoxWithHeader} from "../../components/layout";
 import SectionHeader from "./SectionHeader";
 import theme from "../../components/theme";
 import Footer from "../../components/Footer";
