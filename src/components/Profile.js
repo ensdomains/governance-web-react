@@ -6,9 +6,9 @@ import {imageUrl} from "../utils/utils";
 
 const ProfileContainer = styled.div`
     display: flex;
-    max-width: 200px;
-    background: #FFFFFF;
-    box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.05);
+    max-width: ${p => p.large ? '350px' : '200px'};
+    background: ${p => p.large ? 'initial' : '#FFFFFF'};
+    box-shadow: ${p => p.large ? 'initial' : '0px 1px 20px rgba(0, 0, 0, 0.05)'};
     border-radius: 64px;
     padding: 8px 16px 8px 10px;
 `
@@ -31,8 +31,8 @@ const RightContainer = styled.div`
 
 const AvatarImg = styled.img`
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: ${p => p.large ? '60px' : '50px'};
+    height: ${p => p.large ? '60px' : '50px'};
     margin-right: 10px;
 `
 
@@ -47,8 +47,8 @@ const EmptyAvatar = styled.div`
 const EnsNameText = styled.div`
     font-style: normal;
     font-weight: bold;
-    font-size: 19px;
-    line-height: 23px;
+    font-size: ${p => p.large ? '30px' : '19px'};
+    line-height: ${p => p.large ? '36px' : '23px'};
     letter-spacing: -0.01em;
 `
 
@@ -60,7 +60,7 @@ const AddressText = styled.div`
     color: rgba(152, 152, 152, 1);
 `
 
-const Profile = ({address}) => {
+const Profile = ({address, large}) => {
     const [profileDetails, setProfileDetails] = useState({})
 
     useEffect(() => {
@@ -87,24 +87,28 @@ const Profile = ({address}) => {
             })
         }
 
-        run().catch(e => {console.error(e)})
+        run().catch(e => {
+            console.error(e)
+        })
     }, [address])
 
     return (
-        <ProfileContainer>
+        <ProfileContainer {...{large}}>
             <LeftContainer>
                 {profileDetails.avatar
-                    ? <AvatarImg src={imageUrl(
-                        profileDetails.avatar,
-                        profileDetails.ensName,
-                        profileDetails.networkId
-                    )}/>
+                    ? <AvatarImg
+                        {...{large}}
+                        src={imageUrl(
+                            profileDetails.avatar,
+                            profileDetails.ensName,
+                            profileDetails.networkId
+                        )}/>
                     : <EmptyAvatar/>
                 }
 
             </LeftContainer>
             <RightContainer>
-                {profileDetails.ensName && (<EnsNameText>{profileDetails.ensName}</EnsNameText>)}
+                {profileDetails.ensName && (<EnsNameText {...{large}}>{profileDetails.ensName}</EnsNameText>)}
                 <AddressText>{address}</AddressText>
             </RightContainer>
         </ProfileContainer>
