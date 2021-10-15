@@ -1,10 +1,11 @@
 import React, {useEffect} from "react";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route
+    BrowserRouter as Router,
+    Switch,
+    Route, Redirect
 } from "react-router-dom";
 import styled from 'styled-components/macro'
+import {gql} from "graphql-tag";
 
 import Header from './components/Header'
 import Home from './pages/Home'
@@ -15,6 +16,7 @@ import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Why from "./pages/Why";
 import {initWeb3} from "./web3modal";
 import ENSSummary from "./pages/ENSSummary";
+import {useQuery} from "@apollo/client";
 
 
 const AppContainer = styled.div`
@@ -31,45 +33,63 @@ const AppContainerOuter = styled.div`
 `
 
 const useInitWeb3 = () => {
-  useEffect(() => {
-    initWeb3()
-  }, [])
+    useEffect(() => {
+        initWeb3()
+    }, [])
+}
+
+const PRIVATE_ROUTE_QUERY = gql`
+  query privateRouteQuery @client {
+    addressDetails
+  }
+`
+
+function PrivateRoute({component: Component, ...rest}) {
+    const {data} = useQuery(PRIVATE_ROUTE_QUERY)
+
+    return (
+        <Route
+            {...rest}
+            render={props =>
+                data?.addressDetails.eligible ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/claim",
+                            state: {from: props.location}
+                        }}
+                    />
+                )
+            }
+        />
+    );
 }
 
 function App() {
-  useInitWeb3()
-  return (
-      <Router>
-        <Header />
-        <AppContainerOuter>
-          <AppContainer>
-            <Switch>
-              <Route path="/why">
-                <Why />
-              </Route>
-              <Route path="/governance">
-                <ENSGovernance />
-              </Route>
-              <Route path="/constitution">
-                <ENSConstitution />
-              </Route>
-              <Route path="/delegates">
-                <ChooseYourDelegate />
-              </Route>
-              <Route path="/claim">
-                <ClaimENSToken />
-              </Route>
-              <Route path="/summary">
-                <ENSSummary />
-              </Route>
-              <Route path="/">
-                <Home />
-              </Route>
-            </Switch>
-          </AppContainer>
-        </AppContainerOuter>
-      </Router>
-  );
+    useInitWeb3()
+    return (
+        <Router>
+            <Header/>
+            <AppContainerOuter>
+                <AppContainer>
+                    <Switch>
+                        <PrivateRoute path="/why" component={Why}/>
+                        <PrivateRoute path="/governance" component={ENSGovernance}/>
+                        <PrivateRoute path="/constitution" component={ENSConstitution}/>
+                        <PrivateRoute path="/delegates" component={ChooseYourDelegate}/>
+                        <PrivateRoute path="/summary" component={ENSSummary}/>
+                        <Route path="/claim">
+                            <ClaimENSToken/>
+                        </Route>
+                        <Route path="/">
+                            <Home/>
+                        </Route>
+                    </Switch>
+                </AppContainer>
+            </AppContainerOuter>
+        </Router>
+    );
 }
 
 export default App;

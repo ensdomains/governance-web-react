@@ -97,8 +97,6 @@ const getClaimData = async (address) => {
     const shardData = await response.json({encoding: 'utf-8'})
     const addressDetails = shardData?.entries[address]
 
-    console.log('addressDetails:', addressDetails)
-
     if(addressDetails) {
         const {data} = await apolloClientInstance
             .query({
