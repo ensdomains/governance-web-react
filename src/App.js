@@ -2,7 +2,8 @@ import React, {useEffect} from "react";
 import {
     BrowserRouter as Router,
     Switch,
-    Route, Redirect
+    Route,
+    useHistory
 } from "react-router-dom";
 import styled from 'styled-components/macro'
 import {gql} from "graphql-tag";
@@ -41,28 +42,22 @@ const useInitWeb3 = () => {
 const PRIVATE_ROUTE_QUERY = gql`
   query privateRouteQuery @client {
     addressDetails
+    isConnected
   }
 `
 
-function PrivateRoute({component: Component, ...rest}) {
+function PrivateRoute({component: Component, addressDetails, ...rest}) {
     const {data} = useQuery(PRIVATE_ROUTE_QUERY)
+    const history = useHistory();
+
+    if (history && data?.addressDetails?.eligible !== undefined) {
+        if (!data.addressDetails.eligible) {
+            history.push('/claim')
+        }
+    }
 
     return (
-        <Route
-            {...rest}
-            render={props =>
-                data?.addressDetails.eligible ? (
-                    <Component {...props} />
-                ) : (
-                    <Redirect
-                        to={{
-                            pathname: "/claim",
-                            state: {from: props.location}
-                        }}
-                    />
-                )
-            }
-        />
+        <Route {...rest} render={props => <Component {...props} />}/>
     );
 }
 

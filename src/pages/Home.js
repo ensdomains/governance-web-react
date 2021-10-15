@@ -7,6 +7,9 @@ import { CTAButton } from "../components/buttons";
 
 import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
 import {useHistory} from "react-router-dom";
+import {gql} from "graphql-tag";
+import {useQuery} from "@apollo/client";
+import {initWeb3} from "../web3modal";
 
 const HomeContainer = styled.div`
     display: flex;
@@ -21,8 +24,24 @@ const WrappedSubTitle = styled(SubTitle)`
     max-width: 560px;
 `
 
+const HOME_QUERY = gql`
+  query privateRouteQuery @client {
+    addressDetails
+    isConnected
+  }
+`
+
 const Home = () => {
+    const {data: {isConnected}} = useQuery(HOME_QUERY)
     const history = useHistory();
+
+    const handleClick = () => {
+        if(isConnected) {
+            history.push('/claim')
+        } else {
+            initWeb3()
+        }
+    }
 
     return (
         <HomeContainer>
@@ -37,7 +56,7 @@ const Home = () => {
                 We are launching a governance token to begin handing over control over the protocol to the community.
             </WrappedSubTitle>
             <Gap height={8}/>
-            <CTAButton text={"Get Started"} onClick={() => {history.push('/claim')}}/>
+            <CTAButton text={isConnected ? "Get Started" : "Connect to wallet"} onClick={handleClick}/>
         </HomeContainer>
     );
 };
