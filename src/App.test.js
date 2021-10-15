@@ -18,3 +18,8 @@ describe('useInitApp', () => {
     it.todo('should set addressReactive to null')
   })
 })
+
+describe('PrivateRoute', () => {
+  it.todo('should not redirect if there is no history and no eligible data available')
+  it.todo('should redirect to /claim if we have history and eligible === false')
+})
