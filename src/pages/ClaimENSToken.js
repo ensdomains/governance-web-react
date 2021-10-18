@@ -3,13 +3,6 @@ import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from 'styled-components';
 
-import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
-import {Contract, BigNumber} from "ethers";
-import ENSTokenAbi from '../assets/abis/ENSToken'
-import {getEthersProvider} from "../web3modal";
-import ShardedMerkleTree from "../merkle";
-
-import merkleRoot from '../assets/root'
 import {ContentBox, InnerContentBox, NarrowColumn} from "../components/layout";
 import {Content, Header, Statistic, SubsubTitle} from "../components/text";
 import Gap from "../components/Gap";
@@ -22,47 +15,6 @@ import Pill from "../components/Pill";
 import {CTAButton} from "../components/buttons";
 import Profile from "../components/Profile";
 
-
-const submitClaim = async (balance, proof, address) => {
-    try {
-        const provider = getEthersProvider()
-        const signer = provider.getSigner()
-        const ENSTokenContract = new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer);
-        ENSTokenContract.connect(signer)
-        const result = await ENSTokenContract.claimTokens(
-            balance,
-            address,
-            proof
-        )
-        const transactionReceipt = await result.wait(1)
-        console.log('transaction receipt: ', transactionReceipt)
-    } catch (e) {
-        console.error(e)
-    }
-}
-
-const handleClaim = (address) => async () => {
-    try {
-        const response = await fetch(generateMerkleShardUrl(address))
-        if (!response.ok) {
-            throw new Error('error getting shard data')
-        }
-        const shardJson = await response.json({encoding: 'utf-8'})
-        const {root, shardNybbles, total} = merkleRoot;
-        const shardedMerkleTree = new ShardedMerkleTree(
-            () => shardJson,
-            shardNybbles,
-            root,
-            BigNumber.from(total)
-        )
-        const [entry, proof] = shardedMerkleTree.getProof(address)
-        console.log('entry.balance: ', entry.balance)
-        // submitClaim("0003391299489722269696", proof, address)
-        submitClaim(entry.balance, proof, address)
-    } catch (e) {
-        console.error(e)
-    }
-}
 
 const ClaimEnsTokenContainer = styled.div`
     display: flex;
