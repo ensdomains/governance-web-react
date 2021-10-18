@@ -1,6 +1,4 @@
 import React from 'react';
-import {Client} from '@snapshot-labs/snapshot.js'
-import {hexlify} from '@ethersproject/bytes';
 
 import SectionHeader from "./SectionHeader";
 import Footer from '../../components/Footer'
@@ -8,11 +6,6 @@ import {Content, Header} from '../../components/text'
 import {ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
 import Gap from "../../components/Gap";
 
-
-export async function signMessage(web3, msg, address) {
-    msg = hexlify(new Buffer(msg, 'utf8'));
-    return await web3.send('personal_sign', [msg, address]);
-}
 
 const ENSConstitutionInfo = ({handleBack, handleNext, currentStep, setCurrentStep}) => {
     return (

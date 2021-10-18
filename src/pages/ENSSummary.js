@@ -1,18 +1,83 @@
 import React from 'react';
+import {Client} from '@snapshot-labs/snapshot.js'
+import {hexlify} from '@ethersproject/bytes';
+
 import {ContentBox, NarrowColumn} from "../components/layout";
-import SectionHeader from "./ENSConstitution/SectionHeader";
-import {Content, Header} from "../components/text";
+import {Header} from "../components/text";
 import Gap from "../components/Gap";
+import {getEthersProvider} from "../web3modal";
+import {BigNumber, Contract} from "ethers";
+import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
+import ENSTokenAbi from "../assets/abis/ENSToken.json";
+import merkleRoot from "../assets/root.json";
+import ShardedMerkleTree from "../merkle";
+import {CTAButton} from "../components/buttons";
+import {useQuery} from "@apollo/client";
+import {gql} from "graphql-tag";
+
+export async function signMessage(web3, msg, address) {
+    msg = hexlify(new Buffer(msg, 'utf8'));
+    return await web3.send('personal_sign', [msg, address]);
+}
+
+const submitClaim = async (balance, proof, address) => {
+    try {
+        const provider = getEthersProvider()
+        const signer = provider.getSigner()
+        const ENSTokenContract = new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer);
+        ENSTokenContract.connect(signer)
+        const result = await ENSTokenContract.claimTokens(
+            balance,
+            address,
+            proof
+        )
+        const transactionReceipt = await result.wait(1)
+        console.log('transaction receipt: ', transactionReceipt)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+const handleClaim = (address) => async () => {
+    try {
+        const response = await fetch(generateMerkleShardUrl(address))
+        if (!response.ok) {
+            throw new Error('error getting shard data')
+        }
+        const shardJson = await response.json({encoding: 'utf-8'})
+        const {root, shardNybbles, total} = merkleRoot;
+        const shardedMerkleTree = new ShardedMerkleTree(
+            () => shardJson,
+            shardNybbles,
+            root,
+            BigNumber.from(total)
+        )
+        const [entry, proof] = shardedMerkleTree.getProof(address)
+        console.log('entry.balance: ', entry.balance)
+        // submitClaim("0003391299489722269696", proof, address)
+        submitClaim(entry.balance, proof, address)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+const handleVote = () => {
+    const snapshotClient = new Client('bananana.eth')
+}
 
 const EnsSummary = () => {
+    const {data: {address}} = useQuery(gql`
+      query privateRouteQuery @client {
+        address
+      }
+    `)
     return (
         <NarrowColumn>
             <ContentBox>
                 <Header>Submit your claim</Header>
                 <Gap height={3}/>
-                <Content>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper orci in dolor laoreet hendrerit. Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
-                </Content>
+                <CTAButton onClick={handleVote} text={"Vote"} /><br />
+                <CTAButton onClick={handleClaim(address)} text={"Claim"}/>
                 <Gap height={3}/>
             </ContentBox>
         </NarrowColumn>
