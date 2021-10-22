@@ -1,5 +1,5 @@
 import React from 'react';
-import {Client} from '@snapshot-labs/snapshot.js'
+import {Client, utils} from '@snapshot-labs/snapshot.js'
 import {hexlify} from '@ethersproject/bytes';
 
 import {ContentBox, NarrowColumn} from "../components/layout";
@@ -53,7 +53,6 @@ const handleClaim = (address) => async () => {
             BigNumber.from(total)
         )
         const [entry, proof] = shardedMerkleTree.getProof(address)
-        console.log('entry.balance: ', entry.balance)
         // submitClaim("0003391299489722269696", proof, address)
         submitClaim(entry.balance, proof, address)
     } catch (e) {
@@ -61,8 +60,28 @@ const handleClaim = (address) => async () => {
     }
 }
 
-const handleVote = () => {
-    const snapshotClient = new Client('bananana.eth')
+const handleVote = async () => {
+    const snapshotClient = new Client()
+    const ethersProvider = getEthersProvider()
+    snapshotClient.vote(
+        ethersProvider,
+        '0xBe8563B89d31AD287c73da42848Bd7646172E0ba',
+        'bananana.eth',
+        {proposal: 'QmerF9zBj9QNk3evSTigCdmfQ1SdS2MN4yfCkyHZCd8tcy', choice: [1]}
+    )
+
+    // const scores = await utils.getScores(
+    //     'bananana.eth',
+    //     ['api'],
+    //     'Ethereum mainnet',
+    //     ethersProvider,
+    //     ['0xBe8563B89d31AD287c73da42848Bd7646172E0ba'],
+    // );
+
+    // console.log('scores: ', scores)
+
+    //const result = await fetch('https://us-central1-ens-manager.cloudfunctions.net/getvotes?addresses=0x0904dac3347ea47d208f3fd67402d039a3b99859')
+    //console.log('result: ', result)
 }
 
 const EnsSummary = () => {

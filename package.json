@@ -5,7 +5,9 @@
   "author": "ENS Team (@ensdomains)",
   "dependencies": {
     "@apollo/client": "3.4.11",
+    "@ensdomains/eth-ens-namehash": "2.0.15",
     "@ensdomains/web3modal": "1.9.4",
+    "@ethersproject/bytes": "latest",
     "@myetherwallet/mewconnect-web-client": "2.2.0-beta.13",
     "@portis/web3": "4.0.5",
     "@snapshot-labs/snapshot.js": "0.2.9",
@@ -16,6 +18,7 @@
     "@walletconnect/web3-provider": "1.6.5",
     "ethers": "5.4.6",
     "graphql": "15.5.3",
+    "js-sha3": "0.8.0",
     "keccak256": "1.0.3",
     "merkletreejs": "0.2.24",
     "react": "^17.0.2",
@@ -24,9 +27,7 @@
     "react-scripts": "4.0.3",
     "styled-components": "5.3.1",
     "walletlink": "2.1.11",
-    "web-vitals": "^1.0.1",
-    "@ethersproject/bytes": "latest",
-    "@ethersproject/bytes": "latest"
+    "web-vitals": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

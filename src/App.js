@@ -26,6 +26,7 @@ const AppContainer = styled.div`
   padding-bottom: 100px;
   box-sizing: border-box;
   flex-grow: 1;
+  overflow-x: hidden;
 `
 
 const AppContainerOuter = styled.div`
