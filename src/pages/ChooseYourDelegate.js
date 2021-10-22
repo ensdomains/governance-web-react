@@ -17,6 +17,7 @@ import {useQuery} from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import {imageUrl} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
+import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
@@ -104,7 +105,7 @@ const CHOOSE_YOUR_DELEGATE_QUERY = gql`
 `
 
 const DelegateBoxContainer = styled.div`
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid ${ p => p.selected ? 'rgba(73, 179, 147, 1)' : 'rgba(0, 0, 0, 0.08)'};
   box-sizing: border-box;
   border-radius: 16px;
   display: flex;
@@ -112,6 +113,8 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
+  
+  
 `
 
 const AvatarImg = styled.img`
@@ -133,20 +136,34 @@ const SpeechBubbleImg = styled.img`
   margin-right: 15px;
 `
 
-const DelegateBox = ({avatar, profile, votes, name}) =>
-    <DelegateBoxContainer key={name}>
-        <LeftContainer>
-            <AvatarImg src={imageUrl(avatar, name, 1)}/>
-            <MidContainer>
-                {name}
-                <div>
-                    Votes:
-                    {votes.toNumber()}
-                </div>
-            </MidContainer>
-        </LeftContainer>
-        <SpeechBubbleImg src={SpeechBubble}/>
-    </DelegateBoxContainer>
+const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
+    const selected = name === getDelegateChoice()
+    return (
+        <DelegateBoxContainer
+            key={idx}
+            onClick={() => {
+                setDelegateChoice(name)
+                setRenderKey(x => x+1)
+            }}
+            selected={selected}
+        >
+            <LeftContainer>
+                <AvatarImg src={imageUrl(avatar, name, 1)}/>
+                <MidContainer>
+                    {name}
+                    <div>
+                        Votes:
+                        {votes.toNumber()}
+                    </div>
+                </MidContainer>
+            </LeftContainer>
+            <a href={profile} target={"_blank"}>
+                <SpeechBubbleImg src={SpeechBubble}/>
+            </a>
+        </DelegateBoxContainer>
+    )
+}
+
 
 const WrappedNarrowColumn = styled(NarrowColumn)`
     max-width: 960px;
@@ -164,7 +181,7 @@ const ChooseYourDelegate = () => {
     const {data: chooseData} = useQuery(CHOOSE_YOUR_DELEGATE_QUERY)
     const history = useHistory()
     const delegates = useGetDelegates(chooseData.isConnected)
-    console.log('delegates: ', delegates)
+    const [renderKey, setRenderKey] = useState(0)
 
     return (
         <WrappedNarrowColumn>
@@ -177,7 +194,7 @@ const ChooseYourDelegate = () => {
                 </Content>
                 <Gap height={5}/>
                 <DelegatesContainer>
-                    {delegates.map(DelegateBox)}
+                    {delegates.map(x => ({...x, setRenderKey})).map(DelegateBox)}
                 </DelegatesContainer>
             </ContentBox>
             <Footer
@@ -189,6 +206,7 @@ const ChooseYourDelegate = () => {
                 leftButtonCallback={() => {
                     history.push('/governance')
                 }}
+                disabled={!getDelegateChoice()}
             />
         </WrappedNarrowColumn>
     );

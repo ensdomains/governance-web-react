@@ -1,32 +1,42 @@
 import React from 'react';
 import styled from 'styled-components/macro'
 
-import { CTAButton } from './buttons'
+import {CTAButton} from './buttons'
 import {largerThan} from "../utils/styledComponents";
 
 const FooterContainer = styled.div`
-    width: 100%;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    
-    ${largerThan.tablet`
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  ${largerThan.tablet`
         grid-column-start: 1;
         grid-column-end: 3;    
     `}
 `
 
-const Footer = ({ rightButtonText, rightButtonCallback, leftButtonText, leftButtonCallback}) => {
+const Footer = ({
+                    rightButtonText,
+                    rightButtonCallback,
+                    leftButtonText,
+                    leftButtonCallback,
+                    disabled
+                }) => {
     return (
         <FooterContainer>
             {leftButtonText
-                ? <CTAButton text={leftButtonText} onClick={leftButtonCallback} type="deny"  />
+                ? <CTAButton text={leftButtonText} onClick={leftButtonCallback} type="deny"/>
                 : <div></div>
             }
             {rightButtonText
-                ? <CTAButton text={rightButtonText} onClick={rightButtonCallback} />
+                ? <CTAButton
+                    text={rightButtonText}
+                    onClick={disabled ? () => null : rightButtonCallback}
+                    type={disabled ? 'deny' : ''}
+                />
                 : <div></div>
             }
         </FooterContainer>
