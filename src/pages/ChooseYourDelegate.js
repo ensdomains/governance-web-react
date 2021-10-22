@@ -18,6 +18,7 @@ import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import {imageUrl} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
+import {CTAButton} from "../components/buttons";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
@@ -177,6 +178,15 @@ const DelegatesContainer = styled.div`
   justify-content: center;
 `
 
+const CopyContianer = styled.div`
+  display: flex;
+`
+
+const WrappedCTAButton = styled(CTAButton)`
+  width: 210px;
+  margin-left: 70px;
+`
+
 const ChooseYourDelegate = () => {
     const {data: chooseData} = useQuery(CHOOSE_YOUR_DELEGATE_QUERY)
     const history = useHistory()
@@ -186,12 +196,26 @@ const ChooseYourDelegate = () => {
     return (
         <WrappedNarrowColumn>
             <ContentBox>
-                <Header>Choose a delegate</Header>
-                <Gap height={3}/>
-                <Content>
-                    Select a community member whose views you align with, who will be able to vote with the power of
-                    your tokens.
-                </Content>
+                <CopyContianer>
+                    <div>
+                        <Header>Choose a delegate</Header>
+                        <Gap height={3}/>
+                        <Content>
+                            Select a community member whose views you align with, who will be able to vote with the power of
+                            your tokens.
+                        </Content>
+                    </div>
+                    <div>
+                        <WrappedCTAButton
+                            text={"Enter ENS or address"}
+                            type={"deny"}
+                            onClick={() => {
+                                history.push('/manual-delegates')
+                            }}
+                        />
+                    </div>
+                </CopyContianer>
+
                 <Gap height={5}/>
                 <DelegatesContainer>
                     {delegates.map(x => ({...x, setRenderKey})).map(DelegateBox)}
