@@ -13,6 +13,7 @@ import SectionHeader from "./SectionHeader";
 import Footer from "./ENSConstitutionFooter";
 import Summary from "./ENSConstitutionSummary";
 import ENSConstitutionInfo from "./ENSConstitutionInfo";
+import theme from "../../components/theme";
 
 const AritcleHeader = styled.div`
     font-style: normal;
@@ -30,11 +31,59 @@ const ArticleContent = styled.div`
     line-height: 141%;
     letter-spacing: -0.01em;
     color: #606060;
+    padding: ${p => {
+      switch(p.type) {
+        case 'permissible':
+          return '14px'
+        case 'forbidden':
+          return '14px'
+        default:
+          return '0px'
+      }
+    }};
+    border-radius: 10px;
+    background: ${p => {
+      switch(p.type) {
+        case 'permissible':
+          return 'rgba(73, 179, 147, 0.1)'
+        case 'forbidden':
+          return 'rgba(213, 85, 85, 0.1)'
+        default:
+          return 'initial'
+      }
+    }};
 `
 
 const ContentContainer = styled.div`
     display: grid;
     gap: 15px;
+`
+
+const Permissible = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 19px;
+
+  display: flex;
+  align-items: center;
+
+  color: #49B393;
+  margin-bottom: 5px;
+`
+
+const Forbidden = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 19px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+
+  color: #D55555;
+  margin-bottom: 5px;
 `
 
 const useConstitutionSteps = () => {
@@ -58,8 +107,14 @@ const Voting = ({currentStep, setCurrentStep, totalSteps, article, handleBack, h
             <ContentContainer>
                 <AritcleHeader>{article.title}</AritcleHeader>
                 <ArticleContent>{article.content}</ArticleContent>
-                <ArticleContent><b>Permissable: </b>{article.positiveExample}</ArticleContent>
-                <ArticleContent><b>Not permissable: </b>{article.negativeExample}</ArticleContent>
+                <ArticleContent type={"permissible"}>
+                    <Permissible>Permissable: </Permissible>
+                    {article.positiveExample}
+                </ArticleContent>
+                <ArticleContent type={"forbidden"}>
+                    <Forbidden>Not permissable: </Forbidden>
+                    {article.negativeExample}
+                </ArticleContent>
             </ContentContainer>
         </ContentBoxWithHeader>
         <Footer
