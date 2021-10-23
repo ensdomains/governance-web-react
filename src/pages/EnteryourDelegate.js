@@ -181,11 +181,11 @@ const EnteryourDelegate = () => {
                 rightButtonText="Next"
                 rightButtonCallback={() => {
                     setDelegateChoice(value)
-                    history.push('/delegates')
+                    history.push('/constitution')
                 }}
                 leftButtonText="Back"
                 leftButtonCallback={() => {
-                    history.push('/why')
+                    history.push('/delegates')
                 }}
             />
         </NarrowColumn>
