@@ -115,8 +115,6 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
-
-
 `
 
 const AvatarImg = styled.img`
