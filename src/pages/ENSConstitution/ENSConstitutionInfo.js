@@ -5,6 +5,7 @@ import Footer from '../../components/Footer'
 import {Content, Header} from '../../components/text'
 import {ContentBoxWithHeader, NarrowColumn} from "../../components/layout";
 import Gap from "../../components/Gap";
+import Token from "../../components/Token";
 
 
 const ENSConstitutionInfo = ({handleBack, handleNext, currentStep, setCurrentStep}) => {
@@ -17,8 +18,9 @@ const ENSConstitutionInfo = ({handleBack, handleNext, currentStep, setCurrentSte
                 <Gap height={3}/>
                 <Content>
                     We have created an initial set of community guidelines for which you may vote for or against with your allocation of
-                    claimable ENS. Voting is optional, are conducted off-chain using Snapshot.
+                    claimable <Token />. Voting is optional, are conducted off-chain using Snapshot.
                 </Content>
+
                 <Gap height={3}/>
                 <Content>
                     We hope these rules form the basis for a strong community,
