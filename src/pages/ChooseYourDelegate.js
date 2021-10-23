@@ -19,6 +19,7 @@ import {imageUrl} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
+import {largerThan} from "../utils/styledComponents";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
@@ -74,8 +75,8 @@ const useGetDelegates = (isConnected) => {
         const run = async () => {
             const {data: delegateData} = await apolloClientInstance.query({query: DELEGATE_TEXT_QUERY})
             const delegateNamehashes = delegateData.resolvers.map(result => namehash(result.domain.name))
-                .reduce((a,i)=>a.concat(i,i),[])
-                .reduce((a,i)=>a.concat(i,i),[])
+                .reduce((a, i) => a.concat(i, i), [])
+                .reduce((a, i) => a.concat(i, i), [])
 
             const ENSDelegateContract = new Contract(
                 '0xd8A54d061BdBB8A1EEFD68d437470B9aBF294c24',
@@ -106,7 +107,7 @@ const CHOOSE_YOUR_DELEGATE_QUERY = gql`
 `
 
 const DelegateBoxContainer = styled.div`
-  border: 1px solid ${ p => p.selected ? 'rgba(73, 179, 147, 1)' : 'rgba(0, 0, 0, 0.08)'};
+  border: 1px solid ${p => p.selected ? 'rgba(73, 179, 147, 1)' : 'rgba(0, 0, 0, 0.08)'};
   box-sizing: border-box;
   border-radius: 16px;
   display: flex;
@@ -114,15 +115,15 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
-  
-  
+
+
 `
 
 const AvatarImg = styled.img`
-    border-radius: 50%;
-    width: ${p => p.large ? '60px' : '50px'};
-    height: ${p => p.large ? '60px' : '50px'};
-    margin-right: 10px;
+  border-radius: 50%;
+  width: ${p => p.large ? '60px' : '50px'};
+  height: ${p => p.large ? '60px' : '50px'};
+  margin-right: 10px;
 `
 
 const MidContainer = styled.div`
@@ -144,7 +145,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
             key={idx}
             onClick={() => {
                 setDelegateChoice(name)
-                setRenderKey(x => x+1)
+                setRenderKey(x => x + 1)
             }}
             selected={selected}
         >
@@ -167,7 +168,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
 
 
 const WrappedNarrowColumn = styled(NarrowColumn)`
-    max-width: 960px;
+  max-width: 960px;
 `
 
 const DelegatesContainer = styled.div`
@@ -178,13 +179,32 @@ const DelegatesContainer = styled.div`
   justify-content: center;
 `
 
-const CopyContianer = styled.div`
+const HeaderContianer = styled.div`
   display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+  
+  ${largerThan.mobile`
+    flex-direction: row;
+    margin-bottom: 20px;
+  `}
 `
 
 const WrappedCTAButton = styled(CTAButton)`
   width: 210px;
-  margin-left: 70px;
+  margin: 0 auto;
+  
+  ${largerThan.mobile`
+      margin-left: 70px;
+  `}
+`
+
+const CopyContainer = styled.div`
+  margin-bottom: 20px;
+
+  ${largerThan.mobile`
+     margin-bottom: 0px;
+  `}
 `
 
 const ChooseYourDelegate = () => {
@@ -196,15 +216,16 @@ const ChooseYourDelegate = () => {
     return (
         <WrappedNarrowColumn>
             <ContentBox>
-                <CopyContianer>
-                    <div>
+                <HeaderContianer>
+                    <CopyContainer>
                         <Header>Choose a delegate</Header>
                         <Gap height={3}/>
                         <Content>
-                            Select a community member whose views you align with, who will be able to vote with the power of
+                            Select a community member whose views you align with, who will be able to vote with the
+                            power of
                             your tokens.
                         </Content>
-                    </div>
+                    </CopyContainer>
                     <div>
                         <WrappedCTAButton
                             text={"Enter ENS or address"}
@@ -214,9 +235,7 @@ const ChooseYourDelegate = () => {
                             }}
                         />
                     </div>
-                </CopyContianer>
-
-                <Gap height={5}/>
+                </HeaderContianer>
                 <DelegatesContainer>
                     {delegates.map(x => ({...x, setRenderKey})).map(DelegateBox)}
                 </DelegatesContainer>

@@ -12,6 +12,8 @@ const ButtonContainer = styled.div`
                 return theme.colors.red
             case 'deny':
                 return theme.colors.grey
+            case 'disabled':
+                return theme.colors.grey
             default:
                 return 'linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%)'
             }
