@@ -60,30 +60,6 @@ const handleClaim = (address) => async () => {
     }
 }
 
-const handleVote = async () => {
-    const snapshotClient = new Client()
-    const ethersProvider = getEthersProvider()
-    snapshotClient.vote(
-        ethersProvider,
-        '0xBe8563B89d31AD287c73da42848Bd7646172E0ba',
-        'bananana.eth',
-        {proposal: 'QmerF9zBj9QNk3evSTigCdmfQ1SdS2MN4yfCkyHZCd8tcy', choice: [1]}
-    )
-
-    // const scores = await utils.getScores(
-    //     'bananana.eth',
-    //     ['api'],
-    //     'Ethereum mainnet',
-    //     ethersProvider,
-    //     ['0xBe8563B89d31AD287c73da42848Bd7646172E0ba'],
-    // );
-
-    // console.log('scores: ', scores)
-
-    //const result = await fetch('https://us-central1-ens-manager.cloudfunctions.net/getvotes?addresses=0x0904dac3347ea47d208f3fd67402d039a3b99859')
-    //console.log('result: ', result)
-}
-
 const EnsSummary = () => {
     const {data: {address}} = useQuery(gql`
       query privateRouteQuery @client {
@@ -95,7 +71,6 @@ const EnsSummary = () => {
             <ContentBox>
                 <Header>Submit your claim</Header>
                 <Gap height={3}/>
-                <CTAButton onClick={handleVote} text={"Vote"} /><br />
                 <CTAButton onClick={handleClaim(address)} text={"Claim"}/>
                 <Gap height={3}/>
             </ContentBox>

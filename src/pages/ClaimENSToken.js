@@ -18,7 +18,7 @@ import Profile from "../components/Profile";
 
 const ClaimEnsTokenContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
     
@@ -28,17 +28,14 @@ const ClaimEnsTokenContainer = styled.div`
 `
 
 const LeftContainer = styled.div`
-    margin-bottom: 50px;
     min-width: 350px;
-    
-    ${largerThan.tablet`
-        margin-bottom: 0px;
-    `}
 `
 
 const RightContainer = styled.div`
+    margin-bottom: 50px;
      ${largerThan.tablet`
         margin-left: 50px;
+        margin-bottom: 0px;
     `}
 `
 
