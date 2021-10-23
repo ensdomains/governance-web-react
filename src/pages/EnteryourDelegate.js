@@ -10,14 +10,6 @@ import {NarrowColumn} from "../components/layout";
 import {ContentBox} from "../components/layout";
 import {getEthersProvider} from "../web3modal";
 
-const Img = styled.img`
-  width: 100%;
-  margin-top: -15px;
-`
-
-const WrappedNarrowColumn = styled(NarrowColumn)`
-  max-width: 670px;
-`
 
 const Input = styled.input`
   height: 64px;
@@ -66,11 +58,25 @@ const ValidationMessage = (props) => {
     )
 }
 
+const AddressMessage = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 19px;
+
+  display: flex;
+  align-items: center;
+
+  color: #989898;
+  margin-bottom: 14px;
+`
+
 const InputComponent = (props) => {
     const [validationMessage, setValidationMessage] = useState({
         message: '',
         isError: false
     })
+    const [ensNameAddress, setEnsNameAddress] = useState('')
 
     const onChange = (event) => {
         const value = event.target.value
@@ -78,7 +84,8 @@ const InputComponent = (props) => {
         const run = async () => {
             if (value.includes('.eth')) {
                 try {
-                    getEthersProvider().resolveName(value)
+                    const result = await getEthersProvider().resolveName(value)
+                    setEnsNameAddress(result)
                     setValidationMessage({
                         message: 'Valid ENS name',
                         isError: false
@@ -104,6 +111,8 @@ const InputComponent = (props) => {
                     isError: true
                 })
             }
+
+            setEnsNameAddress('')
         }
 
         if (value) {
@@ -119,6 +128,9 @@ const InputComponent = (props) => {
     return (
         <div>
             <Input {...props} onChange={onChange}/>
+            {ensNameAddress && (
+                <AddressMessage>{ensNameAddress}</AddressMessage>
+            )}
             {validationMessage.message && (
                 <ValidationMessage error={validationMessage.isError}>
                     {validationMessage.message}
