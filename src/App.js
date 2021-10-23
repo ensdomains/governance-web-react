@@ -19,6 +19,7 @@ import {initWeb3} from "./web3modal";
 import ENSSummary from "./pages/ENSSummary";
 import {useQuery} from "@apollo/client";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
+import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 
 
 const AppContainer = styled.div`
@@ -73,6 +74,7 @@ function App() {
                     <Switch>
                         <PrivateRoute path="/why" component={Why}/>
                         <PrivateRoute path="/governance" component={ENSGovernance}/>
+                        <PrivateRoute path="/constitution/sign" component={ENSConstitutionSign}/>
                         <PrivateRoute path="/constitution" component={ENSConstitution}/>
                         <PrivateRoute path="/delegates" component={ChooseYourDelegate}/>
                         <PrivateRoute path="/manual-delegates" component={EnteryourDelegate}/>

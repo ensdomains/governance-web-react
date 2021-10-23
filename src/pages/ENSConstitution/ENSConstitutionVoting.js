@@ -13,7 +13,7 @@ import SectionHeader from "./SectionHeader";
 import Footer from "./ENSConstitutionFooter";
 import Summary from "./ENSConstitutionSummary";
 import ENSConstitutionInfo from "./ENSConstitutionInfo";
-import theme from "../../components/theme";
+
 
 const AritcleHeader = styled.div`
     font-style: normal;
@@ -77,7 +77,6 @@ const Forbidden = styled.div`
   font-weight: bold;
   font-size: 15px;
   line-height: 19px;
-  /* identical to box height */
 
   display: flex;
   align-items: center;
