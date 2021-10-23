@@ -9,6 +9,7 @@ import {Header, Content} from '../components/text'
 import {NarrowColumn} from "../components/layout";
 import {ContentBox} from "../components/layout";
 import {getEthersProvider} from "../web3modal";
+import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 
 
 const Input = styled.input`
@@ -71,15 +72,19 @@ const AddressMessage = styled.div`
   margin-bottom: 14px;
 `
 
-const InputComponent = (props) => {
-    const [validationMessage, setValidationMessage] = useState({
-        message: '',
-        isError: false
-    })
-    const [ensNameAddress, setEnsNameAddress] = useState('')
+const InputComponent = ({
+                            validationMessage,
+                            setValidationMessage,
+                            ensNameAddress,
+                            setEnsNameAddress,
+                            setValue,
+                            defaultValue,
+                            ...props
+                        }) => {
 
     const onChange = (event) => {
         const value = event.target.value
+        setValue(value)
 
         const run = async () => {
             if (value.includes('.eth')) {
@@ -127,7 +132,7 @@ const InputComponent = (props) => {
 
     return (
         <div>
-            <Input {...props} onChange={onChange}/>
+            <Input {...props} onChange={onChange} defaultValue={defaultValue}/>
             {ensNameAddress && (
                 <AddressMessage>{ensNameAddress}</AddressMessage>
             )}
@@ -142,6 +147,12 @@ const InputComponent = (props) => {
 
 const EnteryourDelegate = () => {
     const history = useHistory();
+    const [validationMessage, setValidationMessage] = useState({
+        message: '',
+        isError: false
+    })
+    const [ensNameAddress, setEnsNameAddress] = useState('')
+    const [value, setValue] = useState(getDelegateChoice())
 
     return (
         <NarrowColumn>
@@ -153,11 +164,23 @@ const EnteryourDelegate = () => {
                     You can also enter their Ethereum address.
                 </Content>
                 <Gap height={5}/>
-                <InputComponent placeholder={"delegate.eth"}/>
+                <InputComponent
+                    placeholder={"delegate.eth"}
+                    {...{
+                        validationMessage,
+                        setValidationMessage,
+                        ensNameAddress,
+                        setEnsNameAddress,
+                        setValue,
+                        defaultValue: value
+                    }}
+                />
             </ContentBox>
             <Footer
+                disabled={validationMessage.isError || !value}
                 rightButtonText="Next"
                 rightButtonCallback={() => {
+                    setDelegateChoice(value)
                     history.push('/delegates')
                 }}
                 leftButtonText="Back"
