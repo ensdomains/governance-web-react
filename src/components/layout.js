@@ -11,6 +11,7 @@ export const ContentBox = styled.div`
     box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.02);
     border-radius: 16px;
     padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.09);
 `
 
 export const InnerContentBox = styled.div`
