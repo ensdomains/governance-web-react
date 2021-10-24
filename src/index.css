@@ -46,3 +46,12 @@ html, body {
   url('./assets/webfonts/PlusJakartaSans-Bold.woff') format('woff');
   font-weight: bold;
 }
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration:none;
+  cursor:pointer;
+}
