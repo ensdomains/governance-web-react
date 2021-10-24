@@ -20,6 +20,8 @@ import ENSSummary from "./pages/ENSSummary";
 import {useQuery} from "@apollo/client";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
+import ENSTokenClaim from "./pages/EnsTokenClaim";
+import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 
 
 const AppContainer = styled.div`
@@ -78,7 +80,9 @@ function App() {
                         <PrivateRoute path="/constitution" component={ENSConstitution}/>
                         <PrivateRoute path="/delegates" component={ChooseYourDelegate}/>
                         <PrivateRoute path="/manual-delegates" component={EnteryourDelegate}/>
+                        <PrivateRoute path="/summary/claim" component={ENSTokenClaim}/>
                         <PrivateRoute path="/summary" component={ENSSummary}/>
+                        <PrivateRoute path="/success" component={ENSClaimSuccess}/>
                         <Route path="/claim">
                             <ClaimENSToken/>
                         </Route>
