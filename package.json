@@ -57,6 +57,7 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "1.13.2"
+    "babel-plugin-styled-components": "1.13.2",
+    "cypress": "8.6.0"
   }
 }
