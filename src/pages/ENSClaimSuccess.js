@@ -12,7 +12,7 @@ import TwitterLogo from '../assets/imgs/Twitter.svg'
 import DiscordLogo from '../assets/imgs/Discord.svg'
 
 const SocialButtonContainer = styled.div`
-  background: ${p => p.name === 'Twitter' ? '#EBF3FF' : '#F3EFFF'};
+  background: ${p => p.type === 'Twitter' ? '#EBF3FF' : '#F3EFFF'};
   border-radius: 14px;
   width: 100%;
   height: 100px;
@@ -25,16 +25,21 @@ const SocialButtonContainer = styled.div`
   font-size: 20px;
   line-height: 25px;
   letter-spacing: -0.01em;
-  color: ${p => p.name === 'Twitter' ? '#4D90F1' : '#854BFF'};
+  color: ${p => p.type === 'Twitter' ? '#4D90F1' : '#854BFF'};
   cursor: pointer;
 `
 
-const SocialButton = ({name}) => {
+const SocialButton = ({type, text}) => {
     return (
-        <SocialButtonContainer name={name}>
-            <div>Share on {name}</div>
-            <img src={name === 'Twitter' ? TwitterLogo : DiscordLogo} />
-        </SocialButtonContainer>
+        <a
+            href={type === 'Twitter' ? 'https://twitter.com/intent/tweet' : 'https://discord.gg/qDYkrFKAUW'}
+            target={"_blank"}
+        >
+            <SocialButtonContainer type={type}>
+                <div>{text}</div>
+                <img src={type === 'Twitter' ? TwitterLogo : DiscordLogo} />
+            </SocialButtonContainer>
+        </a>
     )
 }
 
@@ -51,9 +56,9 @@ const ENSClaimSuccess = () => {
                     Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
                 </Content>
                 <Gap height={3}/>
-                <SocialButton name={"Twitter"}/>
+                <SocialButton type={"Twitter"} text={"Share on Twitter"}/>
                 <Gap height={3} />
-                <SocialButton name={"Discord"}/>
+                <SocialButton type={"Discord"} text={"Join the Discord"}/>
                 <Gap height={3}/>
                 <CTAButton
                     onClick={() => {
