@@ -1,77 +1,166 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Client, utils} from '@snapshot-labs/snapshot.js'
-import {hexlify} from '@ethersproject/bytes';
-
-import {ContentBox, NarrowColumn} from "../components/layout";
-import {Header} from "../components/text";
-import Gap from "../components/Gap";
-import {getEthersProvider} from "../web3modal";
-import {BigNumber, Contract} from "ethers";
-import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
-import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree from "../merkle";
-import {CTAButton} from "../components/buttons";
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
+import styled from "styled-components";
 
-export async function signMessage(web3, msg, address) {
-    msg = hexlify(new Buffer(msg, 'utf8'));
-    return await web3.send('personal_sign', [msg, address]);
-}
+import {ContentBox, InnerContentBox, NarrowColumn} from "../components/layout";
+import {Content, Header, Statistic, SubsubTitle} from "../components/text";
+import Gap from "../components/Gap";
+import {getEthersProvider} from "../web3modal";
+import {imageUrl} from "../utils/utils";
+import {CTAButton} from "../components/buttons";
+import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
+import {useHistory} from "react-router-dom";
 
-const submitClaim = async (balance, proof, address) => {
-    try {
-        const provider = getEthersProvider()
-        const signer = provider.getSigner()
-        const ENSTokenContract = new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer);
-        ENSTokenContract.connect(signer)
-        const result = await ENSTokenContract.claimTokens(
-            balance,
-            address,
-            proof
-        )
-        const transactionReceipt = await result.wait(1)
-        console.log('transaction receipt: ', transactionReceipt)
-    } catch (e) {
-        console.error(e)
-    }
-}
 
-const handleClaim = (address) => async () => {
-    try {
-        const response = await fetch(generateMerkleShardUrl(address))
-        if (!response.ok) {
-            throw new Error('error getting shard data')
+const ENSLogo = styled.img`
+  width: 40px;
+  margin-top: 5px;
+  margin-left: 10px;
+`
+
+const AvatarImg = styled.img`
+    border-radius: 50%;
+    width: ${p => p.large ? '60px' : '50px'};
+    height: ${p => p.large ? '60px' : '50px'};
+    margin-right: 10px;
+`
+
+const WrappedInnerContentBox = styled(InnerContentBox)`
+  display: flex;
+`
+
+const LeftContainer = styled.div`
+  flex: 1
+`
+
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const DelegateInfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const DelegateName = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 141%;
+  color: #000000;
+`
+
+const DelegateConfirmation = () => {
+    const {data: {isConnected}} = useQuery(gql`
+      query privateRouteQuery @client {
+        isConnected
+      }
+    `)
+    const [delegateInfo, setDelegateInfo] = useState({
+        avatar: '',
+        displayName: ''
+    })
+    const history = useHistory()
+
+    useEffect(() => {
+        const run = async () => {
+            const delegateChoice = getDelegateChoice();
+
+            if(!delegateChoice) {
+                console.error('No delegate selected')
+                return
+            }
+
+            if(delegateChoice.includes('.eth')) {
+                const resolver = await getEthersProvider().getResolver(delegateChoice);
+                const avatar = await resolver.getText('avatar')
+                console.log('avatar: ', avatar)
+                setDelegateInfo({
+                    avatar,
+                    displayName: delegateChoice
+                })
+                return
+            }
         }
-        const shardJson = await response.json({encoding: 'utf-8'})
-        const {root, shardNybbles, total} = merkleRoot;
-        const shardedMerkleTree = new ShardedMerkleTree(
-            () => shardJson,
-            shardNybbles,
-            root,
-            BigNumber.from(total)
-        )
-        const [entry, proof] = shardedMerkleTree.getProof(address)
-        // submitClaim("0003391299489722269696", proof, address)
-        submitClaim(entry.balance, proof, address)
-    } catch (e) {
-        console.error(e)
-    }
+        if(isConnected) {
+            run()
+        }
+    }, [isConnected])
+
+    return (
+        <WrappedInnerContentBox>
+            <LeftContainer>
+                <SubsubTitle>You delegated to</SubsubTitle>
+                <Gap height={2}/>
+                <DelegateInfoContainer>
+                    {delegateInfo.avatar && (
+                        <AvatarImg
+                            src={imageUrl(
+                                delegateInfo.avatar,
+                                delegateInfo.displayName,
+                                1
+                            )}/>
+                    )}
+                    <DelegateName>
+                        {delegateInfo.displayName}
+                    </DelegateName>
+                </DelegateInfoContainer>
+            </LeftContainer>
+            <RightContainer>
+                <CTAButton
+                    onClick={() => {
+                        history.push('/delegates')
+                    }}
+                    type={"deny"}
+                    text={"Edit"}
+                />
+            </RightContainer>
+        </WrappedInnerContentBox>
+    )
 }
 
 const EnsSummary = () => {
-    const {data: {address}} = useQuery(gql`
+    const {data: {address, addressDetails}} = useQuery(gql`
       query privateRouteQuery @client {
         address
+        addressDetails
+        isConnected
       }
     `)
+    const history = useHistory()
+
+    const {
+        balance,
+    } = addressDetails
+
     return (
         <NarrowColumn>
             <ContentBox>
-                <Header>Submit your claim</Header>
+                <Header>Review your claim</Header>
                 <Gap height={3}/>
-                <CTAButton onClick={handleClaim(address)} text={"Claim"}/>
+                <Content>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper orci in dolor laoreet hendrerit.
+                    Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
+                </Content>
+                <Gap height={3}/>
+                <InnerContentBox>
+                    <SubsubTitle>You will receive</SubsubTitle>
+                    <Gap height={1}/>
+                    <Statistic>{balance}<ENSLogo src={SplashENSLogo}/></Statistic>
+                </InnerContentBox>
+                <Gap height={3}/>
+                <DelegateConfirmation/>
+                <Gap height={5}/>
+                <CTAButton onClick={() => {
+                    history.push({
+                        pathname: '/summary/claim',
+                        state: 'CLAIM'
+                    })
+                }} text={"Claim"}/>
                 <Gap height={3}/>
             </ContentBox>
         </NarrowColumn>
