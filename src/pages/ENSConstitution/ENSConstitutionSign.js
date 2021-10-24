@@ -13,7 +13,7 @@ import {CTAButton} from "../../components/buttons";
 import TransactionState from "../../components/TransactionState";
 
 
-const handleVote = async (setVoteState) => {
+const handleVote = async (setVoteState, address) => {
     const snapshotClient = new Client()
     const ethersProvider = getEthersProvider()
     try {
@@ -23,7 +23,7 @@ const handleVote = async (setVoteState) => {
         })
         await snapshotClient.vote(
             ethersProvider,
-            '0xBe8563B89d31AD287c73da42848Bd7646172E0ba',
+            address,
             'bananana.eth',
             {proposal: 'QmerF9zBj9QNk3evSTigCdmfQ1SdS2MN4yfCkyHZCd8tcy', choice: [1]}
         )
@@ -43,6 +43,7 @@ const handleVote = async (setVoteState) => {
 const ENS_CONSTITUTION_SIGN_QUERY = gql`
   query privateRouteQuery @client {
     isConnected
+    address
   }
 `
 
@@ -56,7 +57,7 @@ const ENSConstitutionSign = ({location}) => {
 
     useEffect(() => {
         if (location.state && data.isConnected) {
-            handleVote(setVoteState)
+            handleVote(setVoteState, data.address)
         }
     }, [data.isConnected])
 
@@ -82,7 +83,7 @@ const ENSConstitutionSign = ({location}) => {
                             history.push('/summary')
                             return
                         }
-                        handleVote(setVoteState)
+                        handleVote(setVoteState, data.address)
                     }}
                     text={voteState.state === 'SUCCESS' ? 'Continue' : 'Try Again'}
                     type={voteState.state === 'LOADING' ? 'disabled' : ''}

@@ -5,14 +5,23 @@ on: [push]
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.18.3-chrome87-ff82
     steps:
+      - run: sudo apt-get install xvfb
+      - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install chrome
+        uses: browser-actions/setup-chrome@latest
+      - run: chrome --version
+      - run: yarn install
+      - run: yarn global add wait-on
+      - run: yarn start &
+      - run: yarn cy:open
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          start: yarn start
-          browser: chrome
+#      - name: Cypress run
+#        uses: sergiubcn/github-action@2
+#        with:
+#          start: yarn start
+#          browser: chrome
+#          headed: true
