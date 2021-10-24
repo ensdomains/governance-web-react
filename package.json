@@ -34,7 +34,8 @@
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "deploy": "DISABLE_ESLINT_PLUGIN=true yarn build && cp _headers ./build && cp _redirects ./build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cy:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +56,8 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "1.13.2"
+    "babel-plugin-styled-components": "1.13.2",
+    "cypress": "8.6.0",
+    "cypress-metamask": "1.0.5-development"
   }
 }
