@@ -7,8 +7,7 @@ import theme from "../../components/theme";
 import Footer from "../../components/Footer";
 import {useHistory} from "react-router-dom";
 import {Client} from "@snapshot-labs/snapshot.js";
-import {getEthersProvider} from "../../web3modal";
-import ENSConstitutionVoting from './ENSConstitutionVoting';
+
 
 const SummaryArticleContainer = styled.div`
   display: flex;

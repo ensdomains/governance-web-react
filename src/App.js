@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import styled from 'styled-components/macro'
 import {gql} from "graphql-tag";
+import {useQuery} from "@apollo/client";
 
 import Header from './components/Header'
 import Home from './pages/Home'
@@ -17,7 +18,6 @@ import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Why from "./pages/Why";
 import {initWeb3} from "./web3modal";
 import ENSSummary from "./pages/ENSSummary";
-import {useQuery} from "@apollo/client";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSTokenClaim from "./pages/EnsTokenClaim";

@@ -91,12 +91,15 @@ const LABELHASH_QUERY = gql`
 `
 
 const getClaimData = async (address) => {
+    console.log('address: ', address)
     const response = await fetch(generateMerkleShardUrl(address))
     if (!response.ok) {
         throw new Error('error getting shard data')
     }
     const shardData = await response.json({encoding: 'utf-8'})
+    console.log('shardData: ', shardData)
     const addressDetails = shardData?.entries[address]
+    console.log('addressDetails: ', addressDetails)
 
     if(addressDetails) {
         const {data} = await apolloClientInstance
