@@ -181,7 +181,7 @@ const EnteryourDelegate = () => {
                 rightButtonText="Next"
                 rightButtonCallback={() => {
                     setDelegateChoice(value)
-                    history.push('/constitution')
+                    history.push('/summary')
                 }}
                 leftButtonText="Back"
                 leftButtonCallback={() => {

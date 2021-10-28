@@ -7,7 +7,7 @@ import {CTAButton} from './buttons'
 import {initWeb3} from "../web3modal";
 import Profile from './Profile'
 
-import HeaderENSLogo from '../assets/imgs/HeaderENSLogo.svg'
+import { ReactComponent as HeaderENSLogo } from '../assets/imgs/HeaderENSLogo.svg'
 import {Link} from "react-router-dom";
 
 const HeaderContainer = styled.div`
@@ -30,6 +30,11 @@ const LeftContainer = styled.div``
 
 const RightContainer = styled.div``
 
+const WrappedLogo = styled(HeaderENSLogo)`
+  margin-bottom: -10px;
+  margin-left: -20px;
+`
+
 const Header = () => {
     const {data: {isConnected, address}} = useQuery(gql`
         query getHeaderData @client {
@@ -43,7 +48,7 @@ const Header = () => {
             <HeaderContainerInner>
                 <LeftContainer>
                     <Link to={"/"}>
-                        <img src={HeaderENSLogo}/>
+                        <WrappedLogo />
                     </Link>
                 </LeftContainer>
                 <RightContainer>

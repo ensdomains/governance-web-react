@@ -241,11 +241,11 @@ const ChooseYourDelegate = () => {
             <Footer
                 rightButtonText="Next"
                 rightButtonCallback={() => {
-                    history.push('/constitution')
+                    history.push('/summary')
                 }}
                 leftButtonText="Back"
                 leftButtonCallback={() => {
-                    history.push('/governance')
+                    history.push('/constitution')
                 }}
                 disabled={!getDelegateChoice()}
             />
