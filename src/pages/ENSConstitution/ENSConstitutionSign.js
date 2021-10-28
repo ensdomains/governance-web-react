@@ -80,7 +80,7 @@ const ENSConstitutionSign = ({location}) => {
                 <CTAButton
                     onClick={() => {
                         if(voteState.state === 'SUCCESS') {
-                            history.push('/summary')
+                            history.push('/delegates')
                             return
                         }
                         handleVote(setVoteState, data.address)
