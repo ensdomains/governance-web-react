@@ -3,6 +3,7 @@ import {Client, utils} from '@snapshot-labs/snapshot.js'
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from "styled-components";
+import {useHistory} from "react-router-dom";
 
 import {ContentBox, InnerContentBox, NarrowColumn} from "../components/layout";
 import {Content, Header, Statistic, SubsubTitle} from "../components/text";
@@ -12,7 +13,6 @@ import {imageUrl} from "../utils/utils";
 import {CTAButton} from "../components/buttons";
 import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
 import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
-import {useHistory} from "react-router-dom";
 
 
 const ENSLogo = styled.img`
@@ -78,7 +78,6 @@ const DelegateConfirmation = () => {
             if(delegateChoice.includes('.eth')) {
                 const resolver = await getEthersProvider().getResolver(delegateChoice);
                 const avatar = await resolver.getText('avatar')
-                console.log('avatar: ', avatar)
                 setDelegateInfo({
                     avatar,
                     displayName: delegateChoice

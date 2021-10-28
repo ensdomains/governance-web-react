@@ -25,7 +25,7 @@ const handleVote = async (setVoteState, address) => {
             ethersProvider,
             address,
             'bananana.eth',
-            {proposal: 'QmerF9zBj9QNk3evSTigCdmfQ1SdS2MN4yfCkyHZCd8tcy', choice: [1]}
+            {proposal: 'QmXPFfC9y78CDv44CQLQe37aj5h6455AaSdxcdiUaCBoiU', choice: [1]}
         )
         setVoteState({
             state: 'SUCCESS',
