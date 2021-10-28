@@ -4,7 +4,7 @@ describe('Token claim site', () => {
         cy.changeMetamaskNetwork('tenderly')
     });
     it('Should allow the user to vote, delegate and claim', () => {
-        cy.visit('http://localhost:3000')
+        cy.visit('http://localhost:5000')
         cy.contains('MetaMask').click()
         cy.acceptMetamaskAccess()
         cy.contains('Get Started').click()
