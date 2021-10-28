@@ -1,0 +1,33 @@
+name: Cypress Tests
+
+on: [push]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_WORDS: ${{ secrets.TEST_WALLET_SEED_PHRASE }}
+      PASSWORD: TestMetaMask
+      NETWORK_NAME: tenderly
+      RPC_URL: https://rpc.tenderly.co/fork/bd704e15-7f2c-4f12-8c1a-9bedf536c336
+      CHAIN_ID: 1
+    steps:
+      - run: sudo apt-get install xvfb
+      - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install chrome
+        uses: browser-actions/setup-chrome@latest
+      - run: chrome --version
+      - run: yarn install
+      - run: yarn build
+      - run: yarn serve &
+      - run: yarn cypress:ci
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+#      - name: Cypress run
+#        uses: sergiubcn/github-action@2
+#        with:
+#          start: yarn start
+#          browser: chrome
+#          headed: true
