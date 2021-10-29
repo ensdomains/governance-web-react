@@ -7,13 +7,12 @@ const Asset = styled.span`
 
 const Logo = styled.img`
     position: absolute;
-    top: -3px;
 `
 
 const Symbol = styled.span`
   font-weight: 700;
   color: #7E99F2;
-  margin-left: 30px;
+  margin-left: 22px;
 `
 
 const Token = ({ asset, start }) => (
