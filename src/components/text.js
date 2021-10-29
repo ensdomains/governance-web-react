@@ -65,12 +65,11 @@ export const Header = styled.div`
 `
 
 export const Content = styled.div`
-    ont-style: normal;
-    font-weight: normal;
-    font-size: 17px;
-    line-height: 141%;
-    letter-spacing: -0.01em;
-    color: #888888;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 141%;
+  color: #1A1A1A;
 `
 
 export const Statistic = styled.div`

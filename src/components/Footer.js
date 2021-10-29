@@ -11,6 +11,7 @@ const FooterContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  margin-top: ${p => p.grid ? '-20px' : '0px'};
 
   ${largerThan.tablet`
         grid-column-start: 1;
@@ -23,10 +24,11 @@ const Footer = ({
                     rightButtonCallback,
                     leftButtonText,
                     leftButtonCallback,
-                    disabled
+                    disabled,
+                    grid
                 }) => {
     return (
-        <FooterContainer>
+        <FooterContainer {...{grid}}>
             {leftButtonText
                 ? <CTAButton text={leftButtonText} onClick={leftButtonCallback} type="deny"/>
                 : <div></div>

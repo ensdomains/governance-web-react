@@ -8,6 +8,9 @@ import {Header, Content, TokenText, SubsubTitle, Statistic} from '../components/
 import {InnerContentBox, NarrowColumn} from "../components/layout";
 import {ContentBox} from "../components/layout";
 import {largerThan} from "../utils/styledComponents";
+import Divider from "../components/Divider";
+import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import Token from "../components/Token";
 
 const Container = styled.div`
     max-width: 1000px;
@@ -62,6 +65,49 @@ ${largerThan.tablet`
     `}
 `
 
+const RowLabel = styled.div`
+  letter-spacing: -0.01em;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #717171;
+  display: flex;
+  align-items: center;
+`
+
+const StatsRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  box-sizing: border-box;
+`
+
+const StatsSection = styled.div`
+`
+
+const StatsNumber = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: right;
+  color: #000000;
+`
+
+const NumberWithLogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const StatsSubtitle = styled.div`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  color: #717171;
+  opacity: 0.6;
+`
 
 const Why = () => {
     const history = useHistory();
@@ -69,42 +115,46 @@ const Why = () => {
     return (
         <Container>
             <ContentBox>
+                <Header>What is ENS?</Header>
+                <Gap height={3}/>
+                <Content>
+                    Your ENS name is your web3 username and profile, one name for all of your crypto addresses, and your decentralized website.
+                </Content>
+                <Gap height={5}/>
+                <StatsSection>
+                    <StatsRow>
+                        <RowLabel>Names</RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>>400k</StatsNumber>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                    <Divider/>
+                    <StatsRow>
+                        <RowLabel>Years registered</RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>>1,775,000</StatsNumber>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                    <Divider/>
+                    <StatsRow>
+                        <RowLabel>Integrations</RowLabel>
+                        <NumberWithLogoContainer>
+                            <StatsNumber>311</StatsNumber>
+                        </NumberWithLogoContainer>
+                    </StatsRow>
+                </StatsSection>
+            </ContentBox>
+
+            <ContentBox>
                 <Header>Why launch a token?</Header>
                 <Gap height={3}/>
                 <Content>
-                    ENS is launching <TokenText>$ENS</TokenText> to continue the journey of decentralization, and to
-                    make the protocol unstoppable.
-                    It represents the first step in a handover of control from the core contributing group, to the wider
-                    community.
+                    <Token /> is an important step in  further decentralizing governance of the ENS protocol.
                 </Content>
                 <Gap height={5}/>
                 <Content>
-                    <TokenText>$ENS</TokenText> will empower community members to have a say in the direction of the
-                    protocol, its revenue, a community treasury, and technical parameters moving forward.
+                    It will empower community members to direct its development, community treasury, and technical parameters.
                 </Content>
-            </ContentBox>
-            <ContentBox>
-                <Header>The story so far...</Header>
-                <Gap height={3}/>
-                <Content>
-                    The Ethereum Name Service was created to build a
-                    human-readable name system for Ethereum, with the goal
-                    of becoming widely adopted. Since then, the protocol has
-                    seen tremendous growth in usage.
-                </Content>
-                <Gap height={5}/>
-                <StatsContainer>
-                    <WrappedInnerContentBox>
-                        <SubsubTitle>Names created</SubsubTitle>
-                        <Gap height={2}/>
-                        <Statistic>3,405,411</Statistic>
-                    </WrappedInnerContentBox>
-                    <WrappedInnerContentBox>
-                        <SubsubTitle>Years registered</SubsubTitle>
-                        <Gap height={2}/>
-                        <Statistic>4,500.41</Statistic>
-                    </WrappedInnerContentBox>
-                </StatsContainer>
             </ContentBox>
             <FullWidthBox>
                 <Header>Why launch it now?</Header>
@@ -115,7 +165,7 @@ const Why = () => {
                     self-sufficient and community owned.
                 </Content>
             </FullWidthBox>
-            <Footer
+            <Footer grid
                 rightButtonText="Next"
                 rightButtonCallback={() => {
                     history.push('/governance')
