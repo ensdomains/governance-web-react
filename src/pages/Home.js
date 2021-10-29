@@ -49,11 +49,11 @@ const Home = () => {
             <Gap height={6}/>
             <Link>Introducing $ENS</Link>
             <Gap height={3}/>
-            <WrappedTitle>Join the effort</WrappedTitle>
-            <WrappedTitle>to decentralise ENS</WrappedTitle>
+            <WrappedTitle>Help decide</WrappedTitle>
+            <WrappedTitle>the future of ENS</WrappedTitle>
             <Gap height={3}/>
             <WrappedSubTitle>
-                We are launching a governance token to begin handing over control over the protocol to the community.
+                With the launch of <b>$ENS</b> and the <b>DAO</b>, the community will be empowered to govern the ENS protocol.
             </WrappedSubTitle>
             <Gap height={8}/>
             <CTAButton text={isConnected ? "Get Started" : "Connect to wallet"} onClick={handleClick}/>

@@ -28,7 +28,7 @@ const Logo = styled.img`
 const Text = styled.div`
     margin-bottom: 1px;
     font-style: normal;
-    font-weight: normal;
+    font-weight: bold;
     font-size: 16px;
     line-height: 19px;
     display: flex;

@@ -22,6 +22,7 @@ import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSTokenClaim from "./pages/EnsTokenClaim";
 import ENSClaimSuccess from "./pages/ENSClaimSuccess";
+import SharedFooter from "./components/SharedFooter";
 
 
 const AppContainer = styled.div`
@@ -92,6 +93,7 @@ function App() {
                     </Switch>
                 </AppContainer>
             </AppContainerOuter>
+            <SharedFooter />
         </Router>
     );
 }
