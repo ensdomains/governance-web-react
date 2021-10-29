@@ -67,8 +67,7 @@ const ENSConstitutionSign = ({location}) => {
                 <Header>Confirm with wallet</Header>
                 <Gap height={3}/>
                 <Content>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper orci in dolor laoreet hendrerit.
-                    Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
+                    Please approve the signing request to submit your votes.
                 </Content>
                 <Gap height={6}/>
                 <TransactionState

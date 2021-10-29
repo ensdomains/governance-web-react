@@ -19,13 +19,30 @@ const FooterContainer = styled.div`
     `}
 `
 
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const Text = styled.span`
+  margin-right: 16px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  text-align: center;
+  color: #000000;
+  opacity: 0.3;
+`
+
 const Footer = ({
                     rightButtonText,
                     rightButtonCallback,
                     leftButtonText,
                     leftButtonCallback,
                     disabled,
-                    grid
+                    grid,
+                    text
                 }) => {
     return (
         <FooterContainer {...{grid}}>
@@ -34,11 +51,14 @@ const Footer = ({
                 : <div></div>
             }
             {rightButtonText
-                ? <CTAButton
-                    text={rightButtonText}
-                    onClick={disabled ? () => null : rightButtonCallback}
-                    type={disabled ? 'deny' : ''}
-                />
+                ? <RightContainer>
+                    {text && <Text>{text}</Text>}
+                    <CTAButton
+                        text={rightButtonText}
+                        onClick={disabled ? () => null : rightButtonCallback}
+                        type={disabled ? 'deny' : ''}
+                    />
+                </RightContainer>
                 : <div></div>
             }
         </FooterContainer>

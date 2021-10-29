@@ -30,7 +30,7 @@ const ArticleContent = styled.div`
     font-size: 16px;
     line-height: 141%;
     letter-spacing: -0.01em;
-    color: #606060;
+    color: #1A1A1A;
     padding: ${p => {
       switch(p.type) {
         case 'permissible':
@@ -124,7 +124,6 @@ const Voting = ({currentStep, setCurrentStep, totalSteps, article, handleBack, h
     </>
 )
 
-
 const EnsConstitutionVoting = () => {
     const history = useHistory();
     const {currentStep, setCurrentStep, totalSteps} = useConstitutionSteps()
@@ -136,7 +135,7 @@ const EnsConstitutionVoting = () => {
             setCurrentStep(currentStep - 1)
             return;
         }
-        history.push('/delegates')
+        history.push('/governance')
     }
 
     const handleNext = () => {

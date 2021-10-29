@@ -11,10 +11,10 @@ const SharedFooterContainer = styled.div`
   left: 0;
   right: 0;
   height: 100px;
-  
   display: flex;
   justify-content: center;
   padding: 0 20px;
+  pointer-events: none;
 `
 
 const LeftContainer = styled.div``

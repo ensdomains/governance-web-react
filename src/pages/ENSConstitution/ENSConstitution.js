@@ -1,7 +1,6 @@
 import React from 'react';
 import {Route, Switch} from "react-router-dom";
 import ENSConstitutionVoting from "./ENSConstitutionVoting";
-import ENSConstitutionInfo from "./ENSConstitutionInfo";
 import ENSConstitutionSummary from "./ENSConstitutionSummary";
 
 
@@ -15,9 +14,6 @@ const ENSConstitution = () => {
             <Route path="/constitution">
                 <ENSConstitutionVoting/>
             </Route>
-            {/*<Route path="/constitution/">*/}
-            {/*    <ENSConstitutionInfo/>*/}
-            {/*</Route>*/}
         </Switch>
     )
 }

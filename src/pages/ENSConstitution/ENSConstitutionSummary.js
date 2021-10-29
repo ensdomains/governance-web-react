@@ -48,13 +48,11 @@ const SummaryArticleTitle = styled.div`
 const SummaryArticleSummary = styled.div`
   max-width: 240px;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   font-size: 17px;
   line-height: 130%;
 
-  letter-spacing: -0.01em;
-
-  color: #424242;
+  color: #1A1A1A;
 `
 
 const Divider = styled.div`
@@ -119,6 +117,7 @@ const Summary = ({currentStep, setCurrentStep, constitution}) => {
                 leftButtonCallback={() => {
                     setCurrentStep(currentStep - 1)
                 }}
+                text={"Almost done!"}
             />
         </>
     )
