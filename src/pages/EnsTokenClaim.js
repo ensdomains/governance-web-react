@@ -119,8 +119,7 @@ const ENSTokenClaim = ({location}) => {
                 <Header>Confirm with wallet</Header>
                 <Gap height={3}/>
                 <Content>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper orci in dolor laoreet hendrerit.
-                    Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
+                    Please approve the transaction to delegate and claim your tokens.
                 </Content>
                 <Gap height={6}/>
                 <TransactionState

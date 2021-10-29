@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {useHistory} from "react-router-dom";
 
 import {ContentBox, InnerContentBox, NarrowColumn} from "../components/layout";
-import {Content, Header, Statistic, SubsubTitle} from "../components/text";
+import {Content, DecimalBalance, Header, IntegerBalance, Statistic, SubsubTitle} from "../components/text";
 import Gap from "../components/Gap";
 import {getEthersProvider} from "../web3modal";
 import {imageUrl} from "../utils/utils";
@@ -141,15 +141,14 @@ const EnsSummary = () => {
             <ContentBox>
                 <Header>Review your claim</Header>
                 <Gap height={3}/>
-                <Content>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper orci in dolor laoreet hendrerit.
-                    Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
-                </Content>
-                <Gap height={3}/>
                 <InnerContentBox>
                     <SubsubTitle>You will receive</SubsubTitle>
                     <Gap height={1}/>
-                    <Statistic>{balance}<ENSLogo src={SplashENSLogo}/></Statistic>
+                    <Statistic>
+                        <IntegerBalance>{balance?.split('.')[0]}</IntegerBalance>
+                        <DecimalBalance>.{balance?.split('.')[1]}</DecimalBalance>
+                        <ENSLogo src={SplashENSLogo}/>
+                    </Statistic>
                 </InnerContentBox>
                 <Gap height={3}/>
                 <DelegateConfirmation/>
@@ -160,7 +159,6 @@ const EnsSummary = () => {
                         state: 'CLAIM'
                     })
                 }} text={"Claim"}/>
-                <Gap height={3}/>
             </ContentBox>
         </NarrowColumn>
     );
