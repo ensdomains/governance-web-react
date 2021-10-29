@@ -86,3 +86,21 @@ export const TokenText = styled.span`
     color: ${theme.colors.blue};
     font-weight: bold;
 `
+
+export const IntegerBalance = styled.span`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 141%;
+  letter-spacing: -0.01em;
+  color: #000000;
+`
+
+export const DecimalBalance = styled.span`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 141%;
+  letter-spacing: -0.01em;
+  color: #BFBFBF;
+`
