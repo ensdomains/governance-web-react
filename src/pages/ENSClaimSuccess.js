@@ -10,6 +10,7 @@ import {useHistory} from "react-router-dom";
 import {CTAButton} from "../components/buttons";
 import TwitterLogo from '../assets/imgs/Twitter.svg'
 import DiscordLogo from '../assets/imgs/Discord.svg'
+import Token from "../components/Token";
 
 const SocialButtonContainer = styled.div`
   background: ${p => p.type === 'Twitter' ? '#EBF3FF' : '#F3EFFF'};
@@ -52,10 +53,9 @@ const ENSClaimSuccess = () => {
                 <Header>Claim successful!</Header>
                 <Gap height={3}/>
                 <Content>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper orci in dolor laoreet hendrerit.
-                    Duis rutrum eu magna non gravida. Vestibulum pulvinar ante eu tortor malesuada consectetur.
+                    Congratulations on claiming your <Token />! We encourage you to share on Twitter and join the ENS Discord to get involved in governance.
                 </Content>
-                <Gap height={3}/>
+                <Gap height={10}/>
                 <SocialButton type={"Twitter"} text={"Share on Twitter"}/>
                 <Gap height={3} />
                 <SocialButton type={"Discord"} text={"Join the Discord"}/>
