@@ -26,18 +26,20 @@ const ENSConstitutionInfo = ({handleBack, handleNext, currentStep, setCurrentSte
                 </Content>
                 <Gap height={3}/>
                 <Content>
-                    We hope these rules form the basis for a strong community,
-                    and recognize the participation of the contributors who have made ENS what it is today.
+                    We hope these rules form the basis for a strong community.
                 </Content>
                 <Gap height={3}/>
                 <Content>
-                    A minimum consensus of 75% of votes is required to
-                    ratify a given Article of the Constitution.
+                    Approval by two-thirds majority of votes cast in the first week is required to ratify a given article of the Constitution.
+                </Content>
+                <Gap height={3}/>
+                <Content>
+                    Future amendments may be made to this Constitution by two-thirds majority and at least 5% of all tokens participating.
                 </Content>
                 <Gap height={3}/>
             </ContentBoxWithHeader>
             <Footer
-                rightButtonText="Next"
+                rightButtonText="Start"
                 rightButtonCallback={handleNext}
                 leftButtonText="Back"
                 leftButtonCallback={handleBack}

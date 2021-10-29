@@ -30,15 +30,11 @@ const ENSGovernance = () => {
                 <Header>How is it distributed?</Header>
                 <Gap height={3}/>
                 <Content>
-                    Over half of the tokens will be allocated to a community treasury which can be governed by the token
-                    holders. The other half of the tokens are split between the contributors, and a retroactive airdrop
-                    to reward early users.
+                    Half of the tokens will be allocated to the DAO community treasury which can be governed by the token holders. The other half of the tokens are split between contributors and a retroactive airdrop to users.
                 </Content>
                 <Gap height={3}/>
                 <Content>
-                    Over half of the tokens will be allocated to a community treasury which can be governed by the token
-                    holders. The other half of the tokens are split between the contributors, and a retroactive airdrop
-                    to reward early users.
+                    Any address that has ever owned an ENS name is eligible for the <b>retroactive airdrop</b>. Past and future registrations are counted, with future registrations capped at 8 years. Accounts with their <b>Primary ENS Name</b> record set will receive a 2x multiplier.
                 </Content>
                 <Gap height={3}/>
             </ContentBox>
