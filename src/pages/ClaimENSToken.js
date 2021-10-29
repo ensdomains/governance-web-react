@@ -4,7 +4,7 @@ import {gql} from "graphql-tag";
 import styled from 'styled-components';
 
 import {ContentBox, InnerContentBox, NarrowColumn} from "../components/layout";
-import {Content, Header, Statistic, SubsubTitle} from "../components/text";
+import {Content, DecimalBalance, Header, IntegerBalance, Statistic, SubsubTitle} from "../components/text";
 import Gap from "../components/Gap";
 import {useHistory} from "react-router-dom";
 import {largerThan} from "../utils/styledComponents";
@@ -41,7 +41,8 @@ const RightContainer = styled.div`
 
 const ENSLogo = styled.img`
   width: 40px;
-  margin-left: 10px;
+  margin-left: 5px;
+  marign-top: 0px
 `
 
 const SmallENSLogo = styled(ENSLogo)`
@@ -100,24 +101,6 @@ const WrappedContent = styled(Content)`
   color: #1A1A1A;
 `
 
-const IntegerBalance = styled.span`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 28px;
-  line-height: 141%;
-  letter-spacing: -0.01em;
-  color: #000000;
-`
-
-const DecimalBalance = styled.span`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 28px;
-  line-height: 141%;
-  letter-spacing: -0.01em;
-  color: #BFBFBF;
-`
-
 const ClaimEnsToken = () => {
     const {data: {address, addressDetails}} = useQuery(gql`
         query getHeaderData @client {
@@ -138,7 +121,6 @@ const ClaimEnsToken = () => {
     } = addressDetails
 
     const history = useHistory();
-    console.log('rawBalance: ', rawBalance)
 
     return (
         <ClaimEnsTokenContainer>
