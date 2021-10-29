@@ -97,9 +97,7 @@ const getClaimData = async (address) => {
         throw new Error('error getting shard data')
     }
     const shardData = await response.json({encoding: 'utf-8'})
-    console.log('shardData: ', shardData)
     const addressDetails = shardData?.entries[address]
-    console.log('addressDetails: ', addressDetails)
 
     if(addressDetails) {
         const {data} = await apolloClientInstance
@@ -117,9 +115,10 @@ const getClaimData = async (address) => {
         const lastExpiringName = data
             ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
             ?.name
-        const pastTokens = formatTokenAmount(addressDetails?.past_tokens)
-        const futureTokens = formatTokenAmount(addressDetails?.future_tokens)
+        const pastTokens = formatTokenAmount(addressDetails?.past_tokens, 2)
+        const futureTokens = formatTokenAmount(addressDetails?.future_tokens, 2)
         const balance = formatTokenAmount(addressDetails?.balance)
+        const shortBalance = formatTokenAmount(addressDetails?.balance, 2)
 
         return ({
             lastExpiringName,
@@ -127,6 +126,7 @@ const getClaimData = async (address) => {
             pastTokens,
             futureTokens,
             balance,
+            shortBalance,
             hasReverseRecord: addressDetails?.has_reverse_record,
             rawBalance: addressDetails?.balance,
             eligible: true

@@ -23,7 +23,7 @@ export const Link = styled.a`
 
 export const Title = styled.div`
     font-size: 72px;
-    background: linear-gradient(44.39deg, #68BDFE 10%, #A29BFE 95.01%);
+    background: linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;

@@ -17,85 +17,105 @@ import Profile from "../components/Profile";
 
 
 const ClaimEnsTokenContainer = styled.div`
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    justify-content: center;
-    
-    ${largerThan.tablet`
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+
+  ${largerThan.tablet`
         flex-direction: row;
     `}
 `
 
 const LeftContainer = styled.div`
-    min-width: 350px;
+  min-width: 350px;
 `
 
 const RightContainer = styled.div`
-    margin-bottom: 50px;
-     ${largerThan.tablet`
+  margin-bottom: 50px;
+  ${largerThan.tablet`
         margin-left: 50px;
         margin-bottom: 0px;
     `}
 `
 
 const ENSLogo = styled.img`
-    width: 40px;
-    margin-top: 5px;
-    margin-left: 10px;
+  width: 40px;
+  margin-left: 10px;
 `
 
 const SmallENSLogo = styled(ENSLogo)`
-    width: 25px;
-    margin-top: 1px;
-    margin-left: 5px;
-    margin-right: -4px;
+  width: 25px;
+  margin-top: 1px;
+  margin-left: 5px;
+  margin-right: -4px;
 `
 
 const StatsSubtitle = styled.div`
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 19px;
-    letter-spacing: -0.01em;
-    
-    color: #717171;
-    
-    opacity: 0.6;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  color: #717171;
+  opacity: 0.6;
 `
 
 const RowLabel = styled.div`
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 22px;
-    letter-spacing: -0.01em;
-    color: #717171;
+  letter-spacing: -0.01em;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #717171;
+  display: flex;
+  align-items: center;
 `
 
 const StatsRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  box-sizing: border-box;
 `
 
 const StatsSection = styled.div`
-  margin-bottom: 35px;  
+  margin-bottom: 35px;
 `
 
 const StatsNumber = styled.div`
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 22px;
-    letter-spacing: -0.01em;
-    color: #000000;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: right;
+  color: #000000;
 `
 
 const NumberWithLogoContainer = styled.div`
-   display: flex;
-   align-items: center; 
+  display: flex;
+  align-items: center;
+`
+
+const WrappedContent = styled(Content)`
+  color: #1A1A1A;
+`
+
+const IntegerBalance = styled.span`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 141%;
+  letter-spacing: -0.01em;
+  color: #000000;
+`
+
+const DecimalBalance = styled.span`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 141%;
+  letter-spacing: -0.01em;
+  color: #BFBFBF;
 `
 
 const ClaimEnsToken = () => {
@@ -118,6 +138,7 @@ const ClaimEnsToken = () => {
     } = addressDetails
 
     const history = useHistory();
+    console.log('rawBalance: ', rawBalance)
 
     return (
         <ClaimEnsTokenContainer>
@@ -128,15 +149,16 @@ const ClaimEnsToken = () => {
                     <StatsRow>
                         <StatsSubtitle>Rewards</StatsSubtitle>
                     </StatsRow>
+                    <Divider/>
                     <StatsRow>
-                        <RowLabel>Historical activity: </RowLabel>
+                        <RowLabel>Historical activity </RowLabel>
                         <NumberWithLogoContainer>
                             <StatsNumber>{pastTokens}</StatsNumber><SmallENSLogo src={SplashENSLogo}/>
                         </NumberWithLogoContainer>
                     </StatsRow>
                     <Divider/>
                     <StatsRow>
-                        <RowLabel>Future registrations: </RowLabel>
+                        <RowLabel>Future registrations </RowLabel>
                         <NumberWithLogoContainer>
                             <StatsNumber>{futureTokens}</StatsNumber><SmallENSLogo src={SplashENSLogo}/>
                         </NumberWithLogoContainer>
@@ -145,7 +167,7 @@ const ClaimEnsToken = () => {
                         <>
                             <Divider/>
                             <StatsRow>
-                                <RowLabel>Reverse record is set: </RowLabel>
+                                <RowLabel>Reverse record is set </RowLabel>
                                 <NumberWithLogoContainer>
                                     <StatsNumber>2x</StatsNumber>
                                 </NumberWithLogoContainer>
@@ -158,15 +180,16 @@ const ClaimEnsToken = () => {
                     <StatsRow>
                         <StatsSubtitle>Fun facts</StatsSubtitle>
                     </StatsRow>
+                    <Divider/>
                     <StatsRow>
-                        <RowLabel>Longest owned: </RowLabel>
+                        <RowLabel>Longest owned </RowLabel>
                         <NumberWithLogoContainer>
                             <StatsNumber>{longestOwnedName}</StatsNumber>
                         </NumberWithLogoContainer>
                     </StatsRow>
                     <Divider/>
                     <StatsRow>
-                        <RowLabel>Longest renewed: </RowLabel>
+                        <RowLabel>Longest renewed </RowLabel>
                         <NumberWithLogoContainer>
                             <StatsNumber>{lastExpiringName}</StatsNumber>
                         </NumberWithLogoContainer>
@@ -184,25 +207,31 @@ const ClaimEnsToken = () => {
                     <ContentBox>
                         <Header>Claim your tokens</Header>
                         <Gap height={3}/>
-                        <Content>
-                            You are eligible for the retroactive airdrop! View your activity below, and initiate the
-                            transaction to claim them.
-                        </Content>
+                        <WrappedContent>
+                            {rawBalance
+                                ? "You are eligible for the airdrop! View your tokens below, and start the claim process."
+                                : "This Ethereum account is not eligible for the airdrop. Please make sure you are connected with the right account."
+                            }
+                        </WrappedContent>
                         <Gap height={5}/>
                         <InnerContentBox>
                             <SubsubTitle>You will receive</SubsubTitle>
                             <Gap height={1}/>
-                            <Statistic>{balance}<ENSLogo src={SplashENSLogo}/></Statistic>
+                            <Statistic>
+                                <IntegerBalance>{balance?.split('.')[0]}</IntegerBalance>
+                                <DecimalBalance>.{balance?.split('.')[1]}</DecimalBalance>
+                                <ENSLogo src={SplashENSLogo}/>
+                            </Statistic>
                         </InnerContentBox>
                         <Gap height={5}/>
                         {eligible && (
                             <>
-                                <Content>
-                                    You have received these rewards for being an early and active participant of the ENS
-                                    community. We hope that you use the power granted by these tokens wisely!
-                                </Content>
-                                <Gap height={5}/>
-                                <CTAButton text="Start claim process" onClick={() => history.push('/why')}/>
+                                <WrappedContent>
+                                    You have received these tokens for being an early participant of the ENS community.
+                                    Use this power wisely!
+                                </WrappedContent>
+                                <Gap height={10}/>
+                                <CTAButton text="Start your claim process" onClick={() => history.push('/why')}/>
                             </>
                         )}
                     </ContentBox>

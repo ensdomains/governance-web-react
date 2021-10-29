@@ -2,11 +2,12 @@ export const getEnv = () => window.location.href.includes('localhost') ? 'dev' :
 
 export const isDev = () => getEnv() === 'dev'
 
-export const formatTokenAmount = (tokenAmount, length = 9) =>
+export const formatTokenAmount = (tokenAmount, length = 6) =>
     new Intl.NumberFormat(
         'en-US',
         {
-            maximumFractionDigits: 2,
+            minimumFractionDigits: length,
+            maximumFractionDigits: length,
         }
     ).format(Number(tokenAmount) / Math.pow(10, 18))
 
