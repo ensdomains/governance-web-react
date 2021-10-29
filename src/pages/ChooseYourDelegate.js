@@ -136,6 +136,10 @@ const SpeechBubbleImg = styled.img`
   margin-right: 15px;
 `
 
+const SpeechBubbleImgText = styled.img`
+    margin: 0 5px;
+`
+
 const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
     const selected = name === getDelegateChoice()
     return (
@@ -173,7 +177,7 @@ const DelegatesContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, 290px);
   grid-row-gap: 12px;
-  grid-column-gap: 15px;
+  grid-column-gap: 14px;
   justify-content: center;
 `
 
@@ -219,9 +223,11 @@ const ChooseYourDelegate = () => {
                         <Header>Choose a delegate</Header>
                         <Gap height={3}/>
                         <Content>
-                            Select a community member whose views you align with, who will be able to vote with the
-                            power of
-                            your tokens.
+                            Select a community member to represent you. You can change this at any time. Click on the<SpeechBubbleImgText src={SpeechBubble}/>icon to read their application.
+                        </Content>
+                        <Gap height={2}/>
+                        <Content style={{fontSize: 15}}>
+                            You can delegate to someone not listed, or to yourself, by entering an ENS name or Ethereum address with the button on the right.
                         </Content>
                     </CopyContainer>
                     <div>
