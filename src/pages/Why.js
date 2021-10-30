@@ -27,10 +27,6 @@ const Container = styled.div`
     `}
 `
 
-const Row = styled.div`
-    display: flex;
-`
-
 const StatsContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -109,12 +105,17 @@ const StatsSubtitle = styled.div`
   opacity: 0.6;
 `
 
+const WhatIsENSContentBox = styled(ContentBox)`
+  grid-row-start: 1;
+  grid-row-end: 3;
+`
+
 const Why = () => {
     const history = useHistory();
 
     return (
         <Container>
-            <ContentBox>
+            <WhatIsENSContentBox>
                 <Header>What is ENS?</Header>
                 <Gap height={3}/>
                 <Content>
@@ -143,7 +144,7 @@ const Why = () => {
                         </NumberWithLogoContainer>
                     </StatsRow>
                 </StatsSection>
-            </ContentBox>
+            </WhatIsENSContentBox>
 
             <ContentBox>
                 <Header>Why launch a token?</Header>
@@ -156,7 +157,7 @@ const Why = () => {
                     It will empower community members to direct its development, community treasury, and technical parameters.
                 </Content>
             </ContentBox>
-            <FullWidthBox>
+            <ContentBox>
                 <Header>Why launch it now?</Header>
                 <Gap height={3}/>
                 <Content>
@@ -164,7 +165,7 @@ const Why = () => {
                     ENS names. We firmly believe that now is the time for the protocol to start to become entirely
                     self-sufficient and community owned.
                 </Content>
-            </FullWidthBox>
+            </ContentBox>
             <Footer grid
                 rightButtonText="Next"
                 rightButtonCallback={() => {
