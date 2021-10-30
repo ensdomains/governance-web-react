@@ -20,6 +20,8 @@ import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
 import {largerThan} from "../utils/styledComponents";
+import RedTick from "../assets/imgs/RedTick.svg";
+import GreenTick from "../assets/imgs/GreenTick.svg";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
@@ -115,6 +117,13 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
+  position: relative;
+  
+  &:hover {
+    border: 1px solid ${p => p.selected ? 'rgba(73, 179, 147, 1)' : '#5298FF'};
+  }
 `
 
 const AvatarImg = styled.img`
@@ -134,10 +143,24 @@ const LeftContainer = styled.div`
 
 const SpeechBubbleImg = styled.img`
   margin-right: 15px;
+  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%) contrast(86%);
+  
+  &:hover {
+    filter: invert(51%) sepia(97%) saturate(1961%) hue-rotate(196deg) brightness(103%) contrast(101%);
+  }
 `
 
 const SpeechBubbleImgText = styled.img`
     margin: 0 5px;
+    filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%) contrast(86%);
+`
+
+const Logo = styled.img`
+  position: absolute;
+  top: -11px;
+  right: -11px;
+  width: 23px;
+  height: 23px;
 `
 
 const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
@@ -151,6 +174,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
             }}
             selected={selected}
         >
+            <Logo src={GreenTick} />
             <LeftContainer>
                 <AvatarImg src={imageUrl(avatar, name, 1)}/>
                 <MidContainer>
