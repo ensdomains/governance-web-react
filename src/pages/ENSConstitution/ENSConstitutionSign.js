@@ -9,11 +9,10 @@ import {ContentBox, NarrowColumn} from "../../components/layout";
 import Gap from "../../components/Gap";
 import {useHistory} from "react-router-dom";
 import {getEthersProvider} from "../../web3modal";
-import {CTAButton} from "../../components/buttons";
 import TransactionState from "../../components/TransactionState";
 
 
-const handleVote = async (setVoteState, address) => {
+const handleVote = async (setVoteState, address, history) => {
     const snapshotClient = new Client()
     const ethersProvider = getEthersProvider()
     try {
@@ -31,6 +30,9 @@ const handleVote = async (setVoteState, address) => {
             state: 'SUCCESS',
             message: ''
         })
+        setTimeout(() => {
+            history.push('/delegates')
+        }, 2000)
     } catch (error) {
         setVoteState({
             state: 'ERROR',
@@ -57,7 +59,7 @@ const ENSConstitutionSign = ({location}) => {
 
     useEffect(() => {
         if (location.state && data.isConnected) {
-            handleVote(setVoteState, data.address)
+            handleVote(setVoteState, data.address, history)
         }
     }, [data.isConnected, data.address])
 
@@ -75,24 +77,20 @@ const ENSConstitutionSign = ({location}) => {
                     title={"Submit votes"}
                     content={"This message is signed off-chain, and does not cost any gas"}
                 />
-                <Gap height={6}/>
-                <CTAButton
-                    onClick={() => {
-                        if(voteState.state === 'SUCCESS') {
-                            history.push('/delegates')
-                            return
-                        }
-                        handleVote(setVoteState, data.address)
-                    }}
-                    text={voteState.state === 'SUCCESS' ? 'Continue' : 'Try Again'}
-                    type={voteState.state === 'LOADING' ? 'disabled' : ''}
-                />
             </ContentBox>
             <Footer
                 leftButtonText="Back"
                 leftButtonCallback={() => {
                     history.push('/constitution')
                 }}
+                rightButtonText={voteState.state === 'SUCCESS' ? "Continuing..." : "Try Again"}
+                rightButtonCallback={() => {
+                    if(voteState.state === 'SUCCESS') {
+                        return
+                    }
+                    handleVote(setVoteState, data.address, history)
+                }}
+                disabled={voteState.state === 'LOADING' || voteState.state === 'SUCCESS' ? 'disabled' : ''}
             />
         </NarrowColumn>
     );
