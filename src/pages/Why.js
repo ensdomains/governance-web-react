@@ -95,7 +95,7 @@ const Why = () => {
                     <StatsRow>
                         <RowLabel>Integrations</RowLabel>
                         <NumberWithLogoContainer>
-                            <StatsNumber>>311</StatsNumber>
+                            <StatsNumber>>310</StatsNumber>
                         </NumberWithLogoContainer>
                     </StatsRow>
                 </StatsSection>
