@@ -20,9 +20,7 @@ const RightContainer = styled.div`
   justify-content: center;
 
   div {
-    //white-space: nowrap;
     overflow: hidden;
-    //text-overflow: ellipsis;
   }
 `
 
@@ -116,21 +114,8 @@ const shortenAddress = (
     return `${address.slice(0, leftSlice)}...${address.slice(-rightSlice)}`;
 }
 
-const maybeShortenAddress = (address, containerRef) => {
-    const containerWidth = containerRef.current?.offsetWidth
-    const containerScrollWidth = containerRef.current?.scrollWidth
-    if (containerScrollWidth > containerWidth) {
-        return shortenAddress(address)
-    }
-    return address
-}
-
-
 const Profile = ({address, large}) => {
     const [profileDetails, setProfileDetails] = useState({})
-    const nameRef = useRef()
-    const addressRef = useRef()
-    const [test, setTest] = useState()
 
     useEffect(() => {
         const run = async () => {
@@ -161,36 +146,6 @@ const Profile = ({address, large}) => {
         })
     }, [address])
 
-    console.log('profileDetails: ', profileDetails.ensName)
-
-    // useEffect(() => {
-    //     console.log('nameRef.current: ', nameRef.current)
-    //     if(nameRef.current) {
-    //         const containerWidth = nameRef.current?.offsetWidth
-    //         const scrollWidth = nameRef.current?.scrollWidth
-    //         const subjectString = profileDetails.ensName
-    //
-    //         // new ResizeObserver(() => {
-    //         //     if(scrollWidth > containerWidth) {
-    //         //         console.log('changed')
-    //         //         setTest(shortenAddress(subjectString))
-    //         //     }
-    //         // }).observe(nameRef.current)
-    //
-    //         // const subjectStringArray = subjectString.split('')
-    //         if(profileDetails?.ensName?.length)
-    //
-    //         console.log('shortenedAddress: ', shortenAddress(subjectString))
-    //         if(scrollWidth > containerWidth) {
-    //             setTest(shortenAddress(subjectString))
-    //             return
-    //         }
-    //         setTest(subjectString)
-    //     }
-    // }, [nameRef.current, profileDetails.ensName])
-    //
-    // console.log('test: ', test)
-
     return (
         <ProfileContainer {...{large}}>
             {profileDetails.avatar
@@ -205,7 +160,7 @@ const Profile = ({address, large}) => {
             }
             <RightContainer>
                 {profileDetails.ensName
-                    ? <EnsNameText ref={nameRef} {...{large}} >
+                    ? <EnsNameText {...{large}} >
                         {shortenAddress(
                             profileDetails.ensName,
                             large ? 20 : 10,
@@ -215,7 +170,7 @@ const Profile = ({address, large}) => {
                     </EnsNameText>
                     : <NoNameText>No name set</NoNameText>
                 }
-                <AddressText ref={addressRef} {...{
+                <AddressText {...{
                     large,
                     ensName: profileDetails.ensName
                 }}>{shortenAddress(
