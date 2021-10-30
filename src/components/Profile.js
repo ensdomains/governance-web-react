@@ -18,6 +18,7 @@ const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 112px;
 
   div {
     overflow: hidden;
@@ -91,16 +92,6 @@ const AddressText = styled.div`
   }
 `
 
-const truncateText = (text, containerRef) => {
-    const containerWidth = containerRef.current?.offsetWidth
-    const scrollWidth = containerRef.current?.scrollWidth
-
-    console.log('containerWidth: ', containerWidth)
-    console.log('scrollWidth: ', scrollWidth)
-
-    return text
-}
-
 const shortenAddress = (
     address = '',
     maxLength = 10,
@@ -164,7 +155,7 @@ const Profile = ({address, large}) => {
                         {shortenAddress(
                             profileDetails.ensName,
                             large ? 20 : 10,
-                            large ? 6 : 5,
+                            large ? 6 : 4,
                             large ? 6 : 5
                         )}
                     </EnsNameText>

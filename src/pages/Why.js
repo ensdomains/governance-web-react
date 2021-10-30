@@ -9,11 +9,10 @@ import {InnerContentBox, NarrowColumn} from "../components/layout";
 import {ContentBox} from "../components/layout";
 import {largerThan} from "../utils/styledComponents";
 import Divider from "../components/Divider";
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
 import Token from "../components/Token";
 
 const Container = styled.div`
-    max-width: 1000px;
+    max-width: 920px;
     margin: 0 auto;
     
     display: grid;
@@ -22,42 +21,8 @@ const Container = styled.div`
 
     
     ${largerThan.tablet`
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0,1fr) minmax(0,0.9fr);
         grid-template-rows: repeat(3, auto);
-    `}
-`
-
-const StatsContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    
-    ${largerThan.sMobile`
-        flex-direction: row;    
-    `}
-`
-
-const WrappedInnerContentBox = styled(InnerContentBox)`
-    &:first-child {
-            margin-bottom: 20px;
-        }
-
-    ${largerThan.sMobile`
-        &:first-child {
-            margin-right: 10px;
-            margin-bottom: 0px;
-        }
-        
-        &:last-child {
-            margin-left: 10px;
-        }
-    `}
-`
-
-const FullWidthBox = styled(ContentBox)`
-${largerThan.tablet`
-    grid-column-start: 1;
-    grid-column-end: 3;    
     `}
 `
 
@@ -95,16 +60,6 @@ const NumberWithLogoContainer = styled.div`
   align-items: center;
 `
 
-const StatsSubtitle = styled.div`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  letter-spacing: -0.01em;
-  color: #717171;
-  opacity: 0.6;
-`
-
 const WhatIsENSContentBox = styled(ContentBox)`
   grid-row-start: 1;
   grid-row-end: 3;
@@ -140,7 +95,7 @@ const Why = () => {
                     <StatsRow>
                         <RowLabel>Integrations</RowLabel>
                         <NumberWithLogoContainer>
-                            <StatsNumber>311</StatsNumber>
+                            <StatsNumber>>311</StatsNumber>
                         </NumberWithLogoContainer>
                     </StatsRow>
                 </StatsSection>
@@ -161,9 +116,7 @@ const Why = () => {
                 <Header>Why launch it now?</Header>
                 <Gap height={3}/>
                 <Content>
-                    Over the past 12 months, ENS has seen <b>massive growth</b> in both the registration and usage of
-                    ENS names. We firmly believe that now is the time for the protocol to start to become entirely
-                    self-sufficient and community owned.
+                    Both ENS and the DAO space have matured in the last year. We believe now is the time for ENS to further decentralize protocol governance.
                 </Content>
             </ContentBox>
             <Footer grid
