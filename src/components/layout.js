@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import Divider from "./Divider";
 
 export const NarrowColumn = styled.div`
-    max-width: 523px;
+    max-width: 494px;
     margin: 0 auto;
 `
 

@@ -84,7 +84,7 @@ const SummaryArticle = ({title, vote}, idx, arr) => {
                     </SummaryArticleSummary>
                 </SummaryArticleLeftContianer>
                 <SummaryArticleRightContianer>
-                    Voted <ForAgainst for={vote}>{vote ? 'for' : 'against'}</ForAgainst>
+                    Voted <ForAgainst for={vote}>{vote ? 'Approve' : 'Reject'}</ForAgainst>
                 </SummaryArticleRightContianer>
             </SummaryArticleContainer>
             {!(idx === arr.length - 1) && <Divider/>}

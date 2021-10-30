@@ -44,7 +44,7 @@ const titleCopy = (currentStep, length) => {
         case 3:
             return `Article IV`
         case 4:
-            return `Summary`
+            return `Your votes`
         default:
             return 'Constitution'
     }
