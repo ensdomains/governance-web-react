@@ -13,10 +13,6 @@ const ProfileContainer = styled.div`
   padding: 8px 16px 8px 10px;
 `
 
-const LeftContainer = styled.div`
-
-`
-
 const RightContainer = styled.div`
   overflow: hidden;
   display: flex;
@@ -34,6 +30,8 @@ const AvatarImg = styled.img`
   border-radius: 50%;
   width: ${p => p.large ? '60px' : '50px'};
   height: ${p => p.large ? '60px' : '50px'};
+  min-width: ${p => p.large ? '60px' : '50px'};
+  min-height: ${p => p.large ? '60px' : '50px'};
   margin-right: 10px;
 `
 
@@ -129,7 +127,6 @@ const Profile = ({address, large}) => {
 
     return (
         <ProfileContainer {...{large}}>
-            <LeftContainer>
                 {profileDetails.avatar
                     ? <AvatarImg
                         {...{large}}
@@ -140,8 +137,6 @@ const Profile = ({address, large}) => {
                         )}/>
                     : <EmptyAvatar/>
                 }
-
-            </LeftContainer>
             <RightContainer>
                 {profileDetails.ensName
                     ? <EnsNameText {...{large}}>{profileDetails.ensName}</EnsNameText>
