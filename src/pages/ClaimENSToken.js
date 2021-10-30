@@ -140,7 +140,7 @@ const ClaimEnsToken = () => {
                     </StatsRow>
                     <Divider/>
                     <StatsRow>
-                        <RowLabel>Future registrations </RowLabel>
+                        <RowLabel>Future registration </RowLabel>
                         <NumberWithLogoContainer>
                             <StatsNumber>{futureTokens}</StatsNumber><SmallENSLogo src={SplashENSLogo}/>
                         </NumberWithLogoContainer>
@@ -149,7 +149,7 @@ const ClaimEnsToken = () => {
                         <>
                             <Divider/>
                             <StatsRow>
-                                <RowLabel>Reverse record is set </RowLabel>
+                                <RowLabel>Primary ENS Name set </RowLabel>
                                 <NumberWithLogoContainer>
                                     <StatsNumber>2x</StatsNumber>
                                 </NumberWithLogoContainer>
@@ -171,7 +171,7 @@ const ClaimEnsToken = () => {
                     </StatsRow>
                     <Divider/>
                     <StatsRow>
-                        <RowLabel>Longest renewed </RowLabel>
+                        <RowLabel>Latest expiration </RowLabel>
                         <NumberWithLogoContainer>
                             <StatsNumber>{lastExpiringName}</StatsNumber>
                         </NumberWithLogoContainer>
