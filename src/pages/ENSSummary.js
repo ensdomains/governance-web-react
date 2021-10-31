@@ -109,7 +109,7 @@ const DelegateConfirmation = () => {
     return (
         <WrappedInnerContentBox>
             <LeftContainer>
-                <SubsubTitle>You delegated to</SubsubTitle>
+                <SubsubTitle>You're delegating to</SubsubTitle>
                 <Gap height={2}/>
                 <DelegateInfoContainer>
                     {delegateInfo.avatar && (
