@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components'
 
 import {getEthersProvider} from "../web3modal";
-import {imageUrl} from "../utils/utils";
+import {imageUrl, shortenAddress} from "../utils/utils";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -91,19 +91,6 @@ const AddressText = styled.div`
       `
   }
 `
-
-const shortenAddress = (
-    address = '',
-    maxLength = 10,
-    leftSlice = 5,
-    rightSlice = 5
-) => {
-    if (address.length < maxLength) {
-        return address;
-    }
-
-    return `${address.slice(0, leftSlice)}...${address.slice(-rightSlice)}`;
-}
 
 const Profile = ({address, large}) => {
     const [profileDetails, setProfileDetails] = useState({})
