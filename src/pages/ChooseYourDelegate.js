@@ -15,7 +15,7 @@ import {gql} from "graphql-tag";
 import {apolloClientInstance} from "../apollo";
 import {useQuery} from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import {imageUrl} from "../utils/utils";
+import {imageUrl, shortenAddress} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
@@ -162,6 +162,29 @@ const Logo = styled.img`
   height: 23px;
 `
 
+const DelegateBoxName = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
+
+  color: #323232;
+`
+
+const DelegateBoxVotes = styled.div`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+
+  display: flex;
+  align-items: center;
+
+  color: #989898;
+`
+
 const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
     const selected = name === getDelegateChoice()
     return (
@@ -177,11 +200,13 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
             <LeftContainer>
                 <AvatarImg src={imageUrl(avatar, name, 1)}/>
                 <MidContainer>
-                    {name}
-                    <div>
-                        Votes:
-                        {votes.toNumber()}
-                    </div>
+                    <DelegateBoxName>
+                        {shortenAddress(name, 16)}
+                    </DelegateBoxName>
+                    <DelegateBoxVotes>
+                        {`${votes.toNumber()} `}
+                        votes
+                    </DelegateBoxVotes>
                 </MidContainer>
             </LeftContainer>
             <a href={profile} target={"_blank"}>
