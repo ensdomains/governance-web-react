@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Client} from "@snapshot-labs/snapshot.js";
+import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from 'react-confetti'
 
 import {Content, Header} from '../components/text'
 import {ContentBox, NarrowColumn} from "../components/layout";
@@ -10,6 +12,17 @@ import {CTAButton} from "../components/buttons";
 import TwitterLogo from '../assets/imgs/Twitter.svg'
 import DiscordLogo from '../assets/imgs/Discord.svg'
 import Token from "../components/Token";
+
+const Confet =  () => {
+    const { width, height } = useWindowSize()
+    return (
+        <Confetti
+            width={width}
+            height={height}
+            style={{zIndex: '-2'}}
+        />
+    )
+}
 
 const SocialButtonContainer = styled.div`
   background: ${p => p.type === 'Twitter' ? '#EBF3FF' : '#F3EFFF'};
@@ -47,27 +60,30 @@ const ENSClaimSuccess = () => {
     const history = useHistory();
 
     return (
-        <NarrowColumn>
-            <ContentBox>
-                <Header>Claim successful!</Header>
-                <Gap height={3}/>
-                <Content>
-                    Congratulations on claiming your <Token />! We encourage you to share on Twitter and join the ENS Discord to get involved in governance.
-                </Content>
-                <Gap height={10}/>
-                <SocialButton type={"Twitter"} text={"Share on Twitter"}/>
-                <Gap height={3} />
-                <SocialButton type={"Discord"} text={"Join the Discord"}/>
-                <Gap height={3}/>
-                <CTAButton
-                    onClick={() => {
-                        history.push('/claim')
-                    }}
-                    text={"Return to dashboard"}
-                    type={"deny"}
-                />
-            </ContentBox>
-        </NarrowColumn>
+        <>
+            <Confet />
+            <NarrowColumn>
+                <ContentBox>
+                    <Header>Claim successful!</Header>
+                    <Gap height={3}/>
+                    <Content>
+                        Congratulations on claiming your <Token />! We encourage you to share on Twitter and join the ENS Discord to get involved in governance.
+                    </Content>
+                    <Gap height={10}/>
+                    <SocialButton type={"Twitter"} text={"Share on Twitter"}/>
+                    <Gap height={3} />
+                    <SocialButton type={"Discord"} text={"Join the Discord"}/>
+                    <Gap height={3}/>
+                    <CTAButton
+                        onClick={() => {
+                            history.push('/claim')
+                        }}
+                        text={"Return to dashboard"}
+                        type={"deny"}
+                    />
+                </ContentBox>
+            </NarrowColumn>
+        </>
     );
 };
 
