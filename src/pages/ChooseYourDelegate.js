@@ -20,7 +20,6 @@ import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
 import {largerThan} from "../utils/styledComponents";
-import RedTick from "../assets/imgs/RedTick.svg";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 
 const DELEGATE_TEXT_QUERY = gql`

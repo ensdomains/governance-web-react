@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Client, utils} from '@snapshot-labs/snapshot.js'
+import {Client} from '@snapshot-labs/snapshot.js'
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from "styled-components";
 import {useHistory} from "react-router-dom";
 
 import {ContentBox, InnerContentBox, NarrowColumn} from "../components/layout";
-import {Content, DecimalBalance, Header, IntegerBalance, Statistic, SubsubTitle} from "../components/text";
+import {DecimalBalance, Header, IntegerBalance, Statistic, SubsubTitle} from "../components/text";
 import Gap from "../components/Gap";
 import {getEthersProvider} from "../web3modal";
-import {imageUrl} from "../utils/utils";
+import {imageUrl, shortenAddress} from "../utils/utils";
 import {CTAButton} from "../components/buttons";
 import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
 import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
@@ -75,7 +75,7 @@ const DelegateConfirmation = () => {
                 return
             }
 
-            if(delegateChoice.includes('.eth')) {
+            if(delegateChoice.includes('.')) {
                 const resolver = await getEthersProvider().getResolver(delegateChoice);
                 const avatar = await resolver.getText('avatar')
                 setDelegateInfo({
@@ -84,6 +84,22 @@ const DelegateConfirmation = () => {
                 })
                 return
             }
+
+            const ethName = await getEthersProvider().lookupAddress(delegateChoice);
+            if(ethName) {
+                const resolver = await getEthersProvider().getResolver(ethName);
+                const avatar = await resolver.getText('avatar')
+                setDelegateInfo({
+                    avatar,
+                    displayName: ethName
+                })
+                return
+            }
+
+            setDelegateInfo({
+                avatar: null,
+                displayName: delegateChoice
+            })
         }
         if(isConnected) {
             run()
@@ -105,7 +121,7 @@ const DelegateConfirmation = () => {
                             )}/>
                     )}
                     <DelegateName>
-                        {delegateInfo.displayName}
+                        {shortenAddress(delegateInfo.displayName)}
                     </DelegateName>
                 </DelegateInfoContainer>
             </LeftContainer>
