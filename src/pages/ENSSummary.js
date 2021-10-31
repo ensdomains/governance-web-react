@@ -17,7 +17,6 @@ import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
 
 const ENSLogo = styled.img`
   width: 40px;
-  margin-top: 5px;
   margin-left: 10px;
 `
 

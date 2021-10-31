@@ -21,7 +21,8 @@ const AritcleHeader = styled.div`
     font-size: 20px;
     line-height: 141%;
     letter-spacing: -0.01em;
-    color: #424242;  
+
+    color: #1A1A1A;;  
 `
 
 const ArticleContent = styled.div`

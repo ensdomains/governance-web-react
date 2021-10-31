@@ -74,7 +74,7 @@ const ENSConstitutionSign = ({location}) => {
                 <TransactionState
                     transactionState={voteState.state}
                     title={"Submit votes"}
-                    content={"This message is signed off-chain, and does not cost any gas"}
+                    content={"This message is signed off-chain, and does not cost any gas."}
                 />
             </ContentBox>
             <Footer

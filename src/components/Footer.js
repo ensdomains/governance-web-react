@@ -56,7 +56,7 @@ const Footer = ({
                     <CTAButton
                         text={rightButtonText}
                         onClick={disabled ? () => null : rightButtonCallback}
-                        type={disabled ? 'deny' : ''}
+                        type={disabled ? 'disabled' : ''}
                     />
                 </RightContainer>
                 : <div></div>
