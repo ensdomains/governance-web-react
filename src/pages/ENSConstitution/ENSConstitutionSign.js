@@ -24,7 +24,7 @@ const handleVote = async (setVoteState, address, history) => {
             ethersProvider,
             address,
             'bananana.eth',
-            {proposal: 'QmXPFfC9y78CDv44CQLQe37aj5h6455AaSdxcdiUaCBoiU', choice: [1]}
+            {proposal: 'QmT6ydSCeha4JWLsjuHmQ7y7Muo3uuvnu5rQ9AiHZpNMSf', choice: [1]}
         )
         setVoteState({
             state: 'SUCCESS',
@@ -39,7 +39,6 @@ const handleVote = async (setVoteState, address, history) => {
             message: error
         })
     }
-
 }
 
 const ENS_CONSTITUTION_SIGN_QUERY = gql`
@@ -86,6 +85,7 @@ const ENSConstitutionSign = ({location}) => {
                 rightButtonText={voteState.state === 'SUCCESS' ? "Continuing..." : "Try Again"}
                 rightButtonCallback={() => {
                     if(voteState.state === 'SUCCESS') {
+                        history.push('/delegates')
                         return
                     }
                     handleVote(setVoteState, data.address, history)

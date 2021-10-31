@@ -10,7 +10,6 @@ import {ContentBox, NarrowColumn} from "../components/layout";
 import Gap from "../components/Gap";
 import {useHistory} from "react-router-dom";
 import {getEthersProvider} from "../web3modal";
-import {CTAButton} from "../components/buttons";
 import TransactionState from "../components/TransactionState";
 import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
@@ -19,7 +18,7 @@ import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
 import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
 
-const submitClaim = async (balance, proof, address, setClaimState) => {
+const submitClaim = async (balance, proof, address, setClaimState, history) => {
     try {
         const provider = getEthersProvider()
         const signer = provider.getSigner()
@@ -36,6 +35,9 @@ const submitClaim = async (balance, proof, address, setClaimState) => {
             state: 'SUCCESS',
             message: ''
         })
+        setTimeout(() => {
+            history.push('/success')
+        }, 2000)
     } catch (error) {
         console.error(error)
         setClaimState({
@@ -45,7 +47,7 @@ const submitClaim = async (balance, proof, address, setClaimState) => {
     }
 }
 
-const handleClaim = async (address, setClaimState) => {
+const handleClaim = async (address, setClaimState, history) => {
     try {
         setClaimState({
             state: 'LOADING',
@@ -81,7 +83,7 @@ const handleClaim = async (address, setClaimState) => {
             BigNumber.from(total)
         )
         const [entry, proof] = shardedMerkleTree.getProof(address)
-        await submitClaim(entry.balance, proof, delegateAddress, setClaimState)
+        await submitClaim(entry.balance, proof, delegateAddress, setClaimState, history)
 
     } catch (error) {
         console.error(error)
@@ -108,7 +110,7 @@ const ENSTokenClaim = ({location}) => {
 
     useEffect(() => {
         if (location.state && isConnected) {
-            handleClaim(address, setClaimState)
+            handleClaim(address, setClaimState, history)
         }
     }, [isConnected])
 
@@ -127,24 +129,21 @@ const ENSTokenClaim = ({location}) => {
                     title={"Delegate & claim tokens"}
                     content={"This transaction happens on-chain, and will require paying gas"}
                 />
-                <Gap height={6}/>
-                <CTAButton
-                    onClick={() => {
-                        if (claimState.state === 'SUCCESS') {
-                            history.push('/success')
-                            return
-                        }
-                        handleClaim(address, setClaimState)
-                    }}
-                    text={claimState.state === 'SUCCESS' ? 'Continue' : 'Try Again'}
-                    type={claimState.state === 'LOADING' ? 'disabled' : ''}
-                />
             </ContentBox>
             <Footer
                 leftButtonText="Back"
                 leftButtonCallback={() => {
                     history.push('/summary')
                 }}
+                rightButtonText={claimState.state === 'SUCCESS' ? "Continuing..." : "Try Again"}
+                rightButtonCallback={() => {
+                    if(claimState.state === 'SUCCESS') {
+                        history.push('/success')
+                        return
+                    }
+                    handleClaim(address, setClaimState, history)
+                }}
+                disabled={claimState.state === 'LOADING' ? 'disabled' : ''}
             />
         </NarrowColumn>
     );

@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import {Client} from "@snapshot-labs/snapshot.js";
 
-import Footer from '../components/Footer'
 import {Content, Header} from '../components/text'
 import {ContentBox, NarrowColumn} from "../components/layout";
 import Gap from "../components/Gap";
@@ -68,12 +67,6 @@ const ENSClaimSuccess = () => {
                     type={"deny"}
                 />
             </ContentBox>
-            <Footer
-                leftButtonText="Back"
-                leftButtonCallback={() => {
-                    history.push('/summary')
-                }}
-            />
         </NarrowColumn>
     );
 };
