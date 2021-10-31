@@ -87,20 +87,25 @@ const InputComponent = ({
         setValue(value)
 
         const run = async () => {
-            if (value.includes('.eth')) {
+            if (value.includes('.')) {
                 try {
                     const result = await getEthersProvider().resolveName(value)
-                    setEnsNameAddress(result)
-                    setValidationMessage({
-                        message: 'Valid ENS name',
-                        isError: false
-                    })
+                    if(result) {
+                        setEnsNameAddress(result)
+                        setValidationMessage({
+                            message: 'Valid ENS name',
+                            isError: false
+                        })
+                        return
+                    }
+                    throw 'error'
                 } catch (error) {
                     setValidationMessage({
-                        message: 'ENS name does not exist',
+                        message: 'ENS name does not resolve to an ETH address',
                         isError: true
                     })
                 }
+                setEnsNameAddress('')
                 return
             }
 
@@ -112,11 +117,10 @@ const InputComponent = ({
                 })
             } catch (error) {
                 setValidationMessage({
-                    message: 'Invalid ethereum address or ENS name',
+                    message: 'Invalid ethereum address',
                     isError: true
                 })
             }
-
             setEnsNameAddress('')
         }
 

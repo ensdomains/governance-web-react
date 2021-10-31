@@ -174,7 +174,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
             }}
             selected={selected}
         >
-            <Logo src={GreenTick} />
+            {selected && <Logo src={GreenTick} />}
             <LeftContainer>
                 <AvatarImg src={imageUrl(avatar, name, 1)}/>
                 <MidContainer>
