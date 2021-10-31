@@ -43,7 +43,7 @@ const ButtonContainer = styled.div`
   cursor:  ${p => {
     switch (p.type) {
       case 'deny':
-        return 'initial'
+        return 'pointer'
       case 'disabled':
         return 'initial'
       default:
