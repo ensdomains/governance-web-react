@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/macro'
 import {useHistory} from "react-router-dom";
 import {utils} from 'ethers';
@@ -90,7 +90,7 @@ const InputComponent = ({
             if (value.includes('.')) {
                 try {
                     const result = await getEthersProvider().resolveName(value)
-                    if(result) {
+                    if (result) {
                         setEnsNameAddress(result)
                         setValidationMessage({
                             message: 'Valid ENS name',
@@ -133,6 +133,14 @@ const InputComponent = ({
             })
         }
     }
+
+    useEffect(() => {
+        onChange({
+            target: {
+                value: defaultValue
+            }
+        })
+    }, [])
 
     return (
         <div>
