@@ -15,7 +15,7 @@ import {gql} from "graphql-tag";
 import {apolloClientInstance} from "../apollo";
 import {useQuery} from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import {imageUrl, shortenAddress} from "../utils/utils";
+import {getENSDelegateContractAddress, imageUrl, shortenAddress} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
@@ -80,14 +80,13 @@ const useGetDelegates = (isConnected) => {
                 .reduce((a, i) => a.concat(i, i), [])
 
             const ENSDelegateContract = new Contract(
-                '0xd8A54d061BdBB8A1EEFD68d437470B9aBF294c24',
+                getENSDelegateContractAddress(),
                 ENSDelegateAbi.abi,
                 provider
             )
 
             const results = await ENSDelegateContract.getDelegates(delegateNamehashes)
             setDelegates(processENSDelegateContractResults(results, delegateData?.resolvers))
-            console.log('results: ', results)
         }
         try {
             if (isConnected) {

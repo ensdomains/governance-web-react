@@ -126,7 +126,7 @@ const Why = () => {
                 }}
                 leftButtonText="Back"
                 leftButtonCallback={() => {
-                    history.push('/claim')
+                    history.push('/dashboard')
                 }}
             />
         </Container>

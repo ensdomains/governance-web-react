@@ -13,7 +13,7 @@ import Header from './components/Header'
 import Home from './pages/Home'
 import ENSGovernance from "./pages/ENSGovernance";
 import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
-import ClaimENSToken from "./pages/ClaimENSToken";
+import Dashboard from "./pages/Dashboard";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Why from "./pages/Why";
 import {initWeb3} from "./web3modal";
@@ -58,7 +58,7 @@ function PrivateRoute({component: Component, addressDetails, ...rest}) {
 
     if (history && data?.addressDetails?.eligible !== undefined) {
         if (!data.addressDetails.eligible) {
-            history.push('/claim')
+            history.push('/dashboard')
         }
     }
 
@@ -84,9 +84,7 @@ function App() {
                         <PrivateRoute path="/summary/claim" component={ENSTokenClaim}/>
                         <PrivateRoute path="/summary" component={ENSSummary}/>
                         <PrivateRoute path="/success" component={ENSClaimSuccess}/>
-                        <Route path="/claim">
-                            <ClaimENSToken/>
-                        </Route>
+                        <Route path="/dashboard"><Dashboard/></Route>
                         <Route path="/">
                             <Home/>
                         </Route>

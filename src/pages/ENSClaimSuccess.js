@@ -76,7 +76,7 @@ const ENSClaimSuccess = () => {
                     <Gap height={3}/>
                     <CTAButton
                         onClick={() => {
-                            history.push('/claim')
+                            history.push('/dashboard')
                         }}
                         text={"Return to dashboard"}
                         type={"deny"}
