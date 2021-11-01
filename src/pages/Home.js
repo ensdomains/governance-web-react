@@ -37,7 +37,7 @@ const Home = () => {
 
     const handleClick = () => {
         if(isConnected) {
-            history.push('/claim')
+            history.push('/dashboard')
         } else {
             initWeb3()
         }

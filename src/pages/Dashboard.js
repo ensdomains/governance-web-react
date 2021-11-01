@@ -101,7 +101,7 @@ const WrappedContent = styled(Content)`
   color: #1A1A1A;
 `
 
-const ClaimEnsToken = () => {
+const Dashboard = () => {
     const {data: {address, addressDetails}} = useQuery(gql`
         query getHeaderData @client {
             address
@@ -223,4 +223,4 @@ const ClaimEnsToken = () => {
     );
 };
 
-export default ClaimEnsToken;
+export default Dashboard;
