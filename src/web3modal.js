@@ -170,6 +170,7 @@ export const initWeb3 = async () => {
         isConnected(true)
         addressReactive(address)
         const claimData = await getClaimData(address)
+        console.log('claimData:', claimData)
         addressDetails(claimData)
         return
     }
