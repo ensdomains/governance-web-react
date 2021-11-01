@@ -25,7 +25,7 @@ class ShardedMerkleTree {
         const entry = shard.entries[address];
         const leaf = hashLeaf([address, entry])
         const proof = this.trees[shardid].getProof(leaf).map((entry) => '0x' + entry.data.toString('hex'));
-        return [entry, proof.concat(shard.proof)];
+        return [entry, proof.concat(shard.proof), leaf];
     }
 
     static build(entries, shardNybbles, directory) {

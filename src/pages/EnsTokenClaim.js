@@ -17,35 +17,7 @@ import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
 import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
-
-const submitClaim = async (balance, proof, address, setClaimState, history) => {
-    try {
-        const provider = getEthersProvider()
-        const signer = provider.getSigner()
-        const ENSTokenContract = new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer);
-        ENSTokenContract.connect(signer)
-        const result = await ENSTokenContract.claimTokens(
-            balance,
-            address,
-            proof
-        )
-        const transactionReceipt = await result.wait(1)
-        console.log('transaction receipt: ', transactionReceipt)
-        setClaimState({
-            state: 'SUCCESS',
-            message: ''
-        })
-        setTimeout(() => {
-            history.push('/success')
-        }, 2000)
-    } catch (error) {
-        console.error(error)
-        setClaimState({
-            state: 'ERROR',
-            message: error
-        })
-    }
-}
+import {submitClaim} from "../utils/tokenClaim";
 
 const handleClaim = async (address, setClaimState, history) => {
     try {
@@ -57,7 +29,6 @@ const handleClaim = async (address, setClaimState, history) => {
         let delegateAddress
         let provider = getEthersProvider()
 
-        const response = await fetch(generateMerkleShardUrl(address))
 
         const displayName = getDelegateChoice()
         if(!displayName) {
@@ -70,6 +41,7 @@ const handleClaim = async (address, setClaimState, history) => {
             delegateAddress = displayName
         }
 
+        const response = await fetch(generateMerkleShardUrl(address))
         if (!response.ok) {
             throw new Error('error getting shard data')
         }
