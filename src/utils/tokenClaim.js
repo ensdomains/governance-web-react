@@ -1,32 +1,38 @@
 import {getEthersProvider} from "../web3modal";
 import {BigNumber, Contract, ethers} from "ethers";
-import {getENSTokenContractAddress} from "./utils";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree from "../merkle";
+import ShardedMerkleTree, {getIndex} from "../merkle";
+import {generateMerkleShardUrl, getENSTokenContractAddress} from "./consts";
 
-/*
-const shardJson = await response.json({encoding: 'utf-8'})
-const {root, shardNybbles, total} = merkleRoot;
-const shardedMerkleTree = new ShardedMerkleTree(
-    () => shardJson,
-    shardNybbles,
-    root,
-    BigNumber.from(total)
-)
-const [entry, proof] = shardedMerkleTree.getProof(address)
-hasClaimed(proof, root, )
- */
+export const hasClaimed = async (address) => {
+    try {
+        const response = await fetch(generateMerkleShardUrl(address))
+        if (!response.ok) {
+            throw new Error('error getting shard data')
+        }
 
+        const shardJson = await response.json({encoding: 'utf-8'})
+        const {root, shardNybbles, total} = merkleRoot;
 
-function hashLeaf([address, entry]) {
-    return ethers.utils.solidityKeccak256(['address', 'uint256'], [address, entry.balance]);
-}
+        const shardedMerkleTree = new ShardedMerkleTree(
+            () => shardJson,
+            shardNybbles,
+            root,
+            BigNumber.from(total)
+        )
 
-const verify = (proof, root, leaf) => {}
-
-export const hasClaimed = (proof, root, leaf) => {
-
+        const provider = getEthersProvider()
+        const signer = provider.getSigner()
+        const ENSTokenContract = new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer);
+        const [entry, proof] = shardedMerkleTree.getProof(address)
+        const index = getIndex(address, entry, proof)
+        console.log('index: ', index)
+        const result = await ENSTokenContract.isClaimed(index)
+        console.log('result: ', result)
+    } catch (error) {
+        console.error('error in hasClaimed: ', error)
+    }
 }
 
 export const submitClaim = async (balance, proof, address, setClaimState, history) => {
@@ -40,7 +46,7 @@ export const submitClaim = async (balance, proof, address, setClaimState, histor
             address,
             proof
         )
-        const transactionReceipt = await result.wait(1)
+        await result.wait(1)
         setClaimState({
             state: 'SUCCESS',
             message: ''
