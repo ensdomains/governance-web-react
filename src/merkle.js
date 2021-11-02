@@ -6,6 +6,26 @@ function hashLeaf([address, entry]) {
     return ethers.utils.solidityKeccak256(['address', 'uint256'], [address, entry.balance]);
 }
 
+export function getIndex(address, entry, proof) {
+    let index = 0;
+    let computedHash = hashLeaf([address, entry]);
+
+    for(let i = 0; i < proof.length; i++) {
+        index *= 2;
+        const proofElement = proof[i];
+
+        if (computedHash <= proofElement) {
+            // Hash(current computed hash + current element of the proof)
+            computedHash = ethers.utils.solidityKeccak256(['bytes32', 'bytes32'], [computedHash, proofElement]);
+        } else {
+            // Hash(current element of the proof + current computed hash)
+            computedHash = ethers.utils.solidityKeccak256(['bytes32', 'bytes32'], [proofElement, computedHash]);
+            index += 1;
+        }
+    }
+    return index;
+}
+
 class ShardedMerkleTree {
     constructor(fetcher, shardNybbles, root) {
         this.fetcher = fetcher;

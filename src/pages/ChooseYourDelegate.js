@@ -15,12 +15,13 @@ import {gql} from "graphql-tag";
 import {apolloClientInstance} from "../apollo";
 import {useQuery} from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import {getENSDelegateContractAddress, imageUrl, shortenAddress} from "../utils/utils";
+import {imageUrl, shortenAddress} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
 import {largerThan} from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
+import {getENSDelegateContractAddress} from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
@@ -76,8 +77,6 @@ const useGetDelegates = (isConnected) => {
         const run = async () => {
             const {data: delegateData} = await apolloClientInstance.query({query: DELEGATE_TEXT_QUERY})
             const delegateNamehashes = delegateData.resolvers.map(result => namehash(result.domain.name))
-                .reduce((a, i) => a.concat(i, i), [])
-                .reduce((a, i) => a.concat(i, i), [])
 
             const ENSDelegateContract = new Contract(
                 getENSDelegateContractAddress(),

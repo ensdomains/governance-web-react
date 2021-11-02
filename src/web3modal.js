@@ -1,8 +1,10 @@
 import {ethers} from "ethers";
 
 import {addressReactive, apolloClientInstance, isConnected, addressDetails} from "./apollo";
-import {formatTokenAmount, generateMerkleShardUrl} from "./utils/utils";
+import {formatTokenAmount} from "./utils/utils";
 import {gql} from "graphql-tag";
+import {hasClaimed} from "./utils/tokenClaim";
+import {generateMerkleShardUrl} from "./utils/consts";
 
 const INFURA_ID =
     window.location.host === 'app.ens.domains'
@@ -169,6 +171,9 @@ export const initWeb3 = async () => {
     if (address) {
         isConnected(true)
         addressReactive(address)
+
+        // hasClaimed(address)
+
         const claimData = await getClaimData(address)
         console.log('claimData:', claimData)
         addressDetails(claimData)

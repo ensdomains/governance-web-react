@@ -11,13 +11,13 @@ import Gap from "../components/Gap";
 import {useHistory} from "react-router-dom";
 import {getEthersProvider} from "../web3modal";
 import TransactionState from "../components/TransactionState";
-import {generateMerkleShardUrl, getENSTokenContractAddress} from "../utils/utils";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
 import {getDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {submitClaim} from "../utils/tokenClaim";
+import {generateMerkleShardUrl} from "../utils/consts";
 
 const handleClaim = async (address, setClaimState, history) => {
     try {

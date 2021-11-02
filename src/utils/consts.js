@@ -6,13 +6,13 @@ export const isDev = () => getEnv() === 'dev'
 
 export const getENSTokenContractAddress = () =>
     isDev()
-        ? '0xf99913EaC369E6757df695e875A4b18f942b8885'
-        : '0x33071c57DE0660d61b638Fa533100Cdf94Ebd323'
+        ? '0xdFeA413b703Ba797b71B01eD9Fbc18F5d2eA639E'
+        : '0xD20C465858df5fcAA4148e8fD849c0C35A6BD870'
 
 export const getENSDelegateContractAddress = () =>
     isDev()
-        ? '0x49662055A9bB779Fa86694DC2ec041D0cF602472'
-        : '0xd8A54d061BdBB8A1EEFD68d437470B9aBF294c24'
+        ? '0x3b55763e582109eD4A15d6E12C9ac2D4dd2d0b96'
+        : '0x5aD2d6518fb50C752348563929b6796aa2a9b217'
 
 export const generateMerkleShardUrl = (address) => `/airdrops/mainnet/${address?.slice(2, 4)}.json`
 
