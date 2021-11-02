@@ -1,4 +1,5 @@
-export const PROPOSAL_ID = "QmSEspbHEcD5o2MGNwjr4mj218CRwAimt1eXjLNcLP2CN6"
+export const PROPOSAL_ID = "QmQ4m6hVGawbo2cjVVUQx2Noz4mXJekMYxDrmg4ZN5GCXq"
+export const SPACE_ID = "bananana.eth"
 
 export const getEnv = () => window.location.href.includes('localhost') ? 'dev' : 'prod'
 

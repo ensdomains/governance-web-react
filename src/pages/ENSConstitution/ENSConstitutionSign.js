@@ -10,6 +10,8 @@ import Gap from "../../components/Gap";
 import {useHistory} from "react-router-dom";
 import {getEthersProvider} from "../../web3modal";
 import TransactionState from "../../components/TransactionState";
+import {PROPOSAL_ID, SPACE_ID} from "../../utils/consts";
+import {getChoices} from "./constitutionHelpers";
 
 
 const handleVote = async (setVoteState, address, history) => {
@@ -23,8 +25,8 @@ const handleVote = async (setVoteState, address, history) => {
         await snapshotClient.vote(
             ethersProvider,
             address,
-            'bananana.eth',
-            {proposal: 'QmT6ydSCeha4JWLsjuHmQ7y7Muo3uuvnu5rQ9AiHZpNMSf', choice: [1]}
+            SPACE_ID,
+            {proposal: PROPOSAL_ID, choice: getChoices()}
         )
         setVoteState({
             state: 'SUCCESS',

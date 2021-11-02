@@ -126,7 +126,11 @@ const Dashboard = () => {
     const [isClaimed, setIsClaimed] = useState(false)
 
     useEffect(() => {
-        setIsClaimed(hasClaimed(address))
+        hasClaimed(address)
+            .then(result => setIsClaimed(result))
+            .catch(error => {
+                console.error('error checking hasClaimed: ', error)
+            })
     }, [address])
 
     return (

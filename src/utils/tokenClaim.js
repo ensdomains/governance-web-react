@@ -28,6 +28,7 @@ export const hasClaimed = async (address) => {
         const [entry, proof] = shardedMerkleTree.getProof(address)
         const index = getIndex(address, entry, proof)
         const result = await ENSTokenContract.isClaimed(index)
+        console.log('result: ', result)
         return result
     } catch (error) {
         return false
