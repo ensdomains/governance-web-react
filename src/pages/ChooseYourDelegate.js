@@ -25,7 +25,7 @@ import {getENSDelegateContractAddress} from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
-        resolvers(where:{texts_contains:["eth.ens.delegate"]}) {
+        resolvers(where:{texts_contains:["eth.ens.delegate"]}, first: 5) {
             address
             addr {
                 id
@@ -49,6 +49,7 @@ export function namehash(inputName) {
 
         for (let i = labels.length - 1; i >= 0; i--) {
             let labelSha
+            console.log('labels: ', labels[i])
             let normalisedLabel = normalize(labels[i])
             labelSha = sha3(normalisedLabel)
             node = sha3(new Buffer(node + labelSha, 'hex'))
@@ -76,6 +77,11 @@ const useGetDelegates = (isConnected) => {
         const provider = getEthersProvider()
         const run = async () => {
             const {data: delegateData} = await apolloClientInstance.query({query: DELEGATE_TEXT_QUERY})
+            console.log('delegateData: ', delegateData)
+            // const reverseRecordFilter = delegateData.resolvers.filter(result => !result.domain.name.includes('['))
+            // console.log('reverse record filter: ', reverseRecordFilter)
+            // delegateData.resolvers = [delegateData.resolvers[0]];
+            console.log('test: ', delegateData)
             const delegateNamehashes = delegateData.resolvers.map(result => namehash(result.domain.name))
 
             const ENSDelegateContract = new Contract(

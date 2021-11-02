@@ -22,6 +22,15 @@ export const getEarliestUnvotedArticle = () => {
     return cons.length - 1
 }
 
+export const getChoices = () => {
+    const cons = getConstitution()
+    const choices = []
+    for(let i = 0; i < cons.length; i++) {
+        if(cons[i].vote === true) choices.push(i+1)
+    }
+    return choices
+}
+
 export const hasVotedOnEachArticle = () => {
     const cons = getConstitution()
     for(let i = 0; i < cons.length; i++) {
