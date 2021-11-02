@@ -93,7 +93,6 @@ const LABELHASH_QUERY = gql`
 `
 
 const getClaimData = async (address) => {
-    console.log('address: ', address)
     const response = await fetch(generateMerkleShardUrl(address))
     if (!response.ok) {
         throw new Error('error getting shard data')
@@ -172,7 +171,7 @@ export const initWeb3 = async () => {
         isConnected(true)
         addressReactive(address)
 
-        // hasClaimed(address)
+        hasClaimed(address)
 
         const claimData = await getClaimData(address)
         console.log('claimData:', claimData)
