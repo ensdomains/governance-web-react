@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useQuery} from "@apollo/client";
 import {gql} from "graphql-tag";
 import styled from 'styled-components';
@@ -14,6 +14,7 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import {CTAButton} from "../components/buttons";
 import Profile from "../components/Profile";
+import {hasClaimed} from "../utils/tokenClaim";
 
 
 const ClaimEnsTokenContainer = styled.div`
@@ -122,6 +123,12 @@ const Dashboard = () => {
 
     const history = useHistory();
 
+    const [isClaimed, setIsClaimed] = useState(false)
+
+    useEffect(() => {
+        setIsClaimed(hasClaimed(address))
+    }, [address])
+
     return (
         <ClaimEnsTokenContainer>
             <LeftContainer>
@@ -182,22 +189,24 @@ const Dashboard = () => {
             <RightContainer>
                 <NarrowColumn>
                     {rawBalance
-                        ? <Pill text={"You are eligible for the airdrop!"}/>
+                        ? <Pill text={isClaimed ? "You were eligible for the airdrop!" : "You are eligible for the airdrop!"}/>
                         : <Pill error text={"You are not eligible for the airdrop"}/>
                     }
 
                     <ContentBox>
-                        <Header>Claim your tokens</Header>
+                        <Header>{isClaimed && rawBalance ? "Your tokens are claimed!" : "Claim your tokens"}</Header>
                         <Gap height={3}/>
                         <WrappedContent>
                             {rawBalance
-                                ? "You are eligible for the airdrop! View your tokens below, and start the claim process."
+                                ? isClaimed
+                                    ? "You were eligible for the retroactive airdrop, and you successfully claimed your tokens."
+                                    : "You are eligible for the airdrop! View your tokens below, and start the claim process."
                                 : "This Ethereum account is not eligible for the airdrop. Please make sure you are connected with the right account."
                             }
                         </WrappedContent>
                         <Gap height={5}/>
                         <InnerContentBox>
-                            <SubsubTitle>You will receive</SubsubTitle>
+                            <SubsubTitle>{rawBalance && isClaimed ? "You received" : "You will receive"}</SubsubTitle>
                             <Gap height={1}/>
                             <Statistic>
                                 <IntegerBalance>{balance?.split('.')[0]}</IntegerBalance>
@@ -213,7 +222,11 @@ const Dashboard = () => {
                                     Use this power wisely!
                                 </WrappedContent>
                                 <Gap height={10}/>
-                                <CTAButton text="Start your claim process" onClick={() => history.push('/why')}/>
+                                <CTAButton
+                                    text={isClaimed ? "Tokens claimed successfully" : "Start your claim process"}
+                                    onClick={() => !isClaimed && history.push('/why')}
+                                    type={isClaimed ? 'disabled' : ''}
+                                />
                             </>
                         )}
                     </ContentBox>
