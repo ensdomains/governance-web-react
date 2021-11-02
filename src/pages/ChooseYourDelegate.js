@@ -25,12 +25,14 @@ import {getENSDelegateContractAddress} from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
     query delegateTextQuery {
-        resolvers(where:{texts_contains:["eth.ens.delegate"]}, first: 5) {
+        resolvers(where:{texts_contains:["eth.ens.delegate"]}, first: 1000) {
             address
+            texts
             addr {
                 id
             }
             domain {
+              id
               name
               resolver { address }
             }
@@ -71,18 +73,21 @@ const processENSDelegateContractResults = (results, delegateData) =>
         })
     })
 
+const filterDelegateData = (results) => {
+    return results
+        .filter(data => data.addr?.id)
+        .filter(data => data.texts?.includes('avatar'))
+        .filter(data => data.address === data.domain.resolver.address)
+}
+
 const useGetDelegates = (isConnected) => {
     const [delegates, setDelegates] = useState([])
     useEffect(() => {
         const provider = getEthersProvider()
         const run = async () => {
             const {data: delegateData} = await apolloClientInstance.query({query: DELEGATE_TEXT_QUERY})
-            console.log('delegateData: ', delegateData)
-            // const reverseRecordFilter = delegateData.resolvers.filter(result => !result.domain.name.includes('['))
-            // console.log('reverse record filter: ', reverseRecordFilter)
-            // delegateData.resolvers = [delegateData.resolvers[0]];
-            console.log('test: ', delegateData)
-            const delegateNamehashes = delegateData.resolvers.map(result => namehash(result.domain.name))
+            const filteredDelegateData = filterDelegateData(delegateData.resolvers)
+            const delegateNamehashes = filteredDelegateData.map(result => result.domain.id)
 
             const ENSDelegateContract = new Contract(
                 getENSDelegateContractAddress(),
@@ -91,7 +96,7 @@ const useGetDelegates = (isConnected) => {
             )
 
             const results = await ENSDelegateContract.getDelegates(delegateNamehashes)
-            setDelegates(processENSDelegateContractResults(results, delegateData?.resolvers))
+            setDelegates(processENSDelegateContractResults(results, filteredDelegateData))
         }
         try {
             if (isConnected) {
