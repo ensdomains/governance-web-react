@@ -15,7 +15,7 @@ import {gql} from "graphql-tag";
 import {apolloClientInstance} from "../apollo";
 import {useQuery} from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import {imageUrl, shortenAddress} from "../utils/utils";
+import {formatTokenAmount, imageUrl, shortenAddress} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
@@ -196,7 +196,6 @@ const DelegateBoxVotes = styled.div`
 
 const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
     const selected = name === getDelegateChoice()
-    console.log('votes: ', votes.toString())
     return (
         <DelegateBoxContainer
             key={idx}
@@ -217,7 +216,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
                         {shortenAddress(name, 16)}
                     </DelegateBoxName>
                     <DelegateBoxVotes>
-                        {/*{`${votes.toNumber()} `}*/}
+                        {formatTokenAmount(votes.toString(), 2)}
                         votes
                     </DelegateBoxVotes>
                 </MidContainer>
