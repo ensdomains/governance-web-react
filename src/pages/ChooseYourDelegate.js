@@ -69,7 +69,7 @@ const processENSDelegateContractResults = (results, delegateData) =>
             profile: result.profile,
             address: result.addr,
             votes: result.votes,
-            name: data.domain.name
+            name: data?.domain?.name
         })
     })
 
@@ -196,6 +196,7 @@ const DelegateBoxVotes = styled.div`
 
 const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
     const selected = name === getDelegateChoice()
+    console.log('votes: ', votes.toString())
     return (
         <DelegateBoxContainer
             key={idx}
@@ -216,7 +217,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
                         {shortenAddress(name, 16)}
                     </DelegateBoxName>
                     <DelegateBoxVotes>
-                        {`${votes.toNumber()} `}
+                        {/*{`${votes.toNumber()} `}*/}
                         votes
                     </DelegateBoxVotes>
                 </MidContainer>
