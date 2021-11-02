@@ -202,7 +202,10 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
         >
             {selected && <Logo src={GreenTick} />}
             <LeftContainer>
-                <AvatarImg src={imageUrl(avatar, name, 1)}/>
+                <AvatarImg
+                    src={imageUrl(avatar, name, 1)}
+                    onError={(e) => {e.target.onerror = null; e.target.src="https://placeimg.com/200/200/animals"}}
+                />
                 <MidContainer>
                     <DelegateBoxName>
                         {shortenAddress(name, 16)}
