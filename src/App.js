@@ -23,6 +23,7 @@ import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSTokenClaim from "./pages/EnsTokenClaim";
 import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import SharedFooter from "./components/SharedFooter";
+import {hasClaimed} from "./utils/tokenClaim";
 
 
 const AppContainer = styled.div`
@@ -48,6 +49,7 @@ const useInitWeb3 = () => {
 const PRIVATE_ROUTE_QUERY = gql`
   query privateRouteQuery @client {
     addressDetails
+    address
     isConnected
   }
 `
@@ -56,11 +58,27 @@ function PrivateRoute({component: Component, addressDetails, ...rest}) {
     const {data} = useQuery(PRIVATE_ROUTE_QUERY)
     const history = useHistory();
 
-    if (history && data?.addressDetails?.eligible !== undefined) {
-        if (!data.addressDetails.eligible) {
-            history.push('/dashboard')
+    useEffect(() => {
+        const run = async () => {
+            try {
+                if ((data.addressDetails.eligible !== undefined && !data.addressDetails.eligible)) {
+                    history.push('/dashboard')
+                    return
+                }
+                const isClaimed = await hasClaimed(data.address)
+                if (isClaimed) {
+                    history.push('/dashboard')
+                }
+            } catch (error) {
+                console.error('Private Route error: ', error)
+                history.push('/dashboard')
+            }
         }
-    }
+
+        if (data.isConnected && (data.addressDetails.eligible !== undefined)) {
+            run()
+        }
+    }, [data.address, data.isConnected, data.addressDetails.eligible])
 
     return (
         <Route {...rest} render={props => <Component {...props} />}/>
@@ -91,7 +109,7 @@ function App() {
                     </Switch>
                 </AppContainer>
             </AppContainerOuter>
-            <SharedFooter />
+            <SharedFooter/>
         </Router>
     );
 }

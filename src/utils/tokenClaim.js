@@ -30,6 +30,7 @@ export const hasClaimed = async (address) => {
         const result = await ENSTokenContract.isClaimed(index)
         return result
     } catch (error) {
+        return false
         console.error('error in hasClaimed: ', error)
     }
 }
