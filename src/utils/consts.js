@@ -10,12 +10,12 @@ export const isDev = () => getEnv() === "dev";
 export const getENSTokenContractAddress = () =>
   isDev()
     ? "0x901C31DdFC2fbE1C2b04cCc84a085fD9c78F75CB"
-    : "0xD20C465858df5fcAA4148e8fD849c0C35A6BD870";
+    : "0x8CaEa57F245B44df50439479efA1CB105ba0dacd";
 
 export const getENSDelegateContractAddress = () =>
   isDev()
     ? "0x6af1a196636723E3D4B550a23a4CcFd71F8F6697"
-    : "0x5aD2d6518fb50C752348563929b6796aa2a9b217";
+    : "0xFF221090d773d7A5670B89d944F8cB298333E8BE";
 
 export const generateMerkleShardUrl = (address) =>
   `/airdrops/mainnet/${address?.slice(2, 4)}.json`;
