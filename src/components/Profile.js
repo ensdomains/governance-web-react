@@ -37,7 +37,7 @@ const AvatarImg = styled.img`
 
 const EmptyAvatar = styled.div`
   border-radius: 50%;
-  width: 50px;
+  min-width: 50px;
   height: 50px;
   margin-right: 10px;
   background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
@@ -49,6 +49,10 @@ const EnsNameText = styled.div`
   font-size: ${(p) => (p.large ? "30px" : "19px")};
   line-height: ${(p) => (p.large ? "36px" : "23px")};
   letter-spacing: -0.01em;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const NoNameText = styled.div`
@@ -145,12 +149,7 @@ const Profile = ({ address, large }) => {
       <RightContainer>
         {profileDetails.ensName ? (
           <EnsNameText {...{ large }}>
-            {shortenAddress(
-              profileDetails.ensName,
-              large ? 20 : 10,
-              large ? 6 : 4,
-              large ? 6 : 5
-            )}
+            {profileDetails.ensName}
           </EnsNameText>
         ) : (
           <NoNameText>No name set</NoNameText>
