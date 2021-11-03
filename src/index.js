@@ -1,25 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {ApolloProvider} from "@apollo/client";
+import React from "react";
+import ReactDOM from "react-dom";
+import { ApolloProvider } from "@apollo/client";
 
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import {initApolloClient} from "./apollo";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { initApolloClient } from "./apollo";
 
-import {initLocalStorage} from "./pages/ENSConstitution/constitutionHelpers";
+import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
-initLocalStorage()
+initLocalStorage();
 
-const client = initApolloClient()
+const client = initApolloClient();
 
 ReactDOM.render(
   <React.StrictMode>
-      <ApolloProvider client={client}>
-          <App />
-      </ApolloProvider>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

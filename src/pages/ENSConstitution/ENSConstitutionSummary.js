@@ -1,23 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import styled from "styled-components";
 
-import {ContentBoxWithHeader} from "../../components/layout";
+import { ContentBoxWithHeader } from "../../components/layout";
 import SectionHeader from "./SectionHeader";
 import theme from "../../components/theme";
 import Footer from "../../components/Footer";
-import {useHistory} from "react-router-dom";
-import {Client} from "@snapshot-labs/snapshot.js";
-
+import { useHistory } from "react-router-dom";
+import { Client } from "@snapshot-labs/snapshot.js";
 
 const SummaryArticleContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`
+`;
 
-const SummaryArticleLeftContianer = styled.div`
-
-`
+const SummaryArticleLeftContianer = styled.div``;
 
 const SummaryArticleRightContianer = styled.div`
   font-style: normal;
@@ -28,8 +25,8 @@ const SummaryArticleRightContianer = styled.div`
   text-align: right;
   letter-spacing: -0.01em;
 
-  color: #B8B8B8;
-`
+  color: #b8b8b8;
+`;
 
 const SummaryArticleTitle = styled.div`
   font-style: normal;
@@ -43,7 +40,7 @@ const SummaryArticleTitle = styled.div`
 
   color: #989898;
   margin-bottom: 5px;
-`
+`;
 
 const SummaryArticleSummary = styled.div`
   max-width: 240px;
@@ -52,75 +49,69 @@ const SummaryArticleSummary = styled.div`
   font-size: 17px;
   line-height: 130%;
 
-  color: #1A1A1A;
-`
+  color: #1a1a1a;
+`;
 
 const Divider = styled.div`
   opacity: 0.05;
   border-bottom: 1px solid #000000;
   height: 0px;
   width: 100%;
-`
+`;
 
 const ForAgainst = styled.span`
-  color: ${p => p.for ? theme.colors.green : theme.colors.red};
-`
+  color: ${(p) => (p.for ? theme.colors.green : theme.colors.red)};
+`;
 
 const ContentContainer = styled.div`
   display: grid;
   gap: 15px;
-`
+`;
 
-const SummaryArticle = ({title, vote}, idx, arr) => {
-    return (
-        <>
-            <SummaryArticleContainer>
-                <SummaryArticleLeftContianer>
-                    <SummaryArticleTitle>
-                        Article {idx + 1}
-                    </SummaryArticleTitle>
-                    <SummaryArticleSummary>
-                        {title}
-                    </SummaryArticleSummary>
-                </SummaryArticleLeftContianer>
-                <SummaryArticleRightContianer>
-                    Voted <ForAgainst for={vote}>{vote ? 'Approve' : 'Reject'}</ForAgainst>
-                </SummaryArticleRightContianer>
-            </SummaryArticleContainer>
-            {!(idx === arr.length - 1) && <Divider/>}
-        </>
-    )
-}
+const SummaryArticle = ({ title, vote }, idx, arr) => {
+  return (
+    <>
+      <SummaryArticleContainer>
+        <SummaryArticleLeftContianer>
+          <SummaryArticleTitle>Article {idx + 1}</SummaryArticleTitle>
+          <SummaryArticleSummary>{title}</SummaryArticleSummary>
+        </SummaryArticleLeftContianer>
+        <SummaryArticleRightContianer>
+          Voted{" "}
+          <ForAgainst for={vote}>{vote ? "Approve" : "Reject"}</ForAgainst>
+        </SummaryArticleRightContianer>
+      </SummaryArticleContainer>
+      {!(idx === arr.length - 1) && <Divider />}
+    </>
+  );
+};
 
-const Summary = ({currentStep, setCurrentStep, constitution}) => {
-    const history = useHistory();
+const Summary = ({ currentStep, setCurrentStep, constitution }) => {
+  const history = useHistory();
 
-    return (
-        <>
-            <ContentBoxWithHeader
-                HeaderComponent={<SectionHeader {...{currentStep, setCurrentStep}}/>}
-            >
-                <ContentContainer>
-                    {constitution.map(SummaryArticle)}
-                </ContentContainer>
-            </ContentBoxWithHeader>
-            <Footer
-                rightButtonText="Sign"
-                rightButtonCallback={() => {
-                    history.push({
-                        pathname: '/constitution/sign',
-                        state: 'VOTE'
-                    })
-                }
-                }
-                leftButtonText="Back"
-                leftButtonCallback={() => {
-                    setCurrentStep(currentStep - 1)
-                }}
-                text={"Almost done!"}
-            />
-        </>
-    )
-}
+  return (
+    <>
+      <ContentBoxWithHeader
+        HeaderComponent={<SectionHeader {...{ currentStep, setCurrentStep }} />}
+      >
+        <ContentContainer>{constitution.map(SummaryArticle)}</ContentContainer>
+      </ContentBoxWithHeader>
+      <Footer
+        rightButtonText="Sign"
+        rightButtonCallback={() => {
+          history.push({
+            pathname: "/constitution/sign",
+            state: "VOTE",
+          });
+        }}
+        leftButtonText="Back"
+        leftButtonCallback={() => {
+          setCurrentStep(currentStep - 1);
+        }}
+        text={"Almost done!"}
+      />
+    </>
+  );
+};
 
-export default Summary
+export default Summary;
