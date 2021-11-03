@@ -15,7 +15,7 @@ import {gql} from "graphql-tag";
 import {apolloClientInstance} from "../apollo";
 import {useQuery} from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import {formatTokenAmount, imageUrl, shortenAddress} from "../utils/utils";
+import {imageUrl, shortenAddress} from "../utils/utils";
 import SpeechBubble from '../assets/imgs/SpeechBubble.svg'
 import {getDelegateChoice, setDelegateChoice} from "./ENSConstitution/delegateHelpers";
 import {CTAButton} from "../components/buttons";
@@ -91,13 +91,26 @@ const cleanDelegatesList = (delegatesList) => delegatesList.map(delegateItem => 
     ranking: Number(delegateItem.votes.toBigInt()/window.BigInt(Math.pow(10,18))) * Math.random()
 }))
 
-const rankDelegates = (delegateList) => {
+const addBalance = async (cleanList) => {
+    const enrichedData = []
+    for (const element of cleanList) {
+        console.log('element: ', element);
+    }
+}
+
+const rankDelegates = async (delegateList) => {
     const cleanList = cleanDelegatesList(delegateList)
+    const withTokenBalance = await addBalance(cleanList)
     const sortedList = cleanList.sort((x, y) => y.ranking - x.ranking)
     return sortedList
 }
 
 const useGetDelegates = (isConnected) => {
+    const {data: {addressDetails}} = useQuery(gql`
+        query getHeaderData @client {
+            addressDetails
+        }
+    `)
     const [delegates, setDelegates] = useState([])
     useEffect(() => {
         const provider = getEthersProvider()
@@ -114,8 +127,8 @@ const useGetDelegates = (isConnected) => {
 
             const results = await ENSDelegateContract.getDelegates(delegateNamehashes)
             const processedDelegateData = processENSDelegateContractResults(results, filteredDelegateData)
-            const rankedDelegates = rankDelegates(processedDelegateData)
-            console.log('rankedDelegates: ', rankedDelegates)
+            console.log('processedDelegateData: ', processedDelegateData)
+            const rankedDelegates = await rankDelegates(processedDelegateData)
             setDelegates(rankedDelegates)
         }
 
@@ -299,8 +312,6 @@ const ChooseYourDelegate = () => {
     const history = useHistory()
     const delegates = useGetDelegates(chooseData.isConnected)
     const [renderKey, setRenderKey] = useState(0)
-
-    console.log('delegates: ', delegates)
 
     return (
         <WrappedNarrowColumn>
