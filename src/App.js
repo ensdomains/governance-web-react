@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
   useHistory,
+  useLocation,
 } from "react-router-dom";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
@@ -25,6 +26,8 @@ import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import SharedFooter from "./components/SharedFooter";
 import { hasClaimed } from "./utils/tokenClaim";
 
+import { setDelegateChoice } from "./pages/ENSConstitution/delegateHelpers";
+
 const AppContainer = styled.div`
   max-width: 1200px;
   margin: auto;
@@ -39,7 +42,7 @@ const AppContainerOuter = styled.div`
   display: flex;
 `;
 
-const useInitWeb3 = () => {
+const useInit = () => {
   useEffect(() => {
     initWeb3();
   }, []);
@@ -85,10 +88,28 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
+function useQueryString() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function App() {
-  useInitWeb3();
+  const query = useQueryString();
+  const {
+    data: { address },
+  } = useQuery(gql`
+    query getAddress @client {
+      address
+    }
+  `);
+  useEffect(() => {
+    const delegate = query.get("delegate");
+    if (delegate && address) {
+      setDelegateChoice(address, delegate);
+    }
+  }, [address]);
+
   return (
-    <Router>
+    <>
       <Header />
       <AppContainerOuter>
         <AppContainer>
@@ -118,8 +139,17 @@ function App() {
         </AppContainer>
       </AppContainerOuter>
       <SharedFooter />
+    </>
+  );
+}
+
+function Index() {
+  useInit();
+  return (
+    <Router>
+      <App />
     </Router>
   );
 }
 
-export default App;
+export default Index;

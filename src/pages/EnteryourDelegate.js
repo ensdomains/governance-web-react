@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 import { useHistory } from "react-router-dom";
 import { utils } from "ethers";
+import { useQuery, gql } from "@apollo/client";
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
@@ -163,8 +164,23 @@ const EnteryourDelegate = () => {
     message: "",
     isError: false,
   });
+
+  const {
+    data: { address },
+  } = useQuery(gql`
+    query getAddress @client {
+      address
+    }
+  `);
+
   const [ensNameAddress, setEnsNameAddress] = useState("");
-  const [value, setValue] = useState(getDelegateChoice());
+  const [value, setValue] = useState(null);
+
+  useEffect(() => {
+    if (address) {
+      setValue(getDelegateChoice(address));
+    }
+  }, [address]);
 
   return (
     <NarrowColumn>
@@ -192,7 +208,7 @@ const EnteryourDelegate = () => {
         disabled={validationMessage.isError || !value}
         rightButtonText="Next"
         rightButtonCallback={() => {
-          setDelegateChoice(value);
+          setDelegateChoice(address, value);
           history.push("/summary");
         }}
         leftButtonText="Back"
