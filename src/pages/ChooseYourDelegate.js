@@ -51,7 +51,6 @@ export function namehash(inputName) {
 
         for (let i = labels.length - 1; i >= 0; i--) {
             let labelSha
-            console.log('labels: ', labels[i])
             let normalisedLabel = normalize(labels[i])
             labelSha = sha3(normalisedLabel)
             node = sha3(new Buffer(node + labelSha, 'hex'))
@@ -63,7 +62,9 @@ export function namehash(inputName) {
 
 const processENSDelegateContractResults = (results, delegateData) =>
     results?.map(result => {
-        const data = delegateData.find(data => data.addr.id === result.addr.toLowerCase())
+        const data = delegateData.find(data => {
+            return data.addr.id.toLowerCase() === result.addr.toLowerCase()
+        })
         return ({
             avatar: result.avatar,
             profile: result.profile,
@@ -78,6 +79,22 @@ const filterDelegateData = (results) => {
         .filter(data => data.addr?.id)
         .filter(data => data.texts?.includes('avatar'))
         .filter(data => data.address === data.domain.resolver.address)
+}
+
+const cleanDelegatesList = (delegatesList) => delegatesList.map(delegateItem => ({
+    addr: delegateItem.addr,
+    avatar: delegateItem.avatar,
+    profile: delegateItem.profile,
+    address: delegateItem.addr,
+    name: delegateItem.name,
+    votes: Number(delegateItem.votes.toBigInt()/window.BigInt(Math.pow(10,18))),
+    ranking: Number(delegateItem.votes.toBigInt()/window.BigInt(Math.pow(10,18))) * Math.random()
+}))
+
+const rankDelegates = (delegateList) => {
+    const cleanList = cleanDelegatesList(delegateList)
+    const sortedList = cleanList.sort((x, y) => y.ranking - x.ranking)
+    return sortedList
 }
 
 const useGetDelegates = (isConnected) => {
@@ -96,8 +113,12 @@ const useGetDelegates = (isConnected) => {
             )
 
             const results = await ENSDelegateContract.getDelegates(delegateNamehashes)
-            setDelegates(processENSDelegateContractResults(results, filteredDelegateData))
+            const processedDelegateData = processENSDelegateContractResults(results, filteredDelegateData)
+            const rankedDelegates = rankDelegates(processedDelegateData)
+            console.log('rankedDelegates: ', rankedDelegates)
+            setDelegates(rankedDelegates)
         }
+
         try {
             if (isConnected) {
                 run()
@@ -105,6 +126,7 @@ const useGetDelegates = (isConnected) => {
         } catch (error) {
             console.error('Error getting delegates: ', error)
         }
+
     }, [isConnected])
     return delegates
 }
@@ -194,8 +216,12 @@ const DelegateBoxVotes = styled.div`
   color: #989898;
 `
 
-const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
+const DelegateBox = (data, idx) => {
+    const {avatar, profile, votes, name, setRenderKey} = data
     const selected = name === getDelegateChoice()
+    if(data.name === 'leontalbert.eth') {
+        console.log('data: ', data.votes.toString())
+    }
     return (
         <DelegateBoxContainer
             key={idx}
@@ -216,8 +242,7 @@ const DelegateBox = ({avatar, profile, votes, name, setRenderKey}, idx) => {
                         {shortenAddress(name, 16)}
                     </DelegateBoxName>
                     <DelegateBoxVotes>
-                        {formatTokenAmount(votes.toString(), 2)}
-                        votes
+                        {votes.toString().split('.')[0]}  votes
                     </DelegateBoxVotes>
                 </MidContainer>
             </LeftContainer>
@@ -274,6 +299,8 @@ const ChooseYourDelegate = () => {
     const history = useHistory()
     const delegates = useGetDelegates(chooseData.isConnected)
     const [renderKey, setRenderKey] = useState(0)
+
+    console.log('delegates: ', delegates)
 
     return (
         <WrappedNarrowColumn>
