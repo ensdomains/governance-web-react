@@ -42,6 +42,7 @@ const WrappedInnerContentBox = styled(InnerContentBox)`
 
 const LeftContainer = styled.div`
   flex: 1;
+  width: calc(100% - 60px);
 `;
 
 const RightContainer = styled.div`
@@ -60,6 +61,10 @@ const DelegateName = styled.div`
   font-size: 26px;
   line-height: 141%;
   color: #000000;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const DelegateConfirmation = () => {
@@ -108,7 +113,7 @@ const DelegateConfirmation = () => {
 
       setDelegateInfo({
         avatar: null,
-        displayName: delegateChoice,
+        address: delegateChoice,
       });
     };
     if (isConnected) {
@@ -128,7 +133,7 @@ const DelegateConfirmation = () => {
             />
           )}
           <DelegateName>
-            {shortenAddress(delegateInfo.displayName)}
+            {delegateInfo.displayName ? delegateInfo.displayName : shortenAddress(delegateInfo.address)}
           </DelegateName>
         </DelegateInfoContainer>
       </LeftContainer>

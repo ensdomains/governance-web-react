@@ -28,7 +28,7 @@ import { getENSDelegateContractAddress } from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 1000) {
+    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 15) {
       address
       texts
       addr {
@@ -198,15 +198,17 @@ const AvatarImg = styled.img`
   margin-right: 10px;
 `;
 
-const MidContainer = styled.div``;
+const MidContainer = styled.div`
+  overflow:hidden;
+`;
 
 const LeftContainer = styled.div`
   display: flex;
   align-items: center;
+  width: calc(100% - 32px);
 `;
 
 const SpeechBubbleImg = styled.img`
-  margin-right: 15px;
   filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%)
     contrast(86%);
 
@@ -235,11 +237,17 @@ const DelegateBoxName = styled.div`
   font-weight: bold;
   font-size: 20px;
   line-height: 25px;
-  display: flex;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   color: #323232;
 `;
+
+const ProfileLink = styled.a`
+  flex-basis: auto;
+`
 
 const DelegateBoxVotes = styled.div`
   font-style: normal;
@@ -284,9 +292,9 @@ const DelegateBox = (data, idx) => {
           </DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
-      <a href={profile} target={"_blank"}>
+      <ProfileLink href={profile} target={"_blank"}>
         <SpeechBubbleImg src={SpeechBubble} />
-      </a>
+      </ProfileLink>
     </DelegateBoxContainer>
   );
 };
