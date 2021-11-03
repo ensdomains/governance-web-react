@@ -24,11 +24,11 @@ import {
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
-import { getENSDelegateContractAddress } from "../utils/consts";
+import {ALLOCATION_ENDPOINT, getENSDelegateContractAddress} from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 1000) {
+    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 10) {
       address
       texts
       addr {
@@ -115,6 +115,17 @@ const rankDelegates = async (delegateList) => {
   return sortedList;
 };
 
+const fetchTokenAllocations = async (addressArray) => {
+  try {
+    var url = new URL(ALLOCATION_ENDPOINT)
+    url.search = new URLSearchParams(addressArray).toString();
+    const result = await fetch(url)
+    console.log('result: ', result)
+  } catch(error) {
+    console.error('error: ', error)
+  }
+}
+
 const useGetDelegates = (isConnected) => {
   const {
     data: { addressDetails },
@@ -149,6 +160,8 @@ const useGetDelegates = (isConnected) => {
         filteredDelegateData
       );
       console.log("processedDelegateData: ", processedDelegateData);
+      const tokenAllocations = await fetch(ALLOCATION_ENDPOINT)
+
       const rankedDelegates = await rankDelegates(processedDelegateData);
       setDelegates(rankedDelegates);
     };

@@ -1,5 +1,6 @@
 export const PROPOSAL_ID = "QmQ4m6hVGawbo2cjVVUQx2Noz4mXJekMYxDrmg4ZN5GCXq";
 export const SPACE_ID = "bananana.eth";
+export const ALLOCATION_ENDPOINT = "https://us-central1-ens-manager.cloudfunctions.net/getVotes";
 
 export const getEnv = () =>
   window.location.href.includes("localhost") ? "dev" : "prod";
