@@ -165,9 +165,10 @@ const useGetDelegates = (isConnected) => {
 };
 
 const CHOOSE_YOUR_DELEGATE_QUERY = gql`
-  query privateRouteQuery @client {
+  query chooseDelegateQuery @client {
     addressDetails
     isConnected
+    address
   }
 `;
 
@@ -199,7 +200,7 @@ const AvatarImg = styled.img`
 `;
 
 const MidContainer = styled.div`
-  overflow:hidden;
+  overflow: hidden;
 `;
 
 const LeftContainer = styled.div`
@@ -247,7 +248,7 @@ const DelegateBoxName = styled.div`
 
 const ProfileLink = styled.a`
   flex-basis: auto;
-`
+`;
 
 const DelegateBoxVotes = styled.div`
   font-style: normal;
@@ -262,8 +263,8 @@ const DelegateBoxVotes = styled.div`
 `;
 
 const DelegateBox = (data, idx) => {
-  const { avatar, profile, votes, name, setRenderKey } = data;
-  const selected = name === getDelegateChoice();
+  const { avatar, profile, votes, name, setRenderKey, userAccount } = data;
+  const selected = name === getDelegateChoice(userAccount);
   if (data.name === "leontalbert.eth") {
     console.log("data: ", data.votes.toString());
   }
@@ -271,7 +272,7 @@ const DelegateBox = (data, idx) => {
     <DelegateBoxContainer
       key={idx}
       onClick={() => {
-        setDelegateChoice(name);
+        setDelegateChoice(userAccount, name);
         setRenderKey((x) => x + 1);
       }}
       selected={selected}
@@ -376,7 +377,13 @@ const ChooseYourDelegate = () => {
           </div>
         </HeaderContianer>
         <DelegatesContainer>
-          {delegates.map((x) => ({ ...x, setRenderKey })).map(DelegateBox)}
+          {delegates
+            .map((x) => ({
+              ...x,
+              setRenderKey,
+              userAccount: chooseData.address,
+            }))
+            .map(DelegateBox)}
         </DelegatesContainer>
       </ContentBox>
       <Footer
