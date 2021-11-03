@@ -1,25 +1,25 @@
-import styled from 'styled-components'
-import SplashENSLogo from '../assets/imgs/SplashENSLogo.svg'
+import styled from "styled-components";
+import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
 
 const Asset = styled.span`
-    position: relative
-`
+  position: relative;
+`;
 
 const Logo = styled.img`
-    position: absolute;
-`
+  position: absolute;
+`;
 
 const Symbol = styled.span`
   font-weight: 700;
-  color: #7E99F2;
+  color: #7e99f2;
   margin-left: 22px;
-`
+`;
 
 const Token = ({ asset, start }) => (
-    <Asset start={start}>
-        <Logo src={SplashENSLogo} width={21} />
-        <Symbol>ENS</Symbol>
-    </Asset>
-)
+  <Asset start={start}>
+    <Logo src={SplashENSLogo} width={21} />
+    <Symbol>ENS</Symbol>
+  </Asset>
+);
 
-export default Token
+export default Token;

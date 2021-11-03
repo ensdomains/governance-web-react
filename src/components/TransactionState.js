@@ -6,14 +6,14 @@ import WarningIndicator from "../assets/imgs/WarningIndicator.svg";
 import GreenTickIndicator from "../assets/imgs/GreenTickIndicator.svg";
 
 const Logo = styled.img`
-  animation: ${p => {
+  animation: ${(p) => {
     switch (p.type) {
-        case 'LOADING':
-            return 'rotation 2s infinite linear'
-        default:
-            return 'initial'
+      case "LOADING":
+        return "rotation 2s infinite linear";
+      default:
+        return "initial";
     }
-}};
+  }};
 
   @keyframes rotation {
     from {
@@ -23,28 +23,28 @@ const Logo = styled.img`
       transform: rotate(359deg);
     }
   }
-`
+`;
 
-const getLogoSrc = type => {
-    switch (type) {
-        case 'LOADING':
-            return LoadingIndicator
-        case 'ERROR':
-            return WarningIndicator
-        case 'SUCCESS':
-            return GreenTickIndicator
-        default:
-            return ''
-    }
-}
+const getLogoSrc = (type) => {
+  switch (type) {
+    case "LOADING":
+      return LoadingIndicator;
+    case "ERROR":
+      return WarningIndicator;
+    case "SUCCESS":
+      return GreenTickIndicator;
+    default:
+      return "";
+  }
+};
 
 const TransactionStateTitle = styled.div`
   font-style: normal;
   font-weight: bold;
   font-size: 21px;
   line-height: 141%;
-  color: #1A1A1A;
-`
+  color: #1a1a1a;
+`;
 
 const TransactionStateContent = styled.div`
   font-style: normal;
@@ -52,35 +52,33 @@ const TransactionStateContent = styled.div`
   font-size: 17px;
   line-height: 141%;
 
-  color: #1A1A1A;
-`
+  color: #1a1a1a;
+`;
 
 const TransactionStateContainer = styled.div`
   display: flex;
-`
+`;
 
 const TransactionContentContainer = styled.div`
   margin-left: 20px;
-`
+`;
 
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
-const TransactionState = ({transactionState, title, content}) =>
-    <TransactionStateContainer>
-        <LogoContainer>
-            <Logo
-                type={transactionState}
-                src={getLogoSrc(transactionState)}
-            />
-        </LogoContainer>
-        <TransactionContentContainer>
-            <TransactionStateTitle>{title}</TransactionStateTitle>
-            <TransactionStateContent>{content}</TransactionStateContent>
-        </TransactionContentContainer>
-    </TransactionStateContainer>
+const TransactionState = ({ transactionState, title, content }) => (
+  <TransactionStateContainer>
+    <LogoContainer>
+      <Logo type={transactionState} src={getLogoSrc(transactionState)} />
+    </LogoContainer>
+    <TransactionContentContainer>
+      <TransactionStateTitle>{title}</TransactionStateTitle>
+      <TransactionStateContent>{content}</TransactionStateContent>
+    </TransactionContentContainer>
+  </TransactionStateContainer>
+);
 
-export default TransactionState
+export default TransactionState;

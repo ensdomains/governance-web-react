@@ -1,59 +1,61 @@
-import {ApolloClient, HttpLink, InMemoryCache, makeVar} from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache, makeVar } from "@apollo/client";
 
-export const addressReactive = makeVar(null)
-export const isConnected = makeVar(false)
-export const addressDetails = makeVar({})
-export const signedVote = makeVar(null)
-export const hasClaimed = makeVar(false)
+export const addressReactive = makeVar(null);
+export const isConnected = makeVar(false);
+export const addressDetails = makeVar({});
+export const signedVote = makeVar(null);
+export const hasClaimed = makeVar(false);
 
-export let apolloClientInstance
+export let apolloClientInstance;
 
 const typePolicies = {
-    Query: {
-        fields: {
-            isConnected: {
-                read() {
-                    return isConnected()
-                }
-            },
-            address: {
-                read() {
-                    return addressReactive() ? addressReactive().toLowerCase() : addressReactive()
-                }
-            },
-            addressDetails: {
-                read() {
-                    return addressDetails()
-                }
-            },
-            signedVote: {
-                read() {
-                    return signedVote()
-                }
-            },
-            hasClaimed: {
-                read() {
-                    return hasClaimed()
-                }
-            }
-        }
-    }
-}
+  Query: {
+    fields: {
+      isConnected: {
+        read() {
+          return isConnected();
+        },
+      },
+      address: {
+        read() {
+          return addressReactive()
+            ? addressReactive().toLowerCase()
+            : addressReactive();
+        },
+      },
+      addressDetails: {
+        read() {
+          return addressDetails();
+        },
+      },
+      signedVote: {
+        read() {
+          return signedVote();
+        },
+      },
+      hasClaimed: {
+        read() {
+          return hasClaimed();
+        },
+      },
+    },
+  },
+};
 
 const getGraphqlUri = (operation) => {
-    const { operationName } = operation
-    if(operationName === 'Votes') {
-        return 'https://hub.snapshot.org/graphql'
-    }
-    return 'https://api.thegraph.com/subgraphs/name/ensdomains/ens';
-}
+  const { operationName } = operation;
+  if (operationName === "Votes") {
+    return "https://hub.snapshot.org/graphql";
+  }
+  return "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
+};
 
 export const initApolloClient = () => {
-    apolloClientInstance = new ApolloClient({
-        link: new HttpLink({
-            uri: getGraphqlUri
-        }),
-        cache: new InMemoryCache({typePolicies})
-    })
-    return apolloClientInstance
+  apolloClientInstance = new ApolloClient({
+    link: new HttpLink({
+      uri: getGraphqlUri,
+    }),
+    cache: new InMemoryCache({ typePolicies }),
+  });
+  return apolloClientInstance;
 };

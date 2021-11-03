@@ -1,21 +1,21 @@
-import React from 'react';
-import styled from 'styled-components/macro'
+import React from "react";
+import styled from "styled-components/macro";
 
-import theme from './theme'
+import theme from "./theme";
 
 const ButtonContainer = styled.div`
-  background: ${p => {
+  background: ${(p) => {
     switch (p.type) {
-      case 'approve':
-        return theme.colors.green
-      case 'reject':
-        return theme.colors.red
-      case 'deny':
-        return theme.colors.grey
-      case 'disabled':
-        return '#E4E7EB'
+      case "approve":
+        return theme.colors.green;
+      case "reject":
+        return theme.colors.red;
+      case "deny":
+        return theme.colors.grey;
+      case "disabled":
+        return "#E4E7EB";
       default:
-        return 'linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%)'
+        return "linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%)";
     }
   }};
   display: flex;
@@ -23,14 +23,14 @@ const ButtonContainer = styled.div`
   justify-content: center;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
-  color: ${p => {
+  color: ${(p) => {
     switch (p.type) {
-      case 'deny':
-        return '#63666A'
-      case 'disabled':
-        return '#ACAEB0'
+      case "deny":
+        return "#63666A";
+      case "disabled":
+        return "#ACAEB0";
       default:
-        return 'white'
+        return "white";
     }
   }};
   padding: 14px 16px;
@@ -40,23 +40,18 @@ const ButtonContainer = styled.div`
   line-height: 22px;
   text-align: center;
   letter-spacing: -0.01em;
-  cursor:  ${p => {
+  cursor: ${(p) => {
     switch (p.type) {
-      case 'deny':
-        return 'pointer'
-      case 'disabled':
-        return 'initial'
+      case "deny":
+        return "pointer";
+      case "disabled":
+        return "initial";
       default:
-        return 'pointer'
+        return "pointer";
     }
   }};
-`
+`;
 
 export const CTAButton = (props) => {
-    return (
-        <ButtonContainer {...props}>
-            {props.text}
-        </ButtonContainer>
-    );
+  return <ButtonContainer {...props}>{props.text}</ButtonContainer>;
 };
-
