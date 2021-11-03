@@ -5,3 +5,7 @@ describe("useGetDelegates", () => {
   );
   it.todo("should filter out names that do not have the correct fields set");
 });
+
+describe("addBalance", () => {
+  it.todo("should add allocation and current votes to ranking")
+})

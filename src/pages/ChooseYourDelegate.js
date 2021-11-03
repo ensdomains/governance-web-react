@@ -28,7 +28,7 @@ import {ALLOCATION_ENDPOINT, getENSDelegateContractAddress} from "../utils/const
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 10) {
+    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 1000) {
       address
       texts
       addr {
@@ -44,6 +44,8 @@ const DELEGATE_TEXT_QUERY = gql`
     }
   }
 `;
+
+
 
 export function namehash(inputName) {
   let node = "";
@@ -86,43 +88,45 @@ const filterDelegateData = (results) => {
     .filter((data) => data.address === data.domain.resolver.address);
 };
 
+const bigNumberToDecimal = (bigNumber) =>
+    Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)))
+
+const stringToInt = numberString =>
+    Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)))
+
 const cleanDelegatesList = (delegatesList) =>
   delegatesList.map((delegateItem) => ({
-    addr: delegateItem.addr,
     avatar: delegateItem.avatar,
     profile: delegateItem.profile,
-    address: delegateItem.addr,
+    address: delegateItem.address?.toLowerCase(),
     name: delegateItem.name,
-    votes: Number(
-      delegateItem.votes.toBigInt() / window.BigInt(Math.pow(10, 18))
-    ),
-    ranking:
-      Number(delegateItem.votes.toBigInt() / window.BigInt(Math.pow(10, 18))) *
-      Math.random(),
+    votes: bigNumberToDecimal(delegateItem.votes),
+    ranking: bigNumberToDecimal(delegateItem.votes)
   }));
 
-const addBalance = async (cleanList) => {
-  const enrichedData = [];
-  for (const element of cleanList) {
-    console.log("element: ", element);
-  }
+const addBalance = async (cleanList, tokenAllocation) => {
+  return cleanList.map(item => {
+    const allocation = tokenAllocation.find(x => x.address === item.address)
+    return ({...item, ranking: (item.votes + allocation.score) * Math.random()})
+  })
 };
 
-const rankDelegates = async (delegateList) => {
+const rankDelegates = async (delegateList, tokenAllocation) => {
   const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(cleanList);
-  const sortedList = cleanList.sort((x, y) => y.ranking - x.ranking);
+  const withTokenBalance = await addBalance(cleanList, tokenAllocation);
+  const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
   return sortedList;
 };
 
 const fetchTokenAllocations = async (addressArray) => {
   try {
-    var url = new URL(ALLOCATION_ENDPOINT)
-    url.search = new URLSearchParams(addressArray).toString();
-    const result = await fetch(url)
-    console.log('result: ', result)
+    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(',')}`
+    const allocations = await fetch(url)
+    const json = await allocations.json()
+    const integerScores = json.score.map(x => ({ address: x.address?.toLowerCase(), score: stringToInt(x.score)}))
+    return integerScores
   } catch(error) {
-    console.error('error: ', error)
+    console.error('fetchTokenAllocations error: ', error)
   }
 }
 
@@ -155,14 +159,16 @@ const useGetDelegates = (isConnected) => {
       const results = await ENSDelegateContract.getDelegates(
         delegateNamehashes
       );
+
       const processedDelegateData = processENSDelegateContractResults(
         results,
         filteredDelegateData
       );
-      console.log("processedDelegateData: ", processedDelegateData);
-      const tokenAllocations = await fetch(ALLOCATION_ENDPOINT)
 
-      const rankedDelegates = await rankDelegates(processedDelegateData);
+      const addressArray = processedDelegateData.map(data => data.address)
+      const tokenAllocations = await fetchTokenAllocations(addressArray)
+
+      const rankedDelegates = await rankDelegates(processedDelegateData, tokenAllocations);
       setDelegates(rankedDelegates);
     };
 
