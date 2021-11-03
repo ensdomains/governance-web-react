@@ -28,7 +28,7 @@ import {ALLOCATION_ENDPOINT, getENSDelegateContractAddress} from "../utils/const
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 15) {
+    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 1000) {
       address
       texts
       addr {
@@ -312,7 +312,7 @@ const DelegateBox = (data, idx) => {
           </DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
-      <ProfileLink href={profile} target={"_blank"}>
+      <ProfileLink href={profile} target={"_blank"} onClick={e => e.stopPropagation()}>
         <SpeechBubbleImg src={SpeechBubble} />
       </ProfileLink>
     </DelegateBoxContainer>
