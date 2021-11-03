@@ -1,5 +1,6 @@
 export const PROPOSAL_ID = "QmQ4m6hVGawbo2cjVVUQx2Noz4mXJekMYxDrmg4ZN5GCXq";
 export const SPACE_ID = "bananana.eth";
+export const ALLOCATION_ENDPOINT = "https://us-central1-ens-manager.cloudfunctions.net/getvotes";
 
 export const getEnv = () =>
   window.location.href.includes("localhost") ? "dev" : "prod";
@@ -8,12 +9,12 @@ export const isDev = () => getEnv() === "dev";
 
 export const getENSTokenContractAddress = () =>
   isDev()
-    ? "0x2530558EE2F806360a504e40334d269249944842"
+    ? "0x901C31DdFC2fbE1C2b04cCc84a085fD9c78F75CB"
     : "0xD20C465858df5fcAA4148e8fD849c0C35A6BD870";
 
 export const getENSDelegateContractAddress = () =>
   isDev()
-    ? "0x5b9116cFfb79A4449FC9ed198803127023e706BF"
+    ? "0x6af1a196636723E3D4B550a23a4CcFd71F8F6697"
     : "0x5aD2d6518fb50C752348563929b6796aa2a9b217";
 
 export const generateMerkleShardUrl = (address) =>
