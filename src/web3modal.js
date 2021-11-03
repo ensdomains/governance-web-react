@@ -1,10 +1,7 @@
 import {ethers} from "ethers";
 
 import {addressReactive, apolloClientInstance, isConnected, addressDetails} from "./apollo";
-import {formatTokenAmount} from "./utils/utils";
-import {gql} from "graphql-tag";
-import {hasClaimed} from "./utils/tokenClaim";
-import {generateMerkleShardUrl} from "./utils/consts";
+import {getClaimData} from "./utils/utils";
 
 const INFURA_ID =
     window.location.host === 'app.ens.domains'
@@ -81,62 +78,6 @@ export const disconnect = async function () {
     if (provider && provider.disconnect) {
         provider.disconnect()
     }
-}
-
-const LABELHASH_QUERY = gql`
-    query domainByLabelhash($labelhash: [String]) {
-        domains(where:{ labelhash_in: $labelhash }) {
-            name
-            labelhash
-          }
-}
-`
-
-const getClaimData = async (address) => {
-    const response = await fetch(generateMerkleShardUrl(address))
-    if (!response.ok) {
-        throw new Error('error getting shard data')
-    }
-    const shardData = await response.json({encoding: 'utf-8'})
-    const addressDetails = shardData?.entries[address]
-
-    if(addressDetails) {
-        const {data} = await apolloClientInstance
-            .query({
-                query: LABELHASH_QUERY,
-                variables: {
-                    labelhash: [addressDetails?.last_expiring_name, addressDetails?.longest_owned_name]
-                }
-            })
-
-        const longestOwnedName = data
-            ?.domains
-            .find(x => x.labelhash === addressDetails?.longest_owned_name)
-            ?.name
-        const lastExpiringName = data
-            ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
-            ?.name
-        const pastTokens = formatTokenAmount(addressDetails?.past_tokens, 2)
-        const futureTokens = formatTokenAmount(addressDetails?.future_tokens, 2)
-        const balance = formatTokenAmount(addressDetails?.balance)
-        const shortBalance = formatTokenAmount(addressDetails?.balance, 2)
-
-        return ({
-            lastExpiringName,
-            longestOwnedName,
-            pastTokens,
-            futureTokens,
-            balance,
-            shortBalance,
-            hasReverseRecord: addressDetails?.has_reverse_record,
-            rawBalance: addressDetails?.balance,
-            eligible: true
-        })
-    }
-
-    return ({
-        eligible: false
-    })
 }
 
 export const initWeb3 = async () => {

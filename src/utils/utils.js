@@ -1,4 +1,6 @@
-import {networkIdToName, supportedAvatarProtocols} from "./consts";
+import {generateMerkleShardUrl, networkIdToName, supportedAvatarProtocols} from "./consts";
+import {apolloClientInstance} from "../apollo";
+import {gql} from "graphql-tag";
 
 export const formatTokenAmount = (tokenAmount, length = 6) =>
     new Intl.NumberFormat(
@@ -34,4 +36,60 @@ export const shortenAddress = (
     }
 
     return `${address.slice(0, leftSlice)}...${address.slice(-rightSlice)}`;
+}
+
+const LABELHASH_QUERY = gql`
+    query domainByLabelhash($labelhash: [String]) {
+        domains(where:{ labelhash_in: $labelhash }) {
+            name
+            labelhash
+          }
+}
+`
+
+export const getClaimData = async (address) => {
+    const response = await fetch(generateMerkleShardUrl(address))
+    if (!response.ok) {
+        throw new Error('error getting shard data')
+    }
+    const shardData = await response.json({encoding: 'utf-8'})
+    const addressDetails = shardData?.entries[address]
+
+    if(addressDetails) {
+        const {data} = await apolloClientInstance
+            .query({
+                query: LABELHASH_QUERY,
+                variables: {
+                    labelhash: [addressDetails?.last_expiring_name, addressDetails?.longest_owned_name]
+                }
+            })
+
+        const longestOwnedName = data
+            ?.domains
+            .find(x => x.labelhash === addressDetails?.longest_owned_name)
+            ?.name
+        const lastExpiringName = data
+            ?.domains.find(x => x.labelhash === addressDetails?.last_expiring_name)
+            ?.name
+        const pastTokens = formatTokenAmount(addressDetails?.past_tokens, 2)
+        const futureTokens = formatTokenAmount(addressDetails?.future_tokens, 2)
+        const balance = formatTokenAmount(addressDetails?.balance)
+        const shortBalance = formatTokenAmount(addressDetails?.balance, 2)
+
+        return ({
+            lastExpiringName,
+            longestOwnedName,
+            pastTokens,
+            futureTokens,
+            balance,
+            shortBalance,
+            hasReverseRecord: addressDetails?.has_reverse_record,
+            rawBalance: addressDetails?.balance,
+            eligible: true
+        })
+    }
+
+    return ({
+        eligible: false
+    })
 }
