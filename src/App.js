@@ -96,12 +96,19 @@ function useQueryString() {
 
 function App() {
   const query = useQueryString();
+  const {
+    data: { address },
+  } = useQuery(gql`
+    query getAddress @client {
+      address
+    }
+  `);
   useEffect(() => {
     const delegate = query.get("delegate");
-    if (delegate) {
-      setDelegateChoice(delegate);
+    if (delegate && address) {
+      setDelegateChoice(address, delegate);
     }
-  }, []);
+  }, [address]);
 
   return (
     <>

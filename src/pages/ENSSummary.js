@@ -69,10 +69,11 @@ const DelegateName = styled.div`
 
 const DelegateConfirmation = () => {
   const {
-    data: { isConnected },
+    data: { isConnected, address },
   } = useQuery(gql`
     query privateRouteQuery @client {
       isConnected
+      address
     }
   `);
   const [delegateInfo, setDelegateInfo] = useState({
@@ -83,7 +84,7 @@ const DelegateConfirmation = () => {
 
   useEffect(() => {
     const run = async () => {
-      const delegateChoice = getDelegateChoice();
+      const delegateChoice = getDelegateChoice(address);
 
       if (!delegateChoice) {
         console.error("No delegate selected");
@@ -133,7 +134,9 @@ const DelegateConfirmation = () => {
             />
           )}
           <DelegateName>
-            {delegateInfo.displayName ? delegateInfo.displayName : shortenAddress(delegateInfo.address)}
+            {delegateInfo.displayName
+              ? delegateInfo.displayName
+              : shortenAddress(delegateInfo.address)}
           </DelegateName>
         </DelegateInfoContainer>
       </LeftContainer>
