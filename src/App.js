@@ -45,8 +45,6 @@ const AppContainerOuter = styled.div`
 const useInit = () => {
   useEffect(() => {
     initWeb3();
-    // get query string
-    // setDelegateChoice
   }, []);
 };
 
