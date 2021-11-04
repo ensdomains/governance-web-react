@@ -8,7 +8,9 @@ import { Header, Content } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
 
-import DistPng from "../assets/imgs/Distribution.png";
+import DistPngSrc from "../assets/imgs/Distribution.png";
+import DistPngMobileSrc from "../assets/imgs/DistributionMobile.png";
+import { largerThan } from "../utils/styledComponents";
 
 const Img = styled.img`
   width: 100%;
@@ -19,13 +21,28 @@ const WrappedNarrowColumn = styled(NarrowColumn)`
   max-width: 670px;
 `;
 
+const DistPng = styled(Img)`
+  display: none;
+  ${largerThan.mobile`
+    display: inline; 
+  `}
+`;
+
+const DistPngMobile = styled(Img)`
+  display: inline;
+  ${largerThan.mobile`
+    display:none;  
+  `}
+`;
+
 const ENSGovernance = () => {
   const history = useHistory();
 
   return (
     <WrappedNarrowColumn>
       <ContentBox>
-        <Img src={DistPng} />
+        <DistPng src={DistPngSrc} />
+        <DistPngMobile src={DistPngMobileSrc} />
         <Gap height={5} />
         <Header>How is it distributed?</Header>
         <Gap height={3} />
