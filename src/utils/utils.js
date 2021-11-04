@@ -40,8 +40,8 @@ export const shortenAddress = (
 };
 
 const LABELHASH_QUERY = gql`
-  query domainByLabelhash($labelhash: [String]) {
-    domains(where: { labelhash_in: $labelhash }) {
+  query domainByLabelhash($labelhash: [String], $parenthash: [String]) {
+    domains(where: { labelhash_in: $labelhash, parent_in: $parenthash }) {
       name
       labelhash
     }
@@ -61,8 +61,11 @@ export const getClaimData = async (address) => {
       query: LABELHASH_QUERY,
       variables: {
         labelhash: [
-          addressDetails?.last_expiring_name,
+          addressDetails?.last_expiring_name ?? "",
           addressDetails?.longest_owned_name,
+        ],
+        parenthash: [
+          "0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae",
         ],
       },
     });
