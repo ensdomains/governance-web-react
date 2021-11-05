@@ -56,14 +56,14 @@ export const submitClaim = async (
       signer
     );
     ENSTokenContract.connect(signer);
-    const estimation = await ENSTokenContract.estimateGas.claimTokens(
-        balance,
-        address,
-        proof
-    );
-    console.log('estimation: ', Number(estimation))
-    // const result = await ENSTokenContract.claimTokens(balance, address, proof);
-    // await result.wait(1);
+    // const estimation = await ENSTokenContract.estimateGas.claimTokens(
+    //     balance,
+    //     address,
+    //     proof
+    // );
+    // console.log('estimation: ', Number(estimation))
+    const result = await ENSTokenContract.claimTokens(balance, address, proof);
+    await result.wait(1);
     setClaimState({
       state: "SUCCESS",
       message: "",
