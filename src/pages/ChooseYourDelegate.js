@@ -425,7 +425,7 @@ const ChooseYourDelegate = () => {
         leftButtonCallback={() => {
           history.push("/constitution");
         }}
-        disabled={!getDelegateChoice()}
+        disabled={!getDelegateChoice(chooseData?.address)}
       />
     </WrappedNarrowColumn>
   );
