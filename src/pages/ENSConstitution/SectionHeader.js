@@ -49,9 +49,8 @@ const titleCopy = (currentStep, length) => {
   }
 };
 
-const SectionHeader = ({ currentStep, setCurrentStep }) => {
-  const constitution = getConstitution();
-
+const SectionHeader = ({ account, currentStep, setCurrentStep }) => {
+  const constitution = getConstitution(account);
   return (
     <SectionHeaderContainer>
       <Header>{titleCopy(currentStep, constitution?.length)}</Header>
