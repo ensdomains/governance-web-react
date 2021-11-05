@@ -229,11 +229,7 @@ const EnsConstitutionVotingContainer = () => {
   `);
 
   if (!address) return null;
-  return (
-    <EnsConstitutionVoting
-      account={"0x866B3c4994e1416B7C738B9818b31dC246b95eEE"}
-    />
-  );
+  return <EnsConstitutionVoting account={address} />;
 };
 
 export default EnsConstitutionVotingContainer;
