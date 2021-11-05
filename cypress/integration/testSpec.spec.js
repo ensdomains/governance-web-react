@@ -58,6 +58,7 @@ describe("Token claim site", () => {
         ).children({timeout: 25000}).first().click()
         cy.contains("Next").click();
         cy.contains("Claim").click();
+        // cy.contains("Confirm").click();
         cy.confirmMetamaskTransaction();
     });
     //it.todo('should maintain constitution voting state after refresh')
