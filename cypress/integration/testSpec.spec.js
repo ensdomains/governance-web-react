@@ -1,26 +1,65 @@
 describe("Token claim site", () => {
-  before(() => {
-    cy.setupMetamask();
-    cy.changeMetamaskNetwork("tenderly");
-  });
-  it("Should allow the user to vote, delegate and claim", () => {
-    cy.visit("http://localhost:5000");
-    cy.contains("MetaMask").click();
-    cy.acceptMetamaskAccess();
-    cy.contains("Get Started").click();
-    cy.contains("Start claim process").click();
-    cy.contains("Next").click();
-    cy.contains("Next").click();
-    cy.contains("leontalbert.eth").click();
-    cy.contains("Next").click();
-    cy.contains("Next").click();
-    cy.contains("Approve").click();
-    cy.contains("Approve").click();
-    cy.contains("Approve").click();
-    cy.contains("Approve").click();
-    cy.contains("Sign").click();
-    cy.signMetamaskMessage();
-  });
-  //it.todo('should maintain constitution voting state after refresh')
-  // it.todo('should maintain delegate selection after refresh')
+    // let forkId
+    before(() => {
+        cy.request({
+            method: 'POST',
+            url: 'https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork',
+            headers: {
+                "x-access-key": "uI0ZaReIhdtOUMd3GTtBmDjcSLk4ZRCy"
+            },
+            body: {"network_id":"1","alias":"","description":""}
+        }).then(result => {
+            console.log('result: ', result)
+            process.env.RPC_URL = `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
+            cy.setupMetamask();
+            cy.addMetamaskNetwork(
+                `tenderly2`,
+                `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
+            )
+
+            cy.request({
+                method: 'POST',
+                url: `https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork/${result.body.simulation_fork.id}/simulate`,
+                headers: {
+                    "x-access-key": "uI0ZaReIhdtOUMd3GTtBmDjcSLk4ZRCy"
+                },
+                body: {
+                    from: "0x0904Dac3347eA47d208F3Fd67402D039a3b99859",
+                    to: "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+                    input: "0x7cb647592c05204eb0b864c264d9bfd6957940471791ad2e156f2ede49db351d3ace3dea",
+                    gas: 8522744,
+                    gas_price: "0",
+                    value: 0,
+                    save: true,
+                }
+            }).then(result => {
+                console.log('result2: ', result)
+            })
+        })
+    });
+    it("Should allow the user to vote, delegate and claim", () => {
+        cy.visit("http://localhost:3000");
+        cy.contains("MetaMask").click();
+        // cy.acceptMetamaskAccess();
+        cy.contains("Get Started").click();
+        cy.contains("Start your claim process").click();
+        cy.contains("Next").click();
+        cy.contains("Next").click();
+        cy.contains("Start").click();
+        cy.contains("Approve").click();
+        cy.contains("Reject").click();
+        cy.contains("Approve").click();
+        cy.contains("Reject").click();
+        cy.contains("Sign").click();
+        cy.signMetamaskMessage();
+        cy.get(
+            '[data-testid="delegates-list-container"]',
+            {timeout: 25000}
+        ).children({timeout: 25000}).first().click()
+        cy.contains("Next").click();
+        cy.contains("Claim").click();
+        cy.confirmMetamaskTransaction();
+    });
+    //it.todo('should maintain constitution voting state after refresh')
+    // it.todo('should maintain delegate selection after refresh')
 });
