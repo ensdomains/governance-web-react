@@ -6,10 +6,6 @@ import { ReactComponent as ForumGrey } from "../assets/imgs/ThingGrey.svg";
 import { ReactComponent as DiscordGrey } from "../assets/imgs/DiscordGrey.svg";
 
 const SharedFooterContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 100px;
   display: flex;
   justify-content: center;

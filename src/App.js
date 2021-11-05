@@ -35,15 +35,15 @@ import { useQueryString } from "./utils/hooks";
 const AppContainer = styled.div`
   max-width: 1200px;
   margin: auto;
-  padding-bottom: 100px;
+  padding-bottom: 80px;
   box-sizing: border-box;
   flex-grow: 1;
   overflow-x: hidden;
 `;
 
 const AppContainerOuter = styled.div`
-  height: calc(100vh - 150px);
   display: flex;
+  flex-direction: column;
 `;
 
 const useInit = () => {
@@ -138,8 +138,8 @@ function App() {
             </Route>
           </Switch>
         </AppContainer>
+        <SharedFooter />
       </AppContainerOuter>
-      <SharedFooter />
     </>
   );
 }
