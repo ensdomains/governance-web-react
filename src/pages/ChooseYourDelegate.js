@@ -28,7 +28,7 @@ import {ALLOCATION_ENDPOINT, getENSDelegateContractAddress} from "../utils/const
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate"] }, first: 1000) {
+    resolvers(where: { texts_contains: ["eth.ens.delegate", "avatar"] }, first: 100) {
       address
       texts
       addr {
@@ -44,8 +44,6 @@ const DELEGATE_TEXT_QUERY = gql`
     }
   }
 `;
-
-
 
 export function namehash(inputName) {
   let node = "";
@@ -104,10 +102,18 @@ const cleanDelegatesList = (delegatesList) =>
     ranking: bigNumberToDecimal(delegateItem.votes)
   }));
 
+const generateRankingScore = (score) => {
+  return score
+}
+
 const addBalance = async (cleanList, tokenAllocation) => {
   return cleanList.map(item => {
-    const allocation = tokenAllocation.find(x => x.address === item.address)
-    return ({...item, ranking: (item.votes + allocation.score) * Math.random()})
+    let allocation = tokenAllocation.find(x => x.address === item.address)
+    allocation.score += Math.random() * 100000
+    return ({...item,
+      ranking: generateRankingScore(item.votes + allocation.score) * Math.random(),
+      allocation: allocation.score
+    })
   })
 };
 
@@ -155,7 +161,6 @@ const useGetDelegates = (isConnected) => {
         ENSDelegateAbi.abi,
         provider
       );
-
       const results = await ENSDelegateContract.getDelegates(
         delegateNamehashes
       );
@@ -164,6 +169,14 @@ const useGetDelegates = (isConnected) => {
         results,
         filteredDelegateData
       );
+
+      // const MAX_TOKEN_AMOUNT = 25000000;//divide 1e18
+      // const TARGET = 0.05
+      // const circulatingSupply = MAX_TOKEN_AMOUNT - token.balanceOf('tokenAddress');
+      //
+      // const targetVotes = TARGET - circulatingSupply
+      // const delegateScore = math.abs(targetVotes - Math.Max(targetVotes*2, item.votes + allocation.score))
+      // 25 delegates average of 5% each
 
       const addressArray = processedDelegateData.map(data => data.address)
       const tokenAllocations = await fetchTokenAllocations(addressArray)
@@ -282,11 +295,9 @@ const DelegateBoxVotes = styled.div`
 `;
 
 const DelegateBox = (data, idx) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount } = data;
+  const { avatar, profile, votes, name, setRenderKey, userAccount, ranking, allocation } = data;
   const selected = name === getDelegateChoice(userAccount);
-  if (data.name === "leontalbert.eth") {
-    console.log("data: ", data.votes.toString());
-  }
+    console.log("data: ", data);
   return (
     <DelegateBoxContainer
       key={idx}
@@ -395,7 +406,7 @@ const ChooseYourDelegate = () => {
             />
           </div>
         </HeaderContianer>
-        <DelegatesContainer>
+        <DelegatesContainer data-testid="delegates-list-container">
           {delegates
             .map((x) => ({
               ...x,
