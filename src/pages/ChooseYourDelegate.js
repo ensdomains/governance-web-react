@@ -395,7 +395,7 @@ const WrappedNarrowColumn = styled(NarrowColumn)`
 
 const DelegatesContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
   justify-content: center;
