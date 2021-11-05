@@ -7,6 +7,7 @@ import {
   addressDetails,
 } from "./apollo";
 import { getClaimData } from "./utils/utils";
+import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
 const INFURA_ID =
   window.location.host === "app.ens.domains"
@@ -114,11 +115,13 @@ export const initWeb3 = async () => {
   }
 
   if (address) {
+    initLocalStorage(address);
     isConnected(true);
     addressReactive(address);
     // hasClaimed(address)
     const claimData = await getClaimData(address);
     addressDetails(claimData);
+
     return;
   }
   isConnected(false);
