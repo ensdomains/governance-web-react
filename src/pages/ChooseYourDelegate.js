@@ -113,8 +113,11 @@ const cleanDelegatesList = (delegatesList) =>
     ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
-const generateRankingScore = (score) => {
-  return score;
+const generateRankingScore = (votes, score, prepopDelegate, name) => {
+  // Rank delegate referral top left
+  return (
+    votes + score * Math.random() + (prepopDelegate === name ? 10000000 : 0)
+  );
 };
 
 const addBalance = async (cleanList, tokenAllocation, prepopDelegate) => {
@@ -123,9 +126,12 @@ const addBalance = async (cleanList, tokenAllocation, prepopDelegate) => {
     allocation.score += Math.random() * 100000;
     return {
       ...item,
-      ranking:
-        generateRankingScore(item.votes + allocation.score) * Math.random() +
-        (prepopDelegate === item.name ? 100000 : 0),
+      ranking: generateRankingScore(
+        item.votes,
+        allocation.score,
+        prepopDelegate,
+        item.name
+      ),
       allocation: allocation.score,
     };
   });
@@ -206,10 +212,6 @@ const useGetDelegates = (isConnected) => {
       const processedDelegateDataWithReverse = processedDelegateData.filter(
         (d, i) => d.name == names[i]
       );
-
-      console.log(names);
-
-      console.log(processedDelegateDataWithReverse);
 
       // const MAX_TOKEN_AMOUNT = 25000000;//divide 1e18
       // const TARGET = 0.05
