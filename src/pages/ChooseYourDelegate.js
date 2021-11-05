@@ -429,11 +429,34 @@ const CopyContainer = styled.div`
   `}
 `;
 
+const Input = styled.input`
+  height: 64px;
+  width: 100%;
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+  background: #f6f6f6;
+  border-radius: 14px;
+  padding: 0px 20px;
+  box-sizing: border-box;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 28px;
+  margin-bottom: 12px;
+
+  &::placeholder {
+    color: black;
+    opacity: 0.23;
+  }
+`;
+
 const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
   const history = useHistory();
   const delegates = useGetDelegates(chooseData.isConnected);
   const [renderKey, setRenderKey] = useState(0);
+  const [search, setSearch] = useState("");
 
   return (
     <WrappedNarrowColumn>
@@ -455,6 +478,7 @@ const ChooseYourDelegate = () => {
               right.
             </Content>
           </CopyContainer>
+
           <div>
             <WrappedCTAButton
               text={"Enter ENS or address"}
@@ -465,8 +489,14 @@ const ChooseYourDelegate = () => {
             />
           </div>
         </HeaderContianer>
+        <Input
+          type="text"
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search delegates"
+        />
         <DelegatesContainer data-testid="delegates-list-container">
           {delegates
+            .filter((x) => x.name.includes(search))
             .map((x) => ({
               ...x,
               setRenderKey,
