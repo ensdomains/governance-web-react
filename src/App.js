@@ -26,7 +26,11 @@ import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import SharedFooter from "./components/SharedFooter";
 import { hasClaimed } from "./utils/tokenClaim";
 
-import { setDelegateChoice } from "./pages/ENSConstitution/delegateHelpers";
+import {
+  setDelegateChoice,
+  setDelegateReferral,
+} from "./pages/ENSConstitution/delegateHelpers";
+import { useQueryString } from "./utils/hooks";
 
 const AppContainer = styled.div`
   max-width: 1200px;
@@ -88,10 +92,6 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
-function useQueryString() {
-  return new URLSearchParams(useLocation().search);
-}
-
 function App() {
   const query = useQueryString();
   const {
@@ -105,6 +105,7 @@ function App() {
     const delegate = query.get("delegate");
     if (delegate && address) {
       setDelegateChoice(address, delegate);
+      setDelegateReferral(delegate);
     }
   }, [address]);
 

@@ -15,20 +15,31 @@ import { gql } from "graphql-tag";
 import { apolloClientInstance } from "../apollo";
 import { useQuery } from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
+import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import {
   getDelegateChoice,
   setDelegateChoice,
+  getDelegateReferral,
 } from "./ENSConstitution/delegateHelpers";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
-import {ALLOCATION_ENDPOINT, getENSDelegateContractAddress} from "../utils/consts";
+import {
+  ALLOCATION_ENDPOINT,
+  getENSDelegateContractAddress,
+  getReverseRecordsAddress,
+} from "../utils/consts";
+
+import { useQueryString } from "../utils/hooks";
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate", "avatar"] }, first: 100) {
+    resolvers(
+      where: { texts_contains: ["eth.ens.delegate", "avatar"] }
+      first: 1000
+    ) {
       address
       texts
       addr {
@@ -87,10 +98,10 @@ const filterDelegateData = (results) => {
 };
 
 const bigNumberToDecimal = (bigNumber) =>
-    Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)))
+  Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)));
 
-const stringToInt = numberString =>
-    Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)))
+const stringToInt = (numberString) =>
+  Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)));
 
 const cleanDelegatesList = (delegatesList) =>
   delegatesList.map((delegateItem) => ({
@@ -99,42 +110,52 @@ const cleanDelegatesList = (delegatesList) =>
     address: delegateItem.address?.toLowerCase(),
     name: delegateItem.name,
     votes: bigNumberToDecimal(delegateItem.votes),
-    ranking: bigNumberToDecimal(delegateItem.votes)
+    ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
 const generateRankingScore = (score) => {
-  return score
-}
-
-const addBalance = async (cleanList, tokenAllocation) => {
-  return cleanList.map(item => {
-    let allocation = tokenAllocation.find(x => x.address === item.address)
-    allocation.score += Math.random() * 100000
-    return ({...item,
-      ranking: generateRankingScore(item.votes + allocation.score) * Math.random(),
-      allocation: allocation.score
-    })
-  })
+  return score;
 };
 
-const rankDelegates = async (delegateList, tokenAllocation) => {
+const addBalance = async (cleanList, tokenAllocation, prepopDelegate) => {
+  return cleanList.map((item) => {
+    let allocation = tokenAllocation.find((x) => x.address === item.address);
+    allocation.score += Math.random() * 100000;
+    return {
+      ...item,
+      ranking:
+        generateRankingScore(item.votes + allocation.score) * Math.random() +
+        (prepopDelegate === item.name ? 100000 : 0),
+      allocation: allocation.score,
+    };
+  });
+};
+
+const rankDelegates = async (delegateList, tokenAllocation, prepopDelegate) => {
   const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(cleanList, tokenAllocation);
+  const withTokenBalance = await addBalance(
+    cleanList,
+    tokenAllocation,
+    prepopDelegate
+  );
   const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
   return sortedList;
 };
 
 const fetchTokenAllocations = async (addressArray) => {
   try {
-    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(',')}`
-    const allocations = await fetch(url)
-    const json = await allocations.json()
-    const integerScores = json.score.map(x => ({ address: x.address?.toLowerCase(), score: stringToInt(x.score)}))
-    return integerScores
-  } catch(error) {
-    console.error('fetchTokenAllocations error: ', error)
+    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
+    const allocations = await fetch(url);
+    const json = await allocations.json();
+    const integerScores = json.score.map((x) => ({
+      address: x.address?.toLowerCase(),
+      score: stringToInt(x.score),
+    }));
+    return integerScores;
+  } catch (error) {
+    console.error("fetchTokenAllocations error: ", error);
   }
-}
+};
 
 const useGetDelegates = (isConnected) => {
   const {
@@ -144,6 +165,7 @@ const useGetDelegates = (isConnected) => {
       addressDetails
     }
   `);
+
   const [delegates, setDelegates] = useState([]);
   useEffect(() => {
     const provider = getEthersProvider();
@@ -161,6 +183,13 @@ const useGetDelegates = (isConnected) => {
         ENSDelegateAbi.abi,
         provider
       );
+
+      const ReverseRecordsContract = new Contract(
+        getReverseRecordsAddress(),
+        ReverseRecordsAbi,
+        provider
+      );
+
       const results = await ENSDelegateContract.getDelegates(
         delegateNamehashes
       );
@@ -170,6 +199,18 @@ const useGetDelegates = (isConnected) => {
         filteredDelegateData
       );
 
+      const addresses = processedDelegateData.map((d) => d.address);
+
+      const names = await ReverseRecordsContract.getNames(addresses);
+
+      const processedDelegateDataWithReverse = processedDelegateData.filter(
+        (d, i) => d.name == names[i]
+      );
+
+      console.log(names);
+
+      console.log(processedDelegateDataWithReverse);
+
       // const MAX_TOKEN_AMOUNT = 25000000;//divide 1e18
       // const TARGET = 0.05
       // const circulatingSupply = MAX_TOKEN_AMOUNT - token.balanceOf('tokenAddress');
@@ -178,10 +219,13 @@ const useGetDelegates = (isConnected) => {
       // const delegateScore = math.abs(targetVotes - Math.Max(targetVotes*2, item.votes + allocation.score))
       // 25 delegates average of 5% each
 
-      const addressArray = processedDelegateData.map(data => data.address)
-      const tokenAllocations = await fetchTokenAllocations(addressArray)
+      const tokenAllocations = await fetchTokenAllocations(addresses);
 
-      const rankedDelegates = await rankDelegates(processedDelegateData, tokenAllocations);
+      const rankedDelegates = await rankDelegates(
+        processedDelegateData,
+        tokenAllocations,
+        getDelegateReferral()
+      );
       setDelegates(rankedDelegates);
     };
 
@@ -295,9 +339,18 @@ const DelegateBoxVotes = styled.div`
 `;
 
 const DelegateBox = (data, idx) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount, ranking, allocation } = data;
+  const {
+    avatar,
+    profile,
+    votes,
+    name,
+    setRenderKey,
+    userAccount,
+    ranking,
+    allocation,
+  } = data;
   const selected = name === getDelegateChoice(userAccount);
-    console.log("data: ", data);
+  console.log("data: ", data);
   return (
     <DelegateBoxContainer
       key={idx}
@@ -323,7 +376,11 @@ const DelegateBox = (data, idx) => {
           </DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
-      <ProfileLink href={profile} target={"_blank"} onClick={e => e.stopPropagation()}>
+      <ProfileLink
+        href={profile}
+        target={"_blank"}
+        onClick={(e) => e.stopPropagation()}
+      >
         <SpeechBubbleImg src={SpeechBubble} />
       </ProfileLink>
     </DelegateBoxContainer>
