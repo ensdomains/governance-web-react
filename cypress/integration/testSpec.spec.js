@@ -16,6 +16,25 @@ describe("Token claim site", () => {
                 `tenderly2`,
                 `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
             )
+
+            cy.request({
+                method: 'POST',
+                url: `https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork/${result.body.simulation_fork.id}/simulate`,
+                headers: {
+                    "x-access-key": "uI0ZaReIhdtOUMd3GTtBmDjcSLk4ZRCy"
+                },
+                body: {
+                    from: "0x0904Dac3347eA47d208F3Fd67402D039a3b99859",
+                    to: "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+                    input: "0x7cb647592c05204eb0b864c264d9bfd6957940471791ad2e156f2ede49db351d3ace3dea",
+                    gas: 8522744,
+                    gas_price: "0",
+                    value: 0,
+                    save: true,
+                }
+            }).then(result => {
+                console.log('result2: ', result)
+            })
         })
     });
     it("Should allow the user to vote, delegate and claim", () => {
@@ -35,8 +54,10 @@ describe("Token claim site", () => {
         cy.signMetamaskMessage();
         cy.get(
             '[data-testid="delegates-list-container"]',
-            {timeout: 20000}
-        ).children().first().click()
+            {timeout: 25000}
+        ).children({timeout: 25000}).first().click()
+        cy.contains("Next").click();
+        cy.contains("Claim").click();
     });
     //it.todo('should maintain constitution voting state after refresh')
     // it.todo('should maintain delegate selection after refresh')
