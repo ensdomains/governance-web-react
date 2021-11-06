@@ -40,7 +40,7 @@ describe("Token claim site", () => {
         cy.visit("http://localhost:3000");
         cy.contains("MetaMask").click();
         cy.acceptMetamaskAccess();
-        cy.contains("Get Started").click();
+        cy.contains("Get started").click();
         cy.contains("Start your claim process").click();
         cy.contains("Next").click();
         cy.contains("Next").click();
