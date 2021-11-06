@@ -29,7 +29,7 @@ const handleClaim = async (address, setClaimState, history) => {
     let delegateAddress;
     let provider = getEthersProvider();
 
-    // const displayName = getDelegateChoice();
+    // const displayName = getDelegateChoice(address);
     const displayName = 'leontalbert.eth'
     if (!displayName) {
       throw "No chosen delegate";
@@ -55,7 +55,7 @@ const handleClaim = async (address, setClaimState, history) => {
       BigNumber.from(total)
     );
     const [entry, proof] = shardedMerkleTree.getProof(address);
-    await submitClaim(
+    return await submitClaim(
       entry.balance,
       proof,
       delegateAddress,
@@ -87,9 +87,20 @@ const ENSTokenClaim = ({ location }) => {
   });
 
   useEffect(() => {
-    if (location.state && isConnected) {
-      handleClaim(address, setClaimState, history);
+    let timeout
+    const run = async () => {
+      if (location.state && isConnected) {
+        timeout = await handleClaim(address, setClaimState, history);
+      }
     }
+
+    run()
+    return () => {
+      if(timeout) {
+        clearTimeout(timeout)
+      }
+    }
+
   }, [isConnected]);
 
   return (

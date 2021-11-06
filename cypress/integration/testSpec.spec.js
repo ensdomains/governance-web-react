@@ -7,7 +7,7 @@ describe("Token claim site", () => {
             headers: {
                 "x-access-key": "uI0ZaReIhdtOUMd3GTtBmDjcSLk4ZRCy"
             },
-            body: {"network_id":"1","alias":"","description":""}
+            body: {"network_id": "1", "alias": "", "description": ""}
         }).then(result => {
             process.env.RPC_URL = `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
             cy.setupMetamask('');
@@ -35,11 +35,11 @@ describe("Token claim site", () => {
             })
         })
     });
-    it("Should allow the user to vote, delegate and claim", () => {
+    it("Should allow the user to vote, delegate and claim", async () => {
 
         cy.visit("http://localhost:3000");
         cy.contains("MetaMask").click();
-        cy.acceptMetamaskAccess();
+        // cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
         cy.contains("Start your claim process").click();
         cy.contains("Next").click();
@@ -55,29 +55,46 @@ describe("Token claim site", () => {
 
         cy.contains("Sign").click();
         cy.signMetamaskMessage();
-        cy.get(
-            '[data-testid="delegates-list-container"]',
-            {timeout: 25000}
-        ).children({timeout: 25000}).first().click()
-        cy.contains("Next").click();
 
-        //Should retain delegate choice after refresh
+        let name = await cy.get('[data-testid="delegate-box-name', {timeout: 25000})
+            .first()
+            .invoke('text').promisify()
+
+        cy.get('[data-testid="delegate-box-name', {timeout: 25000}).first().click()
+
+        // Should retain delegate choice after refresh
         cy.reload()
+        cy.contains(name, { timeout: 10000 })
+            .parent()
+            .parent()
+            .parent()
+            .should('have.css', 'border', '1px solid rgb(73, 179, 147)')
 
-        cy.contains("Claim").click();
-        cy.confirmMetamaskTransaction();
-        cy.contains("Return to dashboard").click();
-
-        //Should change to claimed state after claiming
-        cy.contains("You were eligible for the airdrop!")
-        cy.contains("Tokens claimed successfully").click()
-        cy.contains("You were eligible for the airdrop!").should('have.text', 'You were eligible for the airdrop!')
-
-        //If already claimed should redirect to dashboard
-        cy.visit("http://localhost:3000/delegates");
-        cy.contains(
-            "You were eligible for the airdrop!",
-            { timeout: 20000 }
-        ).should('have.text', 'You were eligible for the airdrop!')
+        // //should prepopulate with selection from query string
+        // cy.visit("http://localhost:3000/delegates?delegate=leontalbert.eth");
+        // const prepopName = cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
+        //     .children({timeout: 25000})
+        //     .first()
+        //
+        // console.log('prepopName ', prepopName)
+        // // expect(prepopName).to.equal('leontalbert.eth')
+        //
+        // cy.contains("Next").click();
+        //
+        // cy.contains("Claim").click();
+        // cy.confirmMetamaskTransaction();
+        // cy.contains("Return to dashboard").click();
+        //
+        // //Should change to claimed state after claiming
+        // cy.contains("You were eligible for the airdrop!")
+        // cy.contains("Tokens claimed successfully").click()
+        // cy.contains("You were eligible for the airdrop!").should('have.text', 'You were eligible for the airdrop!')
+        //
+        // //If already claimed should redirect to dashboard
+        // cy.visit("http://localhost:3000/delegates");
+        // cy.contains(
+        //     "You were eligible for the airdrop!",
+        //     {timeout: 20000}
+        // ).should('have.text', 'You were eligible for the airdrop!')
     });
 });

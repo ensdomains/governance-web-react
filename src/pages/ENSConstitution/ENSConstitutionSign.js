@@ -29,7 +29,7 @@ const handleVote = async (setVoteState, address, history) => {
       state: "SUCCESS",
       message: "",
     });
-    setTimeout(() => {
+    return setTimeout(() => {
       history.push("/delegates");
     }, 2000);
   } catch (error) {
@@ -56,8 +56,19 @@ const ENSConstitutionSign = ({ location }) => {
   });
 
   useEffect(() => {
-    if (location.state && data.isConnected) {
-      handleVote(setVoteState, data.address, history);
+    let timeout
+    const run = async () => {
+      if (location.state && data.isConnected) {
+        timeout = await handleVote(setVoteState, data.address, history);
+      }
+    }
+
+    run()
+    return () => {
+      console.log('unmount: ', timeout)
+      if(timeout) {
+        clearTimeout(timeout)
+      }
     }
   }, [data.isConnected, data.address]);
 

@@ -138,12 +138,14 @@ const InputComponent = ({
   };
 
   useEffect(() => {
-    onChange({
-      target: {
-        value: defaultValue,
-      },
-    });
-  }, []);
+    if(defaultValue) {
+      onChange({
+        target: {
+          value: defaultValue,
+        },
+      });
+    }
+  }, [defaultValue]);
 
   return (
     <div>

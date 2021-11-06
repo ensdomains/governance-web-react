@@ -68,7 +68,7 @@ export const submitClaim = async (
       state: "SUCCESS",
       message: "",
     });
-    setTimeout(() => {
+    return setTimeout(() => {
       history.push("/success");
     }, 2000);
   } catch (error) {
