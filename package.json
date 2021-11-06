@@ -62,7 +62,7 @@
     ]
   },
   "devDependencies": {
-    "@ensdomains/cypress-metamask": "1.1.0-development",
+    "@ensdomains/cypress-metamask": "1.2.0-development",
     "babel-plugin-styled-components": "1.13.2",
     "concurrently": "6.3.0",
     "cypress": "8.7.0",
