@@ -1,29 +1,33 @@
-import { render, screen } from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
+import { useQuery } from '@apollo/client'
+
+import { useQueryStirng } from './utils/hooks'
 import App from "./App";
 
-describe("App", () => {
-  it.todo("should redirect to last completed step when user lands");
-  it.todo("should save last completed step to local storage");
-  it.todo("should render correct styles depending on breakpoint");
-  it.todo("should redirect to claim page if user is ineligible");
-});
+jest.mock('@apollo/client', () => ({
+    __esModule: true,
+    ...jest.requireActual('@apollo/client'),
+    useQuery: jest.fn()
+}))
 
-describe("useInitApp", () => {
-  describe("has signer", () => {
-    it.todo("should set isConnected if there is a signer");
-    it.todo("should set signers address if there is a signer");
-  });
-  describe("does not have signer", () => {
-    it.todo("should set isConnected to FALSE");
-    it.todo("should set addressReactive to null");
-  });
-});
+describe('App', () => {
+    it('should render', () => {
+        useQuery.mockImplementation(() => ({ data: { address: '0xaddress' } }))
+        render(
+            <App />
+        )
+    })
+})
 
 describe("PrivateRoute", () => {
-  it.todo(
-    "should not redirect if there is no history and no eligible data available"
-  );
-  it.todo(
-    "should redirect to /dashboard if we have history and eligible === false"
-  );
+    it.todo(
+        "should not redirect if there is no history and no eligible data available"
+    );
+    it.todo(
+        "should redirect to /dashboard if we have history and eligible === false"
+    );
+    it(
+        'should redirect to dashboard if navigating to a route past voting but voting has not been completed', () => {
+
+        })
 });

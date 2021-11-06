@@ -158,14 +158,6 @@ const fetchTokenAllocations = async (addressArray) => {
 };
 
 const useGetDelegates = (isConnected) => {
-  const {
-    data: { addressDetails },
-  } = useQuery(gql`
-    query getHeaderData @client {
-      addressDetails
-    }
-  `);
-
   const [delegates, setDelegates] = useState([]);
   useEffect(() => {
     const provider = getEthersProvider();
@@ -328,7 +320,7 @@ const DelegateBoxVotes = styled.div`
   color: #989898;
 `;
 
-const DelegateBox = (data, idx) => {
+const DelegateBox = (data) => {
   const {
     avatar,
     profile,
@@ -336,8 +328,6 @@ const DelegateBox = (data, idx) => {
     name,
     setRenderKey,
     userAccount,
-    ranking,
-    allocation,
   } = data;
   const selected = name === getDelegateChoice(userAccount);
   return (
@@ -359,7 +349,7 @@ const DelegateBox = (data, idx) => {
           }}
         />
         <MidContainer>
-          <DelegateBoxName>{shortenAddress(name, 16)}</DelegateBoxName>
+          <DelegateBoxName data-testid="delegate-box-name">{shortenAddress(name, 16)}</DelegateBoxName>
           <DelegateBoxVotes>
             {Math.floor(votes)} votes
           </DelegateBoxVotes>
@@ -386,6 +376,8 @@ const DelegatesContainer = styled.div`
   grid-row-gap: 12px;
   grid-column-gap: 14px;
   justify-content: center;
+  max-height: calc(100vh /3);
+  overflow-y: auto;
 `;
 
 const HeaderContianer = styled.div`
