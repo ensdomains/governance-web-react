@@ -40,16 +40,29 @@ const ButtonContainer = styled.div`
   line-height: 22px;
   text-align: center;
   letter-spacing: -0.01em;
+  transition: all 0.2s ease-out;
   cursor: ${(p) => {
     switch (p.type) {
       case "deny":
         return "pointer";
       case "disabled":
-        return "initial";
+        return "not-allowed";
       default:
         return "pointer";
     }
   }};
+
+  user-select: none;
+
+  &:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+  }
+
+  &:active {
+    transform: translateY(0px);
+    filter: brightness(1);
+  }
 `;
 
 export const CTAButton = (props) => {

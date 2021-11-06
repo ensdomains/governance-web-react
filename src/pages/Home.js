@@ -48,7 +48,12 @@ const Home = () => {
     <HomeContainer>
       <img src={SplashENSLogo} />
       <Gap height={6} />
-      <Link>Introducing $ENS</Link>
+      <Link
+        href="https://ens.mirror.xyz/-eaqMv7XPikvXhvjbjzzPNLS4wzcQ8vdOgi9eNXeUuY"
+        target="_blank"
+      >
+        Introducing $ENS →
+      </Link>
       <Gap height={3} />
       <WrappedTitle>Help decide</WrappedTitle>
       <WrappedTitle>the future of ENS</WrappedTitle>
@@ -59,7 +64,7 @@ const Home = () => {
       </WrappedSubTitle>
       <Gap height={8} />
       <CTAButton
-        text={isConnected ? "Get Started" : "Connect to wallet"}
+        text={isConnected ? "Get started" : "Connect wallet"}
         onClick={handleClick}
       />
     </HomeContainer>

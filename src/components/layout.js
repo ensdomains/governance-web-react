@@ -18,7 +18,7 @@ export const InnerContentBox = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   border-radius: 14px;
-  padding: 20px;
+  padding: 20px 20px 16px 20px;
   flex: 1;
 `;
 
