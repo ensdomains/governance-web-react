@@ -65,7 +65,7 @@ const SmallENSLogo = styled(ENSLogo)`
 
 const StatsSubtitle = styled.div`
   font-style: normal;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 16px;
   line-height: 20px;
   letter-spacing: -0.01em;
@@ -76,7 +76,7 @@ const StatsSubtitle = styled.div`
 const RowLabel = styled.div`
   letter-spacing: -0.01em;
   font-style: normal;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 16px;
   line-height: 20px;
   color: #717171;
@@ -149,7 +149,7 @@ const Dashboard = () => {
     <ClaimEnsTokenContainer>
       <LeftContainer>
         {address && <Profile large {...{ address }} />}
-
+        <Gap height={3} />
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
@@ -235,9 +235,11 @@ const Dashboard = () => {
             <Gap height={5} />
             <InnerContentBox>
               <SubsubTitle>
-                {rawBalance && isClaimed ? "You received" : "You will receive"}
+                {rawBalance && isClaimed
+                  ? "You received..."
+                  : "You will receive..."}
               </SubsubTitle>
-              <Gap height={1} />
+              <Gap height={2} />
               <Statistic>
                 <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
                 <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>
@@ -251,7 +253,7 @@ const Dashboard = () => {
                   You have received these tokens for being an early participant
                   of the ENS community. Use this power wisely!
                 </WrappedContent>
-                <Gap height={10} />
+                <Gap height={5} />
                 <CTAButton
                   text={
                     isClaimed
