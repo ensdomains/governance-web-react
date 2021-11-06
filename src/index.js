@@ -7,10 +7,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { initApolloClient } from "./apollo";
 
-import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
-
-initLocalStorage();
-
 const client = initApolloClient();
 
 ReactDOM.render(

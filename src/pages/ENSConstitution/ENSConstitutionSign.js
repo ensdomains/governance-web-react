@@ -23,7 +23,7 @@ const handleVote = async (setVoteState, address, history) => {
     });
     await snapshotClient.vote(ethersProvider, address, SPACE_ID, {
       proposal: PROPOSAL_ID,
-      choice: getChoices(),
+      choice: getChoices(address),
     });
     setVoteState({
       state: "SUCCESS",

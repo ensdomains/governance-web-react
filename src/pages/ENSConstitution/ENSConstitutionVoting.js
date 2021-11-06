@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
 
 import {
   getConstitution,
@@ -86,13 +87,13 @@ const Forbidden = styled.div`
   margin-bottom: 5px;
 `;
 
-const useConstitutionSteps = () => {
+const useConstitutionSteps = (account) => {
   const [currentStep, setCurrentStep] = useState(-1);
-  const totalSteps = getTotalNumberOfArticles();
+  const totalSteps = getTotalNumberOfArticles(account);
 
   useEffect(() => {
-    if (getEarliestUnvotedArticle() > 0) {
-      setCurrentStep(getEarliestUnvotedArticle());
+    if (getEarliestUnvotedArticle(account) > 0) {
+      setCurrentStep(getEarliestUnvotedArticle(account));
     }
   }, []);
 
@@ -107,11 +108,14 @@ const Voting = ({
   handleBack,
   handleApproveVote,
   handleRejectVote,
+  account,
 }) => (
   <>
     <ContentBoxWithHeader
       HeaderComponent={
-        <SectionHeader {...{ currentStep, setCurrentStep, totalSteps }} />
+        <SectionHeader
+          {...{ account, currentStep, setCurrentStep, totalSteps }}
+        />
       }
     >
       <ContentContainer>
@@ -135,10 +139,11 @@ const Voting = ({
   </>
 );
 
-const EnsConstitutionVoting = () => {
+const EnsConstitutionVoting = ({ account }) => {
   const history = useHistory();
-  const { currentStep, setCurrentStep, totalSteps } = useConstitutionSteps();
-  const constitution = getConstitution();
+  const { currentStep, setCurrentStep, totalSteps } =
+    useConstitutionSteps(account);
+  const constitution = getConstitution(account);
   const article = constitution?.[currentStep];
 
   const handleBack = () => {
@@ -154,7 +159,7 @@ const EnsConstitutionVoting = () => {
   };
 
   const handleVote = (vote) => {
-    voteOnArticle(currentStep, vote);
+    voteOnArticle(account, currentStep, vote);
     setCurrentStep(currentStep + 1);
   };
 
@@ -167,15 +172,15 @@ const EnsConstitutionVoting = () => {
   };
 
   useEffect(() => {
-    if (isCompleted()) {
+    if (isCompleted(account)) {
       setCurrentStep(4);
     }
-  }, []);
+  }, [account]);
 
   if (currentStep < 0) {
     return (
       <ENSConstitutionInfo
-        {...{ handleBack, handleNext, currentStep, setCurrentStep }}
+        {...{ account, handleBack, handleNext, currentStep, setCurrentStep }}
       />
     );
   }
@@ -185,6 +190,7 @@ const EnsConstitutionVoting = () => {
       <NarrowColumn>
         <Voting
           {...{
+            account,
             currentStep,
             setCurrentStep,
             totalSteps,
@@ -213,4 +219,17 @@ const EnsConstitutionVoting = () => {
   }
 };
 
-export default EnsConstitutionVoting;
+const EnsConstitutionVotingContainer = () => {
+  const {
+    data: { address },
+  } = useQuery(gql`
+    query getAddress @client {
+      address
+    }
+  `);
+
+  if (!address) return null;
+  return <EnsConstitutionVoting account={address} />;
+};
+
+export default EnsConstitutionVotingContainer;

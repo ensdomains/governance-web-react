@@ -4,7 +4,6 @@ import {
   Switch,
   Route,
   useHistory,
-  useLocation,
 } from "react-router-dom";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
@@ -26,12 +25,16 @@ import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import SharedFooter from "./components/SharedFooter";
 import { hasClaimed } from "./utils/tokenClaim";
 
-import { setDelegateChoice } from "./pages/ENSConstitution/delegateHelpers";
+import {
+  setDelegateChoice,
+  setDelegateReferral,
+} from "./pages/ENSConstitution/delegateHelpers";
+import { useQueryString } from "./utils/hooks";
 
 const AppContainer = styled.div`
   max-width: 1200px;
   margin: auto;
-  padding-bottom: 100px;
+  padding-bottom: 80px;
   box-sizing: border-box;
   flex-grow: 1;
   overflow-x: hidden;
@@ -88,10 +91,6 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
-function useQueryString() {
-  return new URLSearchParams(useLocation().search);
-}
-
 function App() {
   const query = useQueryString();
   const {
@@ -105,6 +104,7 @@ function App() {
     const delegate = query.get("delegate");
     if (delegate && address) {
       setDelegateChoice(address, delegate);
+      setDelegateReferral(delegate);
     }
   }, [address]);
 
@@ -136,9 +136,9 @@ function App() {
               <Home />
             </Route>
           </Switch>
+          <SharedFooter />
         </AppContainer>
       </AppContainerOuter>
-      <SharedFooter />
     </>
   );
 }
