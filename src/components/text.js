@@ -50,8 +50,8 @@ export const SubTitle = styled.div`
 
 export const SubsubTitle = styled.div`
   font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
+  font-weight: bold;
+  font-size: 16px;
   line-height: 22px;
   letter-spacing: -0.01em;
   color: #717171;
@@ -72,7 +72,7 @@ export const Header = styled.div`
 export const Content = styled.div`
   font-style: normal;
   font-weight: normal;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 141%;
   color: #1a1a1a;
 `;

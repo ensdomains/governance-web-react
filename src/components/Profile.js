@@ -6,6 +6,7 @@ import { imageUrl, shortenAddress } from "../utils/utils";
 
 const ProfileContainer = styled.div`
   display: flex;
+  align-items: center;
   max-width: ${(p) => (p.large ? "350px" : "200px")};
   background: ${(p) => (p.large ? "initial" : "#FFFFFF")};
   box-shadow: ${(p) =>
@@ -39,6 +40,8 @@ const EmptyAvatar = styled.div`
   border-radius: 50%;
   min-width: 50px;
   height: 50px;
+  width: ${(p) => p.large && "60px"};
+  height: ${(p) => p.large && "60px"};
   margin-right: 10px;
   background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
 `;
@@ -46,10 +49,11 @@ const EmptyAvatar = styled.div`
 const EnsNameText = styled.div`
   font-style: normal;
   font-weight: bold;
-  font-size: ${(p) => (p.large ? "30px" : "19px")};
+  font-size: ${(p) => (p.large ? "26px" : "18px")};
   line-height: ${(p) => (p.large ? "36px" : "23px")};
   letter-spacing: -0.01em;
-
+  margin-top: -2px;
+  padding-bottom: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -144,13 +148,11 @@ const Profile = ({ address, large }) => {
           )}
         />
       ) : (
-        <EmptyAvatar />
+        <EmptyAvatar {...{ large }} />
       )}
       <RightContainer>
         {profileDetails.ensName ? (
-          <EnsNameText {...{ large }}>
-            {profileDetails.ensName}
-          </EnsNameText>
+          <EnsNameText {...{ large }}>{profileDetails.ensName}</EnsNameText>
         ) : (
           <NoNameText>No name set</NoNameText>
         )}
