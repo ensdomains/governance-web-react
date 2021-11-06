@@ -16,6 +16,7 @@ import { apolloClientInstance } from "../apollo";
 import { useQuery } from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
+import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import {
@@ -26,13 +27,13 @@ import {
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
+
 import {
   ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
-  getReverseRecordsAddress,
+  getENSTokenContractAddress,
+  getReverseRecordsAddress
 } from "../utils/consts";
-
-import { useQueryString } from "../utils/hooks";
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
@@ -55,6 +56,8 @@ const DELEGATE_TEXT_QUERY = gql`
     }
   }
 `;
+
+const TARGET_DELEGATE_SIZE = 0.025;
 
 export function namehash(inputName) {
   let node = "";
@@ -113,37 +116,28 @@ const cleanDelegatesList = (delegatesList) =>
     ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
-const generateRankingScore = (votes, score, prepopDelegate, name) => {
-  // Rank delegate referral top left
-  return (
-    votes + score * Math.random() + (prepopDelegate === name ? 10000000 : 0)
-  );
+// This function ranks delegates by delegated vote total until they reach the
+// target percentage of all delegated votes, at which point their ranking begins to decrease.
+const generateRankingScore = (score, total, prepopDelegate, name) => {
+  if(score > total * TARGET_DELEGATE_SIZE) {
+    score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
+  }
+  return score + (prepopDelegate === name ? 100000000 : 0)
+}
+
+const addBalance = async (cleanList, tokenAllocation, tokensClaimed, prepopDelegate) => {
+  return cleanList.map(item => {
+    let allocation = tokenAllocation.find(x => x.address === item.address)
+    return ({...item,
+      ranking: generateRankingScore(item.votes + allocation.score, tokensClaimed, prepopDelegate, item.name) * Math.random(),
+      allocation: allocation.score
+    })
+  })
 };
 
-const addBalance = async (cleanList, tokenAllocation, prepopDelegate) => {
-  return cleanList.map((item) => {
-    let allocation = tokenAllocation.find((x) => x.address === item.address);
-    allocation.score += Math.random() * 100000;
-    return {
-      ...item,
-      ranking: generateRankingScore(
-        item.votes,
-        allocation.score,
-        prepopDelegate,
-        item.name
-      ),
-      allocation: allocation.score,
-    };
-  });
-};
-
-const rankDelegates = async (delegateList, tokenAllocation, prepopDelegate) => {
+const rankDelegates = async (delegateList, tokenAllocation, tokensClaimed, prepopDelegate) => {
   const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(
-    cleanList,
-    tokenAllocation,
-    prepopDelegate
-  );
+  const withTokenBalance = await addBalance(cleanList, tokenAllocation, tokensClaimed, prepopDelegate);
   const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
   return sortedList;
 };
@@ -184,6 +178,12 @@ const useGetDelegates = (isConnected) => {
         (result) => result.domain.id
       );
 
+      const ENSTokenContract = new Contract(
+        getENSTokenContractAddress(),
+        ENSTokenAbi.abi,
+        provider
+      );
+
       const ENSDelegateContract = new Contract(
         getENSDelegateContractAddress(),
         ENSDelegateAbi.abi,
@@ -205,29 +205,17 @@ const useGetDelegates = (isConnected) => {
         filteredDelegateData
       );
 
-      const addresses = processedDelegateData.map((d) => d.address);
-
+      const addresses = processedDelegateData.map(data => data.address)
       const names = await ReverseRecordsContract.getNames(addresses);
-
       const processedDelegateDataWithReverse = processedDelegateData.filter(
-        (d, i) => d.name == names[i]
+          (d, i) => d.name == names[i]
       );
-
-      // const MAX_TOKEN_AMOUNT = 25000000;//divide 1e18
-      // const TARGET = 0.05
-      // const circulatingSupply = MAX_TOKEN_AMOUNT - token.balanceOf('tokenAddress');
-      //
-      // const targetVotes = TARGET - circulatingSupply
-      // const delegateScore = math.abs(targetVotes - Math.Max(targetVotes*2, item.votes + allocation.score))
-      // 25 delegates average of 5% each
-
-      const tokenAllocations = await fetchTokenAllocations(addresses);
-
-      const rankedDelegates = await rankDelegates(
-        processedDelegateData,
-        tokenAllocations,
-        getDelegateReferral()
-      );
+      const tokenAllocations = await fetchTokenAllocations(addresses)
+      const tokensLeft = await ENSTokenContract.balanceOf(ENSTokenContract.address);
+      // Actual number of tokens claimed, plus total of delegates' own airdrops.
+      const tokensClaimed = (25000000 - bigNumberToDecimal(tokensLeft)) + tokenAllocations.reduce((total, current) => total + current.score, 0);
+      console.log({target: tokensClaimed * TARGET_DELEGATE_SIZE})
+      const rankedDelegates = await rankDelegates(processedDelegateDataWithReverse, tokenAllocations, tokensClaimed, getDelegateReferral());
       setDelegates(rankedDelegates);
     };
 
@@ -352,10 +340,9 @@ const DelegateBox = (data, idx) => {
     allocation,
   } = data;
   const selected = name === getDelegateChoice(userAccount);
-  console.log("data: ", data);
   return (
     <DelegateBoxContainer
-      key={idx}
+      key={name}
       onClick={() => {
         setDelegateChoice(userAccount, name);
         setRenderKey((x) => x + 1);
@@ -374,7 +361,7 @@ const DelegateBox = (data, idx) => {
         <MidContainer>
           <DelegateBoxName>{shortenAddress(name, 16)}</DelegateBoxName>
           <DelegateBoxVotes>
-            {votes.toString().split(".")[0]} votes
+            {Math.floor(votes)} votes
           </DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>

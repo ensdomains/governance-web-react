@@ -54,7 +54,7 @@ const ENSGovernance = () => {
         </Content>
         <Gap height={3} />
         <Content>
-          Any address that has ever owned an ENS name is eligible for the{" "}
+          Any address that has ever owned a .ETH name is eligible for the{" "}
           <b>retroactive airdrop</b>. Past and future registrations are counted,
           with future registrations capped at 8 years. Accounts with their{" "}
           <b>Primary ENS Name</b> record set will receive a 2x multiplier.

@@ -4,7 +4,6 @@ import {
   Switch,
   Route,
   useHistory,
-  useLocation,
 } from "react-router-dom";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
@@ -42,8 +41,8 @@ const AppContainer = styled.div`
 `;
 
 const AppContainerOuter = styled.div`
+  height: calc(100vh - 150px);
   display: flex;
-  flex-direction: column;
 `;
 
 const useInit = () => {
@@ -137,8 +136,8 @@ function App() {
               <Home />
             </Route>
           </Switch>
+          <SharedFooter />
         </AppContainer>
-        <SharedFooter />
       </AppContainerOuter>
     </>
   );

@@ -1,14 +1,14 @@
 [
   {
-    "title": "Name ownership is an absolute right",
-    "content": "ENS governance will not enact any change that infringes on the rights of ENS users to retain names they own, or unfairly discriminate against name owners’ ability to renew, transfer, or otherwise use their names.",
-    "positiveExample": "ENS governance may enact a change affecting the registration or renewal costs of all names based on transparent criteria such as length, as long as it pursues a goal outlined in this constitution.",
-    "negativeExample": "ENS governance must not enact a change increasing or reducing the renewal costs of a list of existing ENS names, as this would unfairly benefit or penalise a handpicked group.",
+    "title": "Name ownership shall not be infringed",
+    "content": "ENS governance will not enact any change that infringes on the rights of ENS users to retain names they own, or unfairly discriminate against name owners’ ability to extend, transfer, or otherwise use their names.",
+    "positiveExample": "ENS governance may enact a change affecting the registration or extension costs of all names based on transparent criteria such as length, as long as it pursues a goal outlined in this constitution.",
+    "negativeExample": "ENS governance must not enact a change increasing or reducing the extension costs of a list of existing ENS names, as this would unfairly benefit or penalise a handpicked group.",
     "vote": null
   },
   {
-    "title": "Registration fees exist as an incentive mechanism",
-    "content": "The primary purpose of registration fees is as an incentive mechanism, to regulate the registration, renewal, and expiry of ENS names, and prevent the namespace becoming overwhelmed with speculatively registered names. A secondary goal is to provide enough revenue to the DAO to fund ongoing development and improvement of ENS. ENS governance will not enact any fee other than for these purposes.",
+    "title": "Fees are primarily an incentive mechanism",
+    "content": "The primary purpose of registration fees is as an incentive mechanism to prevent the namespace becoming overwhelmed with speculatively registered names. A secondary purpose is to provide enough revenue to the DAO to fund ongoing development and improvement of ENS. ENS governance will not enact any fee other than for these purposes.",
     "positiveExample": "ENS governance may increase the price of name registrations in order to address excessive speculative registrations induced by a price that is set too low, or because the current price is insufficient to fund ongoing ENS operations at a reasonable level.",
     "negativeExample": "ENS governance must not enact a change imposing a fee for claiming DNS domains inside ENS, because such a fee would be purely an income generating measure and not an incentive mechanism.",
     "vote": null
