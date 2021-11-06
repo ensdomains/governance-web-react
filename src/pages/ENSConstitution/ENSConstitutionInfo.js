@@ -17,11 +17,14 @@ const ENSConstitutionInfo = ({
   handleNext,
   currentStep,
   setCurrentStep,
+  account,
 }) => {
   return (
     <NarrowColumn>
       <ContentBoxWithHeader
-        HeaderComponent={<SectionHeader {...{ currentStep, setCurrentStep }} />}
+        HeaderComponent={
+          <SectionHeader {...{ account, currentStep, setCurrentStep }} />
+        }
       >
         <Header>Help shape the community</Header>
         <Gap height={3} />

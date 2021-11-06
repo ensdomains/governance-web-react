@@ -15,21 +15,32 @@ import { gql } from "graphql-tag";
 import { apolloClientInstance } from "../apollo";
 import { useQuery } from "@apollo/client";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
+import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import {
   getDelegateChoice,
   setDelegateChoice,
+  getDelegateReferral,
 } from "./ENSConstitution/delegateHelpers";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
-import {ALLOCATION_ENDPOINT, getENSDelegateContractAddress, getENSTokenContractAddress} from "../utils/consts";
+
+import {
+  ALLOCATION_ENDPOINT,
+  getENSDelegateContractAddress,
+  getENSTokenContractAddress,
+  getReverseRecordsAddress
+} from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
   query delegateTextQuery {
-    resolvers(where: { texts_contains: ["eth.ens.delegate", "avatar"] }, first: 100) {
+    resolvers(
+      where: { texts_contains: ["eth.ens.delegate", "avatar"] }
+      first: 1000
+    ) {
       address
       texts
       addr {
@@ -90,10 +101,10 @@ const filterDelegateData = (results) => {
 };
 
 const bigNumberToDecimal = (bigNumber) =>
-    Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)))
+  Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)));
 
-const stringToInt = numberString =>
-    Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)))
+const stringToInt = (numberString) =>
+  Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)));
 
 const cleanDelegatesList = (delegatesList) =>
   delegatesList.map((delegateItem) => ({
@@ -102,46 +113,49 @@ const cleanDelegatesList = (delegatesList) =>
     address: delegateItem.address?.toLowerCase(),
     name: delegateItem.name,
     votes: bigNumberToDecimal(delegateItem.votes),
-    ranking: bigNumberToDecimal(delegateItem.votes)
+    ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
 // This function ranks delegates by delegated vote total until they reach the
 // target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total) => {
+const generateRankingScore = (score, total, prepopDelegate, name) => {
   if(score > total * TARGET_DELEGATE_SIZE) {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
   }
-  return score
+  return score + (prepopDelegate === name ? 100000000 : 0)
 }
 
-const addBalance = async (cleanList, tokenAllocation, tokensClaimed) => {
+const addBalance = async (cleanList, tokenAllocation, tokensClaimed, prepopDelegate) => {
   return cleanList.map(item => {
     let allocation = tokenAllocation.find(x => x.address === item.address)
     return ({...item,
-      ranking: generateRankingScore(item.votes + allocation.score, tokensClaimed) * Math.random(),
+      ranking: generateRankingScore(item.votes + allocation.score, tokensClaimed, prepopDelegate, item.name) * Math.random(),
       allocation: allocation.score
     })
   })
 };
 
-const rankDelegates = async (delegateList, tokenAllocation, tokensClaimed) => {
+const rankDelegates = async (delegateList, tokenAllocation, tokensClaimed, prepopDelegate) => {
   const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(cleanList, tokenAllocation, tokensClaimed);
+  const withTokenBalance = await addBalance(cleanList, tokenAllocation, tokensClaimed, prepopDelegate);
   const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
   return sortedList;
 };
 
 const fetchTokenAllocations = async (addressArray) => {
   try {
-    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(',')}`
-    const allocations = await fetch(url)
-    const json = await allocations.json()
-    const integerScores = json.score.map(x => ({ address: x.address?.toLowerCase(), score: stringToInt(x.score)}))
-    return integerScores
-  } catch(error) {
-    console.error('fetchTokenAllocations error: ', error)
+    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
+    const allocations = await fetch(url);
+    const json = await allocations.json();
+    const integerScores = json.score.map((x) => ({
+      address: x.address?.toLowerCase(),
+      score: stringToInt(x.score),
+    }));
+    return integerScores;
+  } catch (error) {
+    console.error("fetchTokenAllocations error: ", error);
   }
-}
+};
 
 const useGetDelegates = (isConnected) => {
   const {
@@ -151,6 +165,7 @@ const useGetDelegates = (isConnected) => {
       addressDetails
     }
   `);
+
   const [delegates, setDelegates] = useState([]);
   useEffect(() => {
     const provider = getEthersProvider();
@@ -174,6 +189,13 @@ const useGetDelegates = (isConnected) => {
         ENSDelegateAbi.abi,
         provider
       );
+
+      const ReverseRecordsContract = new Contract(
+        getReverseRecordsAddress(),
+        ReverseRecordsAbi,
+        provider
+      );
+
       const results = await ENSDelegateContract.getDelegates(
         delegateNamehashes
       );
@@ -183,13 +205,17 @@ const useGetDelegates = (isConnected) => {
         filteredDelegateData
       );
 
-      const addressArray = processedDelegateData.map(data => data.address)
-      const tokenAllocations = await fetchTokenAllocations(addressArray)
+      const addresses = processedDelegateData.map(data => data.address)
+      const names = await ReverseRecordsContract.getNames(addresses);
+      const processedDelegateDataWithReverse = processedDelegateData.filter(
+          (d, i) => d.name == names[i]
+      );
+      const tokenAllocations = await fetchTokenAllocations(addresses)
       const tokensLeft = await ENSTokenContract.balanceOf(ENSTokenContract.address);
       // Actual number of tokens claimed, plus total of delegates' own airdrops.
       const tokensClaimed = (25000000 - bigNumberToDecimal(tokensLeft)) + tokenAllocations.reduce((total, current) => total + current.score, 0);
       console.log({target: tokensClaimed * TARGET_DELEGATE_SIZE})
-      const rankedDelegates = await rankDelegates(processedDelegateData, tokenAllocations, tokensClaimed);
+      const rankedDelegates = await rankDelegates(processedDelegateDataWithReverse, tokenAllocations, tokensClaimed, getDelegateReferral());
       setDelegates(rankedDelegates);
     };
 
@@ -303,11 +329,20 @@ const DelegateBoxVotes = styled.div`
 `;
 
 const DelegateBox = (data, idx) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount, ranking, allocation } = data;
+  const {
+    avatar,
+    profile,
+    votes,
+    name,
+    setRenderKey,
+    userAccount,
+    ranking,
+    allocation,
+  } = data;
   const selected = name === getDelegateChoice(userAccount);
   return (
     <DelegateBoxContainer
-      key={idx}
+      key={name}
       onClick={() => {
         setDelegateChoice(userAccount, name);
         setRenderKey((x) => x + 1);
@@ -330,7 +365,11 @@ const DelegateBox = (data, idx) => {
           </DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
-      <ProfileLink href={profile} target={"_blank"} onClick={e => e.stopPropagation()}>
+      <ProfileLink
+        href={profile}
+        target={"_blank"}
+        onClick={(e) => e.stopPropagation()}
+      >
         <SpeechBubbleImg src={SpeechBubble} />
       </ProfileLink>
     </DelegateBoxContainer>
@@ -343,7 +382,7 @@ const WrappedNarrowColumn = styled(NarrowColumn)`
 
 const DelegatesContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, 290px);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
   justify-content: center;
@@ -377,11 +416,34 @@ const CopyContainer = styled.div`
   `}
 `;
 
+const Input = styled.input`
+  height: 64px;
+  width: 100%;
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+  background: #f6f6f6;
+  border-radius: 14px;
+  padding: 0px 20px;
+  box-sizing: border-box;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 28px;
+  margin-bottom: 12px;
+
+  &::placeholder {
+    color: black;
+    opacity: 0.23;
+  }
+`;
+
 const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
   const history = useHistory();
   const delegates = useGetDelegates(chooseData.isConnected);
   const [renderKey, setRenderKey] = useState(0);
+  const [search, setSearch] = useState("");
 
   return (
     <WrappedNarrowColumn>
@@ -403,6 +465,7 @@ const ChooseYourDelegate = () => {
               right.
             </Content>
           </CopyContainer>
+
           <div>
             <WrappedCTAButton
               text={"Enter ENS or address"}
@@ -413,8 +476,14 @@ const ChooseYourDelegate = () => {
             />
           </div>
         </HeaderContianer>
+        <Input
+          type="text"
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search delegates"
+        />
         <DelegatesContainer data-testid="delegates-list-container">
           {delegates
+            .filter((x) => x.name.includes(search))
             .map((x) => ({
               ...x,
               setRenderKey,

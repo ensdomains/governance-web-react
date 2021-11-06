@@ -2,19 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 import { ReactComponent as TwitterGrey } from "../assets/imgs/TwitterGrey.svg";
-import { ReactComponent as ThingGrey } from "../assets/imgs/ThingGrey.svg";
+import { ReactComponent as ForumGrey } from "../assets/imgs/ThingGrey.svg";
 import { ReactComponent as DiscordGrey } from "../assets/imgs/DiscordGrey.svg";
 
 const SharedFooterContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 100px;
   display: flex;
   justify-content: center;
   padding: 0 20px;
-  pointer-events: none;
+  z-index: 1000;
 `;
 
 const LeftContainer = styled.div``;
@@ -44,8 +40,8 @@ const SharedFooter = () => {
           <a target={"_blank"} href={"https://twitter.com/ensdomains"}>
             <TwitterGrey />
           </a>
-          <a target={"_blank"} href={""}>
-            <ThingGrey />
+          <a target={"_blank"} href={"https://discuss.ens.domains/"}>
+            <ForumGrey />
           </a>
           <a target={"_blank"} href={"https://discord.gg/qDYkrFKAUW"}>
             <DiscordGrey />

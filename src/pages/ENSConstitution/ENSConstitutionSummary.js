@@ -6,6 +6,7 @@ import SectionHeader from "./SectionHeader";
 import theme from "../../components/theme";
 import Footer from "../../components/Footer";
 import { useHistory } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
 import { Client } from "@snapshot-labs/snapshot.js";
 
 const SummaryArticleContainer = styled.div`
@@ -89,10 +90,22 @@ const SummaryArticle = ({ title, vote }, idx, arr) => {
 const Summary = ({ currentStep, setCurrentStep, constitution }) => {
   const history = useHistory();
 
+  const {
+    data: { address: account },
+  } = useQuery(gql`
+    query getAddress @client {
+      address
+    }
+  `);
+
+  if (!account) return null;
+
   return (
     <>
       <ContentBoxWithHeader
-        HeaderComponent={<SectionHeader {...{ currentStep, setCurrentStep }} />}
+        HeaderComponent={
+          <SectionHeader {...{ account, currentStep, setCurrentStep }} />
+        }
       >
         <ContentContainer>{constitution.map(SummaryArticle)}</ContentContainer>
       </ContentBoxWithHeader>
