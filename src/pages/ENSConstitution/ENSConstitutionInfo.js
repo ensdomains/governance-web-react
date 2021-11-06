@@ -28,7 +28,7 @@ const ENSConstitutionInfo = ({
         <Content>
           We have created an initial set of community guidelines for which you
           may vote for or against with your allocation of claimable <Token />.
-          Voting is optional, are conducted off-chain using{" "}
+          Voting is gas-free and is conducted off-chain using{" "}
           <BlackBold>Snapshot</BlackBold>.
         </Content>
         <Gap height={3} />
