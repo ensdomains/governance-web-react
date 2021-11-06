@@ -55,9 +55,9 @@ const Header = () => {
         </LeftContainer>
         <RightContainer>
           {isConnected ? (
-            <Profile {...{ address }} />
+            <Profile data-testid="header-profile" {...{ address }} />
           ) : (
-            <CTAButton onClick={initWeb3} text={"Connect"} />
+            <CTAButton data-testid="header-connect-button" onClick={initWeb3} text={"Connect"} />
           )}
         </RightContainer>
       </HeaderContainerInner>
