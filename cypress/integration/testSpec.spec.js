@@ -9,14 +9,12 @@ describe("Token claim site", () => {
             },
             body: {"network_id":"1","alias":"","description":""}
         }).then(result => {
-            console.log('result: ', result)
             process.env.RPC_URL = `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
-            cy.setupMetamask();
+            cy.setupMetamask('');
             cy.addMetamaskNetwork(
                 `tenderly2`,
                 `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
             )
-
             cy.request({
                 method: 'POST',
                 url: `https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork/${result.body.simulation_fork.id}/simulate`,
@@ -38,9 +36,10 @@ describe("Token claim site", () => {
         })
     });
     it("Should allow the user to vote, delegate and claim", () => {
+
         cy.visit("http://localhost:3000");
         cy.contains("MetaMask").click();
-        // cy.acceptMetamaskAccess();
+        cy.acceptMetamaskAccess();
         cy.contains("Get Started").click();
         cy.contains("Start your claim process").click();
         cy.contains("Next").click();
@@ -50,6 +49,10 @@ describe("Token claim site", () => {
         cy.contains("Reject").click();
         cy.contains("Approve").click();
         cy.contains("Reject").click();
+
+        //Should retain vote state after refreshing
+        cy.reload()
+
         cy.contains("Sign").click();
         cy.signMetamaskMessage();
         cy.get(
@@ -57,9 +60,24 @@ describe("Token claim site", () => {
             {timeout: 25000}
         ).children({timeout: 25000}).first().click()
         cy.contains("Next").click();
+
+        //Should retain delegate choice after refresh
+        cy.reload()
+
         cy.contains("Claim").click();
         cy.confirmMetamaskTransaction();
+        cy.contains("Return to dashboard").click();
+
+        //Should change to claimed state after claiming
+        cy.contains("You were eligible for the airdrop!")
+        cy.contains("Tokens claimed successfully").click()
+        cy.contains("You were eligible for the airdrop!").should('have.text', 'You were eligible for the airdrop!')
+
+        //If already claimed should redirect to dashboard
+        cy.visit("http://localhost:3000/delegates");
+        cy.contains(
+            "You were eligible for the airdrop!",
+            { timeout: 20000 }
+        ).should('have.text', 'You were eligible for the airdrop!')
     });
-    //it.todo('should maintain constitution voting state after refresh')
-    // it.todo('should maintain delegate selection after refresh')
 });
