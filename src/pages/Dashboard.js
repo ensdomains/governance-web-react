@@ -136,13 +136,18 @@ const Dashboard = () => {
   const history = useHistory();
 
   const [isClaimed, setIsClaimed] = useState(false);
+  const [isClaimedLoading, setIsClaimedLoading] = useState(false);
 
   useEffect(() => {
     hasClaimed(address)
-      .then((result) => setIsClaimed(result))
+      .then((result) => {
+        setIsClaimedLoading(false);
+        setIsClaimed(result);
+      })
       .catch((error) => {
         console.error("error checking hasClaimed: ", error);
       });
+    setIsClaimedLoading(true);
   }, [address]);
 
   return (
@@ -256,12 +261,14 @@ const Dashboard = () => {
                 <Gap height={5} />
                 <CTAButton
                   text={
-                    isClaimed
+                    isClaimedLoading
+                      ? "Checking claim status..."
+                      : isClaimed
                       ? "Tokens claimed successfully"
                       : "Start your claim process"
                   }
                   onClick={() => !isClaimed && history.push("/why")}
-                  type={isClaimed ? "disabled" : ""}
+                  type={isClaimed || isClaimedLoading ? "disabled" : ""}
                 />
               </>
             )}
