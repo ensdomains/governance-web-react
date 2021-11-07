@@ -45,7 +45,7 @@ const SummaryArticleTitle = styled.div`
 const SummaryArticleSummary = styled.div`
   max-width: 240px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 17px;
   line-height: 130%;
 

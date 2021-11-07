@@ -44,9 +44,11 @@ const LeftContainer = styled.div`
 
 const RightContainer = styled.div`
   margin-bottom: 50px;
+  max-width: 400px;
   ${largerThan.tablet`
         margin-left: 50px;
         margin-bottom: 0px;
+        max-width: unset;
     `}
 `;
 

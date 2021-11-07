@@ -22,7 +22,12 @@ export const InnerContentBox = styled.div`
   flex: 1;
 `;
 
-const ContentBoxWithHeaderContainer = styled.div``;
+const ContentBoxWithHeaderContainer = styled.div`
+  background: #ffffff;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+`;
 
 const ContentBoxHeader = styled.div`
   border-radius: 16px 16px 0px 0px;

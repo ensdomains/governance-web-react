@@ -32,6 +32,7 @@ const ArticleContent = styled.div`
   line-height: 141%;
   letter-spacing: -0.01em;
   color: #1a1a1a;
+  ${(p) => p.small && `font-size: 14px;`}
   padding: ${(p) => {
     switch (p.type) {
       case "permissible":
@@ -117,12 +118,12 @@ const Voting = ({
       <ContentContainer>
         <AritcleHeader>{article.title}</AritcleHeader>
         <ArticleContent>{article.content}</ArticleContent>
-        <ArticleContent type={"permissible"}>
-          <Permissible>Permissable: </Permissible>
+        <ArticleContent type={"permissible"} small>
+          <Permissible>Permissible</Permissible>
           {article.positiveExample}
         </ArticleContent>
-        <ArticleContent type={"forbidden"}>
-          <Forbidden>Not permissable: </Forbidden>
+        <ArticleContent type={"forbidden"} small>
+          <Forbidden>Not permissible</Forbidden>
           {article.negativeExample}
         </ArticleContent>
       </ContentContainer>

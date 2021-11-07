@@ -67,6 +67,16 @@ const NumberWithLogoContainer = styled.div`
 const WhatIsENSContentBox = styled(ContentBox)`
   grid-row-start: 1;
   grid-row-end: 3;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  overflow: hidden;
+`;
+
+const Names = styled.img`
+  max-width: 600px;
+  position: relative;
+  left: -100px;
 `;
 
 const Why = () => {
@@ -75,13 +85,16 @@ const Why = () => {
   return (
     <Container>
       <WhatIsENSContentBox>
-        <Header>What is ENS?</Header>
-        <Gap height={3} />
-        <Content>
-          Your ENS name is your web3 username and profile, one name for all of
-          your crypto addresses, and your decentralized website.
-        </Content>
-        <Gap height={5} />
+        <div>
+          <Header>What is ENS?</Header>
+          <Gap height={3} />
+          <Content>
+            Your ENS name represents a username & profile for web3, a shortcut
+            for all of your crypto addresses, and a link to your decentralized
+            website.
+          </Content>
+          <Names src="/names.png" />
+        </div>
         <StatsSection>
           <StatsRow>
             <RowLabel>Names</RowLabel>

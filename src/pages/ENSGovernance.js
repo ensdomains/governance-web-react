@@ -14,7 +14,6 @@ import { largerThan } from "../utils/styledComponents";
 
 const Img = styled.img`
   width: 100%;
-  margin-top: -15px;
 `;
 
 const WrappedNarrowColumn = styled(NarrowColumn)`
@@ -25,11 +24,16 @@ const DistPng = styled(Img)`
   display: none;
   ${largerThan.mobile`
     display: inline; 
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 14px;
+    left: 0px;
   `}
 `;
 
 const DistPngMobile = styled(Img)`
   display: inline;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   ${largerThan.mobile`
     display:none;  
   `}

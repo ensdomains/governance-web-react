@@ -12,6 +12,10 @@ const BlackBold = styled.b`
   color: black;
 `;
 
+const StyledHeader = styled(Header)`
+  font-size: 22px;
+`;
+
 const ENSConstitutionInfo = ({
   handleBack,
   handleNext,
@@ -23,7 +27,7 @@ const ENSConstitutionInfo = ({
       <ContentBoxWithHeader
         HeaderComponent={<SectionHeader {...{ currentStep, setCurrentStep }} />}
       >
-        <Header>Help shape the community</Header>
+        <StyledHeader>Help shape the community</StyledHeader>
         <Gap height={3} />
         <Content>
           We have created an initial set of community guidelines for which you

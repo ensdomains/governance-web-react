@@ -15,8 +15,9 @@ const StepsContainer = styled.div`
 
 const Step = styled.div`
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 13px;
+  height: 13px;
+  margin-top: 4px;
   cursor: pointer;
   background: ${(p) => {
     if (p.currentStep) return `#878787`;
