@@ -133,21 +133,22 @@ const Dashboard = () => {
     eligible,
   } = addressDetails;
 
+  console.log(addressDetails);
+
   const history = useHistory();
 
   const [isClaimed, setIsClaimed] = useState(false);
-  const [isClaimedLoading, setIsClaimedLoading] = useState(false);
+  const [isClaimedLoading, setIsClaimedLoading] = useState(true);
 
   useEffect(() => {
     hasClaimed(address)
       .then((result) => {
-        setIsClaimedLoading(false);
         setIsClaimed(result);
+        setIsClaimedLoading(false);
       })
       .catch((error) => {
         console.error("error checking hasClaimed: ", error);
       });
-    setIsClaimedLoading(true);
   }, [address]);
 
   return (
@@ -211,17 +212,19 @@ const Dashboard = () => {
 
       <RightContainer>
         <NarrowColumn>
-          {rawBalance ? (
-            <Pill
-              text={
-                isClaimed
-                  ? "You were eligible for the airdrop!"
-                  : "You are eligible for the airdrop!"
-              }
-            />
-          ) : (
-            <Pill error text={"You are not eligible for the airdrop"} />
-          )}
+          {isClaimedLoading === false && eligible !== undefined ? (
+            eligible ? (
+              <Pill
+                text={
+                  isClaimed
+                    ? "You were eligible for the airdrop!"
+                    : "You are eligible for the airdrop!"
+                }
+              />
+            ) : (
+              <Pill error text={"You are not eligible for the airdrop"} />
+            )
+          ) : null}
 
           <ContentBox>
             <Header>
