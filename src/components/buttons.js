@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 
 import theme from "./theme";
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.button`
   background: ${(p) => {
     switch (p.type) {
       case "approve":
@@ -51,6 +51,9 @@ const ButtonContainer = styled.div`
         return "pointer";
     }
   }};
+  background-color: transparent;
+  border: none;
+  width: 100%;
 
   user-select: none;
 
@@ -66,5 +69,5 @@ const ButtonContainer = styled.div`
 `;
 
 export const CTAButton = (props) => {
-  return <ButtonContainer {...props}>{props.text}</ButtonContainer>;
+  return <ButtonContainer disabled={props.type === 'disabled'} {...props}>{props.text}</ButtonContainer>;
 };
