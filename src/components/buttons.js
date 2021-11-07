@@ -51,6 +51,7 @@ const ButtonContainer = styled.div`
         return "pointer";
     }
   }};
+  pointer-events: ${p => p.type === 'disabled' ? 'none' : 'initial'};
 
   user-select: none;
 
