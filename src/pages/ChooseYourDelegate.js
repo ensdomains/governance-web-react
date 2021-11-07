@@ -365,7 +365,7 @@ const DelegateBox = (data) => {
           }}
         />
         <MidContainer>
-          <DelegateBoxName data-testid="delegate-box-name">{shortenAddress(name, 16)}</DelegateBoxName>
+          <DelegateBoxName data-testid="delegate-box-name">{name}</DelegateBoxName>
           <DelegateBoxVotes>
             {Math.floor(votes)} votes
           </DelegateBoxVotes>
