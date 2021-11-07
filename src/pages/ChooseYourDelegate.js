@@ -7,6 +7,7 @@ import styled from "styled-components";
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
+import Loader from "../components/Loader";
 import { Header, Content } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
@@ -32,7 +33,7 @@ import {
   ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
   getENSTokenContractAddress,
-  getReverseRecordsAddress
+  getReverseRecordsAddress,
 } from "../utils/consts";
 
 const DELEGATE_TEXT_QUERY = gql`
@@ -119,25 +120,47 @@ const cleanDelegatesList = (delegatesList) =>
 // This function ranks delegates by delegated vote total until they reach the
 // target percentage of all delegated votes, at which point their ranking begins to decrease.
 const generateRankingScore = (score, total, prepopDelegate, name) => {
-  if(score > total * TARGET_DELEGATE_SIZE) {
+  if (score > total * TARGET_DELEGATE_SIZE) {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
   }
-  return score + (prepopDelegate === name ? 100000000 : 0)
-}
-
-const addBalance = async (cleanList, tokenAllocation, tokensClaimed, prepopDelegate) => {
-  return cleanList.map(item => {
-    let allocation = tokenAllocation.find(x => x.address === item.address)
-    return ({...item,
-      ranking: generateRankingScore(item.votes + allocation.score, tokensClaimed, prepopDelegate, item.name) * Math.random(),
-      allocation: allocation.score
-    })
-  })
+  return score + (prepopDelegate === name ? 100000000 : 0);
 };
 
-const rankDelegates = async (delegateList, tokenAllocation, tokensClaimed, prepopDelegate) => {
+const addBalance = async (
+  cleanList,
+  tokenAllocation,
+  tokensClaimed,
+  prepopDelegate
+) => {
+  return cleanList.map((item) => {
+    let allocation = tokenAllocation.find((x) => x.address === item.address);
+    return {
+      ...item,
+      ranking:
+        generateRankingScore(
+          item.votes + allocation.score,
+          tokensClaimed,
+          prepopDelegate,
+          item.name
+        ) * Math.random(),
+      allocation: allocation.score,
+    };
+  });
+};
+
+const rankDelegates = async (
+  delegateList,
+  tokenAllocation,
+  tokensClaimed,
+  prepopDelegate
+) => {
   const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(cleanList, tokenAllocation, tokensClaimed, prepopDelegate);
+  const withTokenBalance = await addBalance(
+    cleanList,
+    tokenAllocation,
+    tokensClaimed,
+    prepopDelegate
+  );
   const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
   return sortedList;
 };
@@ -159,21 +182,22 @@ const fetchTokenAllocations = async (addressArray) => {
 
 const createNamehashBatches = (namehashes, perBatch = 2) => {
   var result = namehashes.reduce((resultArray, item, index) => {
-    const chunkIndex = Math.floor(index/perBatch)
+    const chunkIndex = Math.floor(index / perBatch);
 
-    if(!resultArray[chunkIndex]) {
-      resultArray[chunkIndex] = [] // start a new chunk
+    if (!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = []; // start a new chunk
     }
 
-    resultArray[chunkIndex].push(item)
+    resultArray[chunkIndex].push(item);
 
-    return resultArray
-  }, [])
-  return result
-}
+    return resultArray;
+  }, []);
+  return result;
+};
 
 const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const provider = getEthersProvider();
     const run = async () => {
@@ -205,26 +229,39 @@ const useGetDelegates = (isConnected) => {
 
       const batches = createNamehashBatches(delegateNamehashes, 50);
 
-      const results = await Promise.all(batches.map(batch => ENSDelegateContract.getDelegates(batch)))
-      const flatResults = results?.flat()
+      const results = await Promise.all(
+        batches.map((batch) => ENSDelegateContract.getDelegates(batch))
+      );
+      const flatResults = results?.flat();
 
       const processedDelegateData = processENSDelegateContractResults(
         flatResults,
         filteredDelegateData
       );
 
-      const addresses = processedDelegateData.map(data => data.address)
+      const addresses = processedDelegateData.map((data) => data.address);
       const names = await ReverseRecordsContract.getNames(addresses);
       const processedDelegateDataWithReverse = processedDelegateData.filter(
-          (d, i) => d.name == names[i]
+        (d, i) => d.name == names[i]
       );
-      const tokenAllocations = await fetchTokenAllocations(addresses)
-      const tokensLeft = await ENSTokenContract.balanceOf(ENSTokenContract.address);
+      const tokenAllocations = await fetchTokenAllocations(addresses);
+      const tokensLeft = await ENSTokenContract.balanceOf(
+        ENSTokenContract.address
+      );
       // Actual number of tokens claimed, plus total of delegates' own airdrops.
-      const tokensClaimed = (25000000 - bigNumberToDecimal(tokensLeft)) + tokenAllocations.reduce((total, current) => total + current.score, 0);
-      console.log({target: tokensClaimed * TARGET_DELEGATE_SIZE})
-      const rankedDelegates = await rankDelegates(processedDelegateDataWithReverse, tokenAllocations, tokensClaimed, getDelegateReferral());
+      const tokensClaimed =
+        25000000 -
+        bigNumberToDecimal(tokensLeft) +
+        tokenAllocations.reduce((total, current) => total + current.score, 0);
+      console.log({ target: tokensClaimed * TARGET_DELEGATE_SIZE });
+      const rankedDelegates = await rankDelegates(
+        processedDelegateDataWithReverse,
+        tokenAllocations,
+        tokensClaimed,
+        getDelegateReferral()
+      );
       setDelegates(rankedDelegates);
+      setLoading(false);
     };
 
     try {
@@ -235,7 +272,10 @@ const useGetDelegates = (isConnected) => {
       console.error("Error getting delegates: ", error);
     }
   }, [isConnected]);
-  return delegates;
+  return {
+    loading,
+    delegates,
+  };
 };
 
 const CHOOSE_YOUR_DELEGATE_QUERY = gql`
@@ -337,14 +377,7 @@ const DelegateBoxVotes = styled.div`
 `;
 
 const DelegateBox = (data) => {
-  const {
-    avatar,
-    profile,
-    votes,
-    name,
-    setRenderKey,
-    userAccount,
-  } = data;
+  const { avatar, profile, votes, name, setRenderKey, userAccount } = data;
   const selected = name === getDelegateChoice(userAccount);
   return (
     <DelegateBoxContainer
@@ -365,10 +398,10 @@ const DelegateBox = (data) => {
           }}
         />
         <MidContainer>
-          <DelegateBoxName data-testid="delegate-box-name">{name}</DelegateBoxName>
-          <DelegateBoxVotes>
-            {Math.floor(votes)} votes
-          </DelegateBoxVotes>
+          <DelegateBoxName data-testid="delegate-box-name">
+            {name}
+          </DelegateBoxName>
+          <DelegateBoxVotes>{Math.floor(votes)} votes</DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
       <ProfileLink
@@ -391,15 +424,17 @@ const DelegatesContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
+  padding: 10px 30px 0;
   justify-content: center;
-  max-height: calc(100vh /3);
+  max-height: calc(100vh / 3);
   overflow-y: auto;
 `;
 
-const HeaderContianer = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
+  padding: 30px 30px 0;
 
   ${largerThan.mobile`
     flex-direction: row;
@@ -426,19 +461,21 @@ const CopyContainer = styled.div`
 
 const Input = styled.input`
   height: 64px;
-  width: 100%;
+  width: calc(100% - 60px);
+  box-sizing: border-box;
   -webkit-appearance: none;
   outline: none;
   border: none;
   background: #f6f6f6;
   border-radius: 14px;
   padding: 0px 20px;
-  box-sizing: border-box;
+
   font-style: normal;
   font-weight: bold;
   font-size: 22px;
   line-height: 28px;
-  margin-bottom: 12px;
+
+  margin: 0 30px 0;
 
   &::placeholder {
     color: black;
@@ -449,14 +486,16 @@ const Input = styled.input`
 const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
   const history = useHistory();
-  const delegates = useGetDelegates(chooseData.isConnected);
+  const { delegates, loading: delegatesLoading } = useGetDelegates(
+    chooseData.isConnected
+  );
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
 
   return (
     <WrappedNarrowColumn>
-      <ContentBox>
-        <HeaderContianer>
+      <ContentBox padding={"none"}>
+        <HeaderContainer>
           <CopyContainer>
             <Header>Choose a delegate</Header>
             <Gap height={3} />
@@ -483,22 +522,26 @@ const ChooseYourDelegate = () => {
               }}
             />
           </div>
-        </HeaderContianer>
+        </HeaderContainer>
         <Input
           type="text"
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search delegates"
         />
-        <DelegatesContainer data-testid="delegates-list-container">
-          {delegates
-            .filter((x) => x.name.includes(search))
-            .map((x) => ({
-              ...x,
-              setRenderKey,
-              userAccount: chooseData.address,
-            }))
-            .map(DelegateBox)}
-        </DelegatesContainer>
+        {delegatesLoading ? (
+          <Loader center large />
+        ) : (
+          <DelegatesContainer data-testid="delegates-list-container">
+            {delegates
+              .filter((x) => x.name.includes(search))
+              .map((x) => ({
+                ...x,
+                setRenderKey,
+                userAccount: chooseData.address,
+              }))
+              .map(DelegateBox)}
+          </DelegatesContainer>
+        )}
       </ContentBox>
       <Footer
         rightButtonText="Next"
