@@ -157,6 +157,21 @@ const fetchTokenAllocations = async (addressArray) => {
   }
 };
 
+const createNamehashBatches = (namehashes, perBatch = 2) => {
+  var result = namehashes.reduce((resultArray, item, index) => {
+    const chunkIndex = Math.floor(index/perBatch)
+
+    if(!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = [] // start a new chunk
+    }
+
+    resultArray[chunkIndex].push(item)
+
+    return resultArray
+  }, [])
+  return result
+}
+
 const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState([]);
   useEffect(() => {
@@ -188,12 +203,13 @@ const useGetDelegates = (isConnected) => {
         provider
       );
 
-      const results = await ENSDelegateContract.getDelegates(
-        delegateNamehashes
-      );
+      const batches = createNamehashBatches(delegateNamehashes, 50);
+
+      const results = await Promise.all(batches.map(batch => ENSDelegateContract.getDelegates(batch)))
+      const flatResults = results?.flat()
 
       const processedDelegateData = processENSDelegateContractResults(
-        results,
+        flatResults,
         filteredDelegateData
       );
 
