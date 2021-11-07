@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 
 import theme from "./theme";
 
-const ButtonContainer = styled.button`
+const ButtonContainer = styled.div`
   background: ${(p) => {
     switch (p.type) {
       case "approve":
@@ -51,10 +51,7 @@ const ButtonContainer = styled.button`
         return "pointer";
     }
   }};
-  background-color: transparent;
-  border: none;
-  width: 100%;
-
+  pointer-events: ${p => p.type === 'disabled' ? 'none' : 'initial'};
   user-select: none;
 
   &:hover {
