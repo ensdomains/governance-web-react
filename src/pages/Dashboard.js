@@ -133,8 +133,6 @@ const Dashboard = () => {
     eligible,
   } = addressDetails;
 
-  console.log(addressDetails);
-
   const history = useHistory();
 
   const [isClaimed, setIsClaimed] = useState(false);
