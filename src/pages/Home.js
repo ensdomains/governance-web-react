@@ -5,7 +5,7 @@ import { Link, Title, SubTitle } from "../components/text";
 import Gap from "../components/Gap";
 import { CTAButton } from "../components/buttons";
 
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { useHistory } from "react-router-dom";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
@@ -46,8 +46,7 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <img src={SplashENSLogo} />
-      <Gap height={6} />
+      <SplashENSLogo />
       <Link
         href="https://ens.mirror.xyz/-eaqMv7XPikvXhvjbjzzPNLS4wzcQ8vdOgi9eNXeUuY"
         target="_blank"
