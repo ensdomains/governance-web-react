@@ -22,6 +22,7 @@ import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 
+
 const CHOOSE_YOUR_DELEGATE_QUERY = gql`
   query chooseDelegateQuery @client {
     addressDetails
@@ -184,7 +185,7 @@ const DelegatesContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
-  padding: 0px 30px 10px;
+  padding: 10px 30px 10px;
   justify-content: center;
   max-height: calc(100vh / 3);
   overflow-y: auto;
