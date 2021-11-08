@@ -11,7 +11,6 @@ import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
 import { getEthersProvider } from "../web3modal";
 import TransactionState from "../components/TransactionState";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";

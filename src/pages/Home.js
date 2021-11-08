@@ -5,7 +5,7 @@ import { Link, Title, SubTitle } from "../components/text";
 import Gap from "../components/Gap";
 import { CTAButton } from "../components/buttons";
 
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { useHistory } from "react-router-dom";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
@@ -17,10 +17,29 @@ const HomeContainer = styled.div`
   align-items: center;
 `;
 
-const WrappedTitle = styled(Title)``;
+const WrappedTitle = styled.div`
+    font-weight: bold;
+    font-size: 44px;
+    line-height: 118%;
+    
+    text-align: center;
+    letter-spacing: -0.01em;
+    background: linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`;
 
-const WrappedSubTitle = styled(SubTitle)`
+const WrappedSubTitle = styled.div`
   max-width: 560px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 150%;
+
+  text-align: center;
+  letter-spacing: -0.01em;
+
+  color: #717171;
 `;
 
 const HOME_QUERY = gql`
@@ -46,8 +65,7 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <img src={SplashENSLogo} />
-      <Gap height={6} />
+      <SplashENSLogo />
       <Link
         href="https://ens.mirror.xyz/-eaqMv7XPikvXhvjbjzzPNLS4wzcQ8vdOgi9eNXeUuY"
         target="_blank"
