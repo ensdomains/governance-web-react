@@ -24,7 +24,7 @@ describe("Token claim site", () => {
                 body: {
                     from: "0x0904Dac3347eA47d208F3Fd67402D039a3b99859",
                     to: "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
-                    input: "0x7cb647592c05204eb0b864c264d9bfd6957940471791ad2e156f2ede49db351d3ace3dea",
+                    input: "0x7cb64759aca22207fc31a4c3ecd6ab11ce2df3db64b8afeba4f31db2b9aeb76f1dada659",
                     gas: 8522744,
                     gas_price: "0",
                     value: 0,
@@ -43,6 +43,7 @@ describe("Token claim site", () => {
         // cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
         cy.contains("Start your claim process", { timeout: 10000 }).click();
+
         cy.contains("Next").click();
         cy.contains("Next").click();
         cy.contains("Start").click();
@@ -69,7 +70,7 @@ describe("Token claim site", () => {
 
             // Should retain delegate choice after refresh
             cy.reload()
-            cy.contains(name, {timeout: 10000})
+            cy.contains(name, {timeout: 25000})
                 .parent()
                 .parent()
                 .parent()
@@ -95,16 +96,16 @@ describe("Token claim site", () => {
                 cy.get('input').type('0ba')
                 cy.wait(5000)
                 cy.contains('Next').click()
-                cy.contains('leontalbert.eth', { timeout: 10000 })
+                cy.contains('leontalbert.eth', { timeout: 20000 })
 
                 cy.contains("Claim", {timeout: 20000}).click();
                 cy.confirmMetamaskTransaction();
                 cy.contains("Return to dashboard", {timeout: 20000}).click();
 
                 //Should change to claimed state after claiming
-                cy.contains("You were eligible for the airdrop!")
+                cy.contains("You were eligible for the airdrop!", {timeout: 20000})
                 cy.contains("Tokens claimed successfully").click({force: true})
-                cy.contains("You were eligible for the airdrop!").should('have.text', 'You were eligible for the airdrop!')
+                cy.contains("You were eligible for the airdrop!", {timeout: 20000}).should('have.text', 'You were eligible for the airdrop!')
 
                 // //If already claimed should redirect to dashboard
                 cy.visit("http://localhost:3000/delegates");
