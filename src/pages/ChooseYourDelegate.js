@@ -124,7 +124,7 @@ const generateRankingScore = (score, total, prepopDelegate, name) => {
   if (score > total * TARGET_DELEGATE_SIZE) {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
   }
-  return score + (prepopDelegate === name ? 100000000 : 0);
+  return score + (prepopDelegate === name ? 100000000 : 0)
 };
 
 const addBalance = async (
