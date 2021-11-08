@@ -47,6 +47,17 @@ const ENS_CONSTITUTION_SIGN_QUERY = gql`
   }
 `;
 
+const getRightButtonText = (state) => {
+  switch (state) {
+    case "LOADING":
+      return "Signing...";
+    case "SUCCESS":
+      return "Continuing...";
+    case "ERROR":
+      return "Try Again";
+  }
+};
+
 const ENSConstitutionSign = ({ location }) => {
   const { data } = useQuery(ENS_CONSTITUTION_SIGN_QUERY);
   const history = useHistory();
@@ -56,20 +67,20 @@ const ENSConstitutionSign = ({ location }) => {
   });
 
   useEffect(() => {
-    let timeout
+    let timeout;
     const run = async () => {
       if (location.state && data.isConnected) {
         timeout = await handleVote(setVoteState, data.address, history);
       }
-    }
+    };
 
-    run()
+    run();
     return () => {
-      console.log('unmount: ', timeout)
-      if(timeout) {
-        clearTimeout(timeout)
+      console.log("unmount: ", timeout);
+      if (timeout) {
+        clearTimeout(timeout);
       }
-    }
+    };
   }, [data.isConnected, data.address]);
 
   return (
@@ -94,9 +105,7 @@ const ENSConstitutionSign = ({ location }) => {
         leftButtonCallback={() => {
           history.push("/constitution");
         }}
-        rightButtonText={
-          voteState.state === "SUCCESS" ? "Continuing..." : "Try Again"
-        }
+        rightButtonText={getRightButtonText(voteState.state)}
         rightButtonCallback={() => {
           if (voteState.state === "SUCCESS") {
             history.push("/delegates");
