@@ -1,4 +1,4 @@
-export const PROPOSAL_ID = "QmRF4PHQQ3RvVaQX4Hu3Jb1ygCDk3BxThSMtNwcUbBvf6C";
+export const PROPOSAL_ID = "QmbYusUed8Hh6r1jjqWSfpbbaZPhfAFRWFJLxBYisRWZsR";
 export const SPACE_ID = "bananana.eth";
 export const ALLOCATION_ENDPOINT =
   "https://us-central1-ens-manager.cloudfunctions.net/getvotes";
