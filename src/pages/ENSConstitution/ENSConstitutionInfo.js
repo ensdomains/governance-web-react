@@ -45,8 +45,7 @@ const ENSConstitutionInfo = ({
         </Content>
         <Gap height={3} />
         <Content>
-          Future amendments may be made to this Constitution by two-thirds
-          majority and at least 5% of all tokens participating.
+          Future amendments may be made to this Constitution by two-thirds majority and at least 1% of all tokens participating.
         </Content>
         <Gap height={3} />
       </ContentBoxWithHeader>
