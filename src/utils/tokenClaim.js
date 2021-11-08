@@ -63,7 +63,7 @@ export const submitClaim = async (
     // );
     // console.log('estimation: ', Number(estimation))
     const result = await ENSTokenContract.claimTokens(balance, address, proof)
-    await result.wait(10)
+    await result.wait(1)
     setClaimState({
       state: "SUCCESS",
       message: "",
