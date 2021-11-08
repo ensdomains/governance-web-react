@@ -10,6 +10,8 @@
     "@ethersproject/bytes": "latest",
     "@myetherwallet/mewconnect-web-client": "2.2.0-beta.13",
     "@portis/web3": "4.0.5",
+    "@sentry/react": "6.14.1",
+    "@sentry/tracing": "6.14.1",
     "@snapshot-labs/snapshot.js": "0.2.9",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
