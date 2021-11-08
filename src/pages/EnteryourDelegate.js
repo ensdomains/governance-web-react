@@ -69,11 +69,12 @@ const AddressMessage = styled.div`
   font-size: 15px;
   line-height: 19px;
 
-  display: flex;
-  align-items: center;
-
   color: #989898;
   margin-bottom: 14px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const InputComponent = ({
@@ -138,7 +139,7 @@ const InputComponent = ({
   };
 
   useEffect(() => {
-    if(defaultValue) {
+    if (defaultValue) {
       onChange({
         target: {
           value: defaultValue,

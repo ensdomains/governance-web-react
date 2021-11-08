@@ -32,17 +32,25 @@ import {
 import { useQueryString } from "./utils/hooks";
 
 const AppContainer = styled.div`
-  max-width: 1200px;
   margin: auto;
-  padding-bottom: 80px;
   box-sizing: border-box;
-  flex-grow: 1;
   overflow-x: hidden;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const AppContainerOuter = styled.div`
   height: calc(100vh - 150px);
   display: flex;
+  flex-direction: column;
+`;
+
+const AppContainerMid = styled.div`
+  flex: 1 0 auto;
+  align-items: center;
 `;
 
 const useInit = () => {
@@ -112,32 +120,34 @@ function App() {
     <>
       <Header />
       <AppContainerOuter>
-        <AppContainer>
-          <Switch>
-            <PrivateRoute path="/why" component={Why} />
-            <PrivateRoute path="/governance" component={ENSGovernance} />
-            <PrivateRoute
-              path="/constitution/sign"
-              component={ENSConstitutionSign}
-            />
-            <PrivateRoute path="/constitution" component={ENSConstitution} />
-            <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
-            <PrivateRoute
-              path="/manual-delegates"
-              component={EnteryourDelegate}
-            />
-            <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
-            <PrivateRoute path="/summary" component={ENSSummary} />
-            <PrivateRoute path="/success" component={ENSClaimSuccess} />
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-          <SharedFooter />
-        </AppContainer>
+        <AppContainerMid>
+          <AppContainer>
+            <Switch>
+              <PrivateRoute path="/why" component={Why} />
+              <PrivateRoute path="/governance" component={ENSGovernance} />
+              <PrivateRoute
+                path="/constitution/sign"
+                component={ENSConstitutionSign}
+              />
+              <PrivateRoute path="/constitution" component={ENSConstitution} />
+              <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
+              <PrivateRoute
+                path="/manual-delegates"
+                component={EnteryourDelegate}
+              />
+              <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
+              <PrivateRoute path="/summary" component={ENSSummary} />
+              <PrivateRoute path="/success" component={ENSClaimSuccess} />
+              <Route path="/dashboard">
+                <Dashboard />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </AppContainer>
+        </AppContainerMid>
+        <SharedFooter />
       </AppContainerOuter>
     </>
   );
