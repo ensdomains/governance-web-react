@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/node_modules/@ensdomains/cypress-metamask" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/node_modules/cypress-metamask" vcs="Git" />
   </component>
 </project>

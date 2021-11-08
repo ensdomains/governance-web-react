@@ -40,9 +40,9 @@ describe("Token claim site", () => {
         cy.visit("http://localhost:3000");
         cy.contains("MetaMask").click();
         // console.log('env: ', Cypress.env('CI'))
-        cy.acceptMetamaskAccess();
+        // cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
-        cy.contains("Start your claim process").click();
+        cy.contains("Start your claim process", { timeout: 10000 }).click();
         cy.contains("Next").click();
         cy.contains("Next").click();
         cy.contains("Start").click();
@@ -95,7 +95,7 @@ describe("Token claim site", () => {
                 cy.get('input').type('0ba')
                 cy.wait(5000)
                 cy.contains('Next').click()
-                cy.contains('leontalbert.eth')
+                cy.contains('leontalbert.eth', { timeout: 10000 })
 
                 cy.contains("Claim", {timeout: 20000}).click();
                 cy.confirmMetamaskTransaction();
