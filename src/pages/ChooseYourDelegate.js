@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import Loader from "../components/Loader";
+import LazyImage from "../components/LazyImage";
 import { Header, Content } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
@@ -148,12 +149,13 @@ const DelegateBox = (data) => {
       {selected && <Logo src={GreenTick} />}
       <LeftContainer>
         {imageSrc ? (
-          <AvatarImg
+          <LazyImage
             src={imageUrl(avatar, name, 1)}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = GradientAvatar;
             }}
+            ImageComponent={AvatarImg}
           />
         ) : (
           <Gradient />
