@@ -42,7 +42,7 @@ describe("Token claim site", () => {
         // console.log('env: ', Cypress.env('CI'))
         cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
-        cy.contains("Start your claim process").click();
+        cy.contains("Start your claim process", {timeout: 10000}).click();
         cy.contains("Next").click();
         cy.contains("Next").click();
         cy.contains("Start").click();
@@ -61,11 +61,11 @@ describe("Token claim site", () => {
         cy.contains("Sign").click();
         cy.signMetamaskMessage();
 
-        cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
+        cy.get('[data-testid="delegate-box-name"]', {timeout: 40000})
             .first()
             .invoke('text').then(name => {
 
-            cy.get('[data-testid="delegate-box-name"]', {timeout: 25000}).first().click()
+            cy.get('[data-testid="delegate-box-name"]', {timeout: 40000}).first().click()
 
             // Should retain delegate choice after refresh
             cy.reload()
@@ -77,7 +77,7 @@ describe("Token claim site", () => {
 
             // Should prepopulate with selection from query string
             cy.visit("http://localhost:3000/delegates?delegate=leontalbert.eth");
-            cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
+            cy.get('[data-testid="delegate-box-name"]', {timeout: 40000})
                 .first().invoke('text').then(prepopName => {
 
                 expect(prepopName).to.equal('leontalbert.eth')
