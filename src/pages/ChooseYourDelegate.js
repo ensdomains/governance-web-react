@@ -23,7 +23,6 @@ import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 
-
 const CHOOSE_YOUR_DELEGATE_QUERY = gql`
   query chooseDelegateQuery @client {
     addressDetails
@@ -136,7 +135,6 @@ const DelegateBox = (data) => {
   const { avatar, profile, votes, name, setRenderKey, userAccount } = data;
   const selected = name === getDelegateChoice(userAccount);
   const imageSrc = imageUrl(avatar, name, 1);
-  console.log(imageSrc);
   return (
     <DelegateBoxContainer
       key={name}
@@ -295,11 +293,11 @@ const ChooseYourDelegate = () => {
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
             {delegates
-              .filter((x) => x.name.includes(search))
               .map((x) => ({
                 ...x,
                 setRenderKey,
                 userAccount: chooseData.address,
+                search: x.name.includes(search),
               }))
               .map(DelegateBox)}
           </DelegatesContainer>
