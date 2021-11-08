@@ -125,7 +125,7 @@ const generateRankingScore = (score, total, prepopDelegate, name) => {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0)
   }
   return score + (prepopDelegate === name ? 100000000 : 0)
-}
+}=
 
 const addBalance = async (
   cleanList,
