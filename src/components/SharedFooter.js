@@ -7,16 +7,12 @@ import { ReactComponent as DiscordGrey } from "../assets/imgs/DiscordGrey.svg";
 import {largerThan} from "../utils/styledComponents";
 
 const SharedFooterContainer = styled.div`
-  ${largerThan.tablet`
-    position: fixed;
-    bottom: 0;
-    right: 0;
-  `}
   height: 100px;
   display: flex;
   justify-content: center;
   padding: 0 20px;
   z-index: 1000;
+  flex-shrink: 0;
 `;
 
 const LeftContainer = styled.div``;
