@@ -52,7 +52,6 @@ const ButtonContainer = styled.div`
     }
   }};
   pointer-events: ${p => p.type === 'disabled' ? 'none' : 'initial'};
-
   user-select: none;
 
   &:hover {
@@ -67,5 +66,5 @@ const ButtonContainer = styled.div`
 `;
 
 export const CTAButton = (props) => {
-  return <ButtonContainer {...props}>{props.text}</ButtonContainer>;
+  return <ButtonContainer disabled={props.type === 'disabled'} {...props}>{props.text}</ButtonContainer>;
 };
