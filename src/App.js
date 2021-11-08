@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -29,7 +29,7 @@ import {
   setDelegateChoice,
   setDelegateReferral,
 } from "./pages/ENSConstitution/delegateHelpers";
-import { useQueryString } from "./utils/hooks";
+import { useQueryString, useGetDelegates } from "./utils/hooks";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -102,10 +102,11 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
 function App() {
   const query = useQueryString();
   const {
-    data: { address },
+    data: { address, isConnected },
   } = useQuery(gql`
     query getAddress @client {
       address
+      isConnected
     }
   `);
   useEffect(() => {
@@ -115,6 +116,8 @@ function App() {
       setDelegateReferral(delegate);
     }
   }, [address]);
+
+  useGetDelegates(isConnected);
 
   return (
     <>
