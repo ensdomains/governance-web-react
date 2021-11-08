@@ -293,11 +293,11 @@ const ChooseYourDelegate = () => {
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
             {delegates
+              .filter((x) => x.name.includes(search))
               .map((x) => ({
                 ...x,
                 setRenderKey,
                 userAccount: chooseData.address,
-                search: x.name.includes(search),
               }))
               .map(DelegateBox)}
           </DelegatesContainer>
