@@ -40,7 +40,7 @@ describe("Token claim site", () => {
         cy.visit("http://localhost:3000");
         cy.contains("MetaMask").click();
         // console.log('env: ', Cypress.env('CI'))
-        // cy.acceptMetamaskAccess();
+        cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
         cy.contains("Start your claim process", { timeout: 10000 }).click();
 
