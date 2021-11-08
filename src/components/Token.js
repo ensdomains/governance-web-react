@@ -1,12 +1,15 @@
 import styled from "styled-components";
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 
 const Asset = styled.span`
   position: relative;
 `;
 
-const Logo = styled.img`
+const Logo = styled(SplashENSLogo)`
   position: absolute;
+  width: 21px;
+  height: 21px;
+  margin-top: 1px;
 `;
 
 const Symbol = styled.span`
@@ -17,7 +20,7 @@ const Symbol = styled.span`
 
 const Token = ({ asset, start }) => (
   <Asset start={start}>
-    <Logo src={SplashENSLogo} width={21} />
+    <Logo />
     <Symbol>ENS</Symbol>
   </Asset>
 );
