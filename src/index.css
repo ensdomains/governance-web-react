@@ -1,3 +1,7 @@
+html, body {
+  height: 100%;
+}
+
 html {
   background: radial-gradient(
       40.48% 67.6% at 50% 32.4%,
