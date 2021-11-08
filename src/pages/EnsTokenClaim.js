@@ -30,7 +30,7 @@ const handleClaim = async (address, setClaimState, history) => {
     let provider = getEthersProvider();
 
     // const displayName = getDelegateChoice(address);
-    const displayName = 'leontalbert.eth'
+    const displayName = "leontalbert.eth";
     if (!displayName) {
       throw "No chosen delegate";
     }
@@ -71,6 +71,17 @@ const handleClaim = async (address, setClaimState, history) => {
   }
 };
 
+const getRightButtonText = (state) => {
+  switch (state) {
+    case "LOADING":
+      return "Claiming...";
+    case "SUCCESS":
+      return "Continuing...";
+    case "ERROR":
+      return "Try Again";
+  }
+};
+
 const ENSTokenClaim = ({ location }) => {
   const {
     data: { isConnected, address },
@@ -87,20 +98,19 @@ const ENSTokenClaim = ({ location }) => {
   });
 
   useEffect(() => {
-    let timeout
+    let timeout;
     const run = async () => {
       if (location.state && isConnected) {
         timeout = await handleClaim(address, setClaimState, history);
       }
-    }
+    };
 
-    run()
+    run();
     return () => {
-      if(timeout) {
-        clearTimeout(timeout)
+      if (timeout) {
+        clearTimeout(timeout);
       }
-    }
-
+    };
   }, [isConnected]);
 
   return (
@@ -128,9 +138,7 @@ const ENSTokenClaim = ({ location }) => {
         leftButtonCallback={() => {
           history.push("/summary");
         }}
-        rightButtonText={
-          claimState.state === "SUCCESS" ? "Continuing..." : "Try Again"
-        }
+        rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
             history.push("/success");
