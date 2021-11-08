@@ -440,7 +440,7 @@ const DelegatesContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
-  padding: 10px 30px 30px;
+  padding: 0px 30px 10px;
   justify-content: center;
   max-height: calc(100vh / 3);
   overflow-y: auto;
@@ -491,7 +491,7 @@ const Input = styled.input`
   font-size: 22px;
   line-height: 28px;
 
-  margin: 0 30px 0;
+  margin: 0 30px 10px;
 
   &::placeholder {
     color: black;
