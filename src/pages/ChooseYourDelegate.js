@@ -20,6 +20,7 @@ import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
+import GradientAvatar from "../assets/imgs/Gradient.svg";
 import {
   getDelegateChoice,
   setDelegateChoice,
@@ -307,6 +308,7 @@ const DelegateBoxContainer = styled.div`
 `;
 
 const AvatarImg = styled.img`
+  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
   border-radius: 50%;
   width: ${(p) => (p.large ? "60px" : "50px")};
   height: ${(p) => (p.large ? "60px" : "50px")};
@@ -376,9 +378,19 @@ const DelegateBoxVotes = styled.div`
   color: #989898;
 `;
 
+const Gradient = styled.div`
+  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
+  width: ${(p) => (p.large ? "60px" : "50px")};
+  height: ${(p) => (p.large ? "60px" : "50px")};
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
 const DelegateBox = (data) => {
   const { avatar, profile, votes, name, setRenderKey, userAccount } = data;
   const selected = name === getDelegateChoice(userAccount);
+  const imageSrc = imageUrl(avatar, name, 1);
+  console.log(imageSrc);
   return (
     <DelegateBoxContainer
       key={name}
@@ -390,13 +402,17 @@ const DelegateBox = (data) => {
     >
       {selected && <Logo src={GreenTick} />}
       <LeftContainer>
-        <AvatarImg
-          src={imageUrl(avatar, name, 1)}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "https://placeimg.com/200/200/animals";
-          }}
-        />
+        {imageSrc ? (
+          <AvatarImg
+            src={imageUrl(avatar, name, 1)}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = GradientAvatar;
+            }}
+          />
+        ) : (
+          <Gradient />
+        )}
         <MidContainer>
           <DelegateBoxName data-testid="delegate-box-name">
             {name}
@@ -424,7 +440,7 @@ const DelegatesContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
-  padding: 10px 30px 0;
+  padding: 10px 30px 30px;
   justify-content: center;
   max-height: calc(100vh / 3);
   overflow-y: auto;
