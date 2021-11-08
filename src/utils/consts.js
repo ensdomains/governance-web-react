@@ -54,4 +54,5 @@ export const supportedAvatarProtocols = [
   "https://",
   "ipfs://",
   "eip155",
+  "Qm",
 ];

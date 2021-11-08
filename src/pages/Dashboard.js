@@ -114,11 +114,12 @@ const WrappedContent = styled(Content)`
 
 const Dashboard = () => {
   const {
-    data: { address, addressDetails },
+    data: { address, addressDetails, network },
   } = useQuery(gql`
     query getHeaderData @client {
       address
       addressDetails
+      network
     }
   `);
 
