@@ -37,7 +37,7 @@ const DelegateBoxContainer = styled.div`
     ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
   box-sizing: border-box;
   border-radius: 16px;
-  display: flex;
+  display: ${(p) => (p.search ? "flex" : "none")};
   height: 80px;
   align-items: center;
   padding: 15px;
@@ -132,7 +132,8 @@ const Gradient = styled.div`
 `;
 
 const DelegateBox = (data) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount } = data;
+  const { avatar, profile, votes, name, setRenderKey, userAccount, search } =
+    data;
   const selected = name === getDelegateChoice(userAccount);
   const imageSrc = imageUrl(avatar, name, 1);
   return (
@@ -142,6 +143,7 @@ const DelegateBox = (data) => {
         setDelegateChoice(userAccount, name);
         setRenderKey((x) => x + 1);
       }}
+      search={search}
       selected={selected}
     >
       {selected && <Logo src={GreenTick} />}
@@ -293,11 +295,11 @@ const ChooseYourDelegate = () => {
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
             {delegates
-              .filter((x) => x.name.includes(search))
               .map((x) => ({
                 ...x,
                 setRenderKey,
                 userAccount: chooseData.address,
+                search: x.name.includes(search),
               }))
               .map(DelegateBox)}
           </DelegatesContainer>
