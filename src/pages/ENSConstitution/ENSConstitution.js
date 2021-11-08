@@ -1,8 +1,8 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { useQuery, gql } from "@apollo/client";
-import ENSConstitutionVoting from "./ENSConstitutionVoting";
-import ENSConstitutionSummary from "./ENSConstitutionSummary";
+import React from "react"
+import { Route, Switch } from "react-router-dom"
+import { useQuery, gql } from "@apollo/client"
+import ENSConstitutionVoting from "./ENSConstitutionVoting"
+import ENSConstitutionSummary from "./ENSConstitutionSummary"
 
 const ENSConstitution = () => {
   const {
@@ -12,8 +12,8 @@ const ENSConstitution = () => {
       address
       isConnected
     }
-  `);
-  if (!isConnected) return null;
+  `)
+  if (!isConnected) return null
   return (
     <Switch>
       <Route path="/constitution/summary">
@@ -23,7 +23,7 @@ const ENSConstitution = () => {
         <ENSConstitutionVoting account={account} />
       </Route>
     </Switch>
-  );
-};
+  )
+}
 
-export default ENSConstitution;
+export default ENSConstitution

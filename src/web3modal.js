@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from "ethers"
 
 import {
   addressReactive,
@@ -6,21 +6,21 @@ import {
   isConnected,
   addressDetails,
   network,
-} from "./apollo";
-import { getClaimData } from "./utils/utils";
-import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
+} from "./apollo"
+import { getClaimData } from "./utils/utils"
+import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers"
 
 const INFURA_ID =
   window.location.host === "app.ens.domains"
     ? "90f210707d3c450f847659dc9a3436ea"
-    : "58a380d3ecd545b2b5b3dad5d2b18bf0";
+    : "58a380d3ecd545b2b5b3dad5d2b18bf0"
 
-const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
+const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5"
 
-let provider;
-let web3Modal;
-let ethersProvider;
-let ensInstance;
+let provider
+let web3Modal
+let ethersProvider
+let ensInstance
 
 const option = {
   network: "mainnet", // optional
@@ -61,76 +61,76 @@ const option = {
       packageFactory: true,
     },
   },
-};
+}
 
 export const connect = async () => {
   try {
-    const Web3Modal = (await import("@ensdomains/web3modal")).default;
-    web3Modal = new Web3Modal(option);
-    provider = await web3Modal.connect();
+    const Web3Modal = (await import("@ensdomains/web3modal")).default
+    web3Modal = new Web3Modal(option)
+    provider = await web3Modal.connect()
 
-    return provider;
+    return provider
   } catch (e) {
     if (e !== "Modal closed by user") {
-      throw e;
+      throw e
     }
   }
-};
+}
 
 export const disconnect = async function () {
   if (web3Modal) {
-    await web3Modal.clearCachedProvider();
+    await web3Modal.clearCachedProvider()
   }
 
   if (provider && provider.disconnect) {
-    provider.disconnect();
+    provider.disconnect()
   }
-};
+}
 
 export const initWeb3 = async () => {
-  const web3Provider = await connect();
+  const web3Provider = await connect()
 
   web3Provider?.on("chainChanged", async (_chainId) => {
-    window.location.reload();
-  });
+    window.location.reload()
+  })
 
   web3Provider?.on("accountsChanged", async (accounts) => {
-    window.location.reload();
-  });
+    window.location.reload()
+  })
 
   try {
-    ethersProvider = new ethers.providers.Web3Provider(web3Provider);
+    ethersProvider = new ethers.providers.Web3Provider(web3Provider)
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
 
-  const signer = ethersProvider?.getSigner();
-  let address;
+  const signer = ethersProvider?.getSigner()
+  let address
 
   if (signer) {
     try {
-      address = (await signer.getAddress()).toLowerCase();
+      address = (await signer.getAddress()).toLowerCase()
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
   }
 
   if (address) {
-    initLocalStorage(address);
-    isConnected(true);
-    addressReactive(address);
-    const net = await ethersProvider.getNetwork();
-    network(net.chainId);
+    initLocalStorage(address)
+    isConnected(true)
+    addressReactive(address)
+    const net = await ethersProvider.getNetwork()
+    network(net.chainId)
     // hasClaimed(address)
-    const claimData = await getClaimData(address);
-    addressDetails(claimData);
+    const claimData = await getClaimData(address)
+    addressDetails(claimData)
 
-    return;
+    return
   }
-  isConnected(false);
-  addressReactive(null);
-};
+  isConnected(false)
+  addressReactive(null)
+}
 
-export const getProvider = () => provider;
-export const getEthersProvider = () => ethersProvider;
-export const getEnsInstance = () => ensInstance;
+export const getProvider = () => provider
+export const getEthersProvider = () => ethersProvider
+export const getEnsInstance = () => ensInstance

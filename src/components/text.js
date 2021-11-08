@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
-import theme from "./theme";
+import theme from "./theme"
 
 export const Link = styled.a`
   font-style: normal;
@@ -19,7 +19,7 @@ export const Link = styled.a`
   &:active {
     color: ${theme.colors.blue};
   }
-`;
+`
 
 export const Title = styled.div`
   font-size: 72px;
@@ -36,7 +36,7 @@ export const Title = styled.div`
   line-height: 60px;
   text-align: center;
   letter-spacing: -0.01em;
-`;
+`
 
 export const SubTitle = styled.div`
   font-style: normal;
@@ -46,7 +46,7 @@ export const SubTitle = styled.div`
   text-align: center;
   letter-spacing: -0.01em;
   color: ${theme.colors.text.medium};
-`;
+`
 
 export const SubsubTitle = styled.div`
   font-style: normal;
@@ -56,7 +56,7 @@ export const SubsubTitle = styled.div`
   letter-spacing: -0.01em;
   color: #717171;
   opacity: 0.6;
-`;
+`
 
 export const Header = styled.div`
   font-style: normal;
@@ -67,7 +67,7 @@ export const Header = styled.div`
   align-items: center;
   letter-spacing: -0.01em;
   color: #000000;
-`;
+`
 
 export const Content = styled.div`
   font-style: normal;
@@ -75,7 +75,7 @@ export const Content = styled.div`
   font-size: 15px;
   line-height: 141%;
   color: #1a1a1a;
-`;
+`
 
 export const Statistic = styled.div`
   font-style: normal;
@@ -85,12 +85,12 @@ export const Statistic = styled.div`
   letter-spacing: -0.01em;
   color: #000000;
   display: flex;
-`;
+`
 
 export const TokenText = styled.span`
   color: ${theme.colors.blue};
   font-weight: bold;
-`;
+`
 
 export const IntegerBalance = styled.span`
   font-style: normal;
@@ -99,7 +99,7 @@ export const IntegerBalance = styled.span`
   line-height: 141%;
   letter-spacing: -0.01em;
   color: #000000;
-`;
+`
 
 export const DecimalBalance = styled.span`
   font-style: normal;
@@ -108,4 +108,4 @@ export const DecimalBalance = styled.span`
   line-height: 141%;
   letter-spacing: -0.01em;
   color: #bfbfbf;
-`;
+`

@@ -1,42 +1,42 @@
-import React from "react";
-import styled from "styled-components/macro";
-import { useHistory } from "react-router-dom";
+import React from "react"
+import styled from "styled-components/macro"
+import { useHistory } from "react-router-dom"
 
-import Footer from "../components/Footer";
-import Gap from "../components/Gap";
-import { Header, Content } from "../components/text";
-import { NarrowColumn } from "../components/layout";
-import { ContentBox } from "../components/layout";
+import Footer from "../components/Footer"
+import Gap from "../components/Gap"
+import { Header, Content } from "../components/text"
+import { NarrowColumn } from "../components/layout"
+import { ContentBox } from "../components/layout"
 
-import DistPngSrc from "../assets/imgs/Distribution.png";
-import DistPngMobileSrc from "../assets/imgs/DistributionMobile.png";
-import { largerThan } from "../utils/styledComponents";
+import DistPngSrc from "../assets/imgs/Distribution.png"
+import DistPngMobileSrc from "../assets/imgs/DistributionMobile.png"
+import { largerThan } from "../utils/styledComponents"
 
 const Img = styled.img`
   width: 100%;
   margin-top: -15px;
-`;
+`
 
 const WrappedNarrowColumn = styled(NarrowColumn)`
   max-width: 670px;
-`;
+`
 
 const DistPng = styled(Img)`
   display: none;
   ${largerThan.mobile`
     display: inline; 
   `}
-`;
+`
 
 const DistPngMobile = styled(Img)`
   display: inline;
   ${largerThan.mobile`
     display:none;  
   `}
-`;
+`
 
 const ENSGovernance = () => {
-  const history = useHistory();
+  const history = useHistory()
 
   return (
     <WrappedNarrowColumn>
@@ -64,15 +64,15 @@ const ENSGovernance = () => {
       <Footer
         rightButtonText="Next"
         rightButtonCallback={() => {
-          history.push("/constitution");
+          history.push("/constitution")
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/why");
+          history.push("/why")
         }}
       />
     </WrappedNarrowColumn>
-  );
-};
+  )
+}
 
-export default ENSGovernance;
+export default ENSGovernance

@@ -1,86 +1,86 @@
-import React, { useEffect, useState } from "react";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
-import { Client } from "@snapshot-labs/snapshot.js";
-import { BigNumber, Contract } from "ethers";
+import React, { useEffect, useState } from "react"
+import { gql } from "graphql-tag"
+import { useQuery } from "@apollo/client"
+import { Client } from "@snapshot-labs/snapshot.js"
+import { BigNumber, Contract } from "ethers"
 
-import Footer from "../components/Footer";
-import { Content, Header } from "../components/text";
-import { ContentBox, NarrowColumn } from "../components/layout";
-import Gap from "../components/Gap";
-import { useHistory } from "react-router-dom";
-import { getEthersProvider } from "../web3modal";
-import TransactionState from "../components/TransactionState";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
-import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree from "../merkle";
-import Pill from "../components/Pill";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
-import { submitClaim } from "../utils/tokenClaim";
-import { generateMerkleShardUrl } from "../utils/consts";
+import Footer from "../components/Footer"
+import { Content, Header } from "../components/text"
+import { ContentBox, NarrowColumn } from "../components/layout"
+import Gap from "../components/Gap"
+import { useHistory } from "react-router-dom"
+import { getEthersProvider } from "../web3modal"
+import TransactionState from "../components/TransactionState"
+import ENSTokenAbi from "../assets/abis/ENSToken.json"
+import merkleRoot from "../assets/root.json"
+import ShardedMerkleTree from "../merkle"
+import Pill from "../components/Pill"
+import { getDelegateChoice } from "./ENSConstitution/delegateHelpers"
+import { submitClaim } from "../utils/tokenClaim"
+import { generateMerkleShardUrl } from "../utils/consts"
 
 const handleClaim = async (address, setClaimState, history) => {
   try {
     setClaimState({
       state: "LOADING",
       message: "",
-    });
+    })
 
-    let delegateAddress;
-    let provider = getEthersProvider();
+    let delegateAddress
+    let provider = getEthersProvider()
 
     // const displayName = getDelegateChoice(address);
-    const displayName = "leontalbert.eth";
+    const displayName = "leontalbert.eth"
     if (!displayName) {
-      throw "No chosen delegate";
+      throw "No chosen delegate"
     }
 
     if (displayName.includes(".eth")) {
-      delegateAddress = await provider.resolveName(displayName);
+      delegateAddress = await provider.resolveName(displayName)
     } else {
-      delegateAddress = displayName;
+      delegateAddress = displayName
     }
 
-    const response = await fetch(generateMerkleShardUrl(address));
+    const response = await fetch(generateMerkleShardUrl(address))
     if (!response.ok) {
-      throw new Error("error getting shard data");
+      throw new Error("error getting shard data")
     }
 
-    const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } = merkleRoot;
+    const shardJson = await response.json({ encoding: "utf-8" })
+    const { root, shardNybbles, total } = merkleRoot
     const shardedMerkleTree = new ShardedMerkleTree(
       () => shardJson,
       shardNybbles,
       root,
       BigNumber.from(total)
-    );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
+    )
+    const [entry, proof] = shardedMerkleTree.getProof(address)
     return await submitClaim(
       entry.balance,
       proof,
       delegateAddress,
       setClaimState,
       history
-    );
+    )
   } catch (error) {
-    console.error(error);
+    console.error(error)
     setClaimState({
       state: "ERROR",
       message: error,
-    });
+    })
   }
-};
+}
 
 const getRightButtonText = (state) => {
   switch (state) {
     case "LOADING":
-      return "Claiming...";
+      return "Claiming..."
     case "SUCCESS":
-      return "Continuing...";
+      return "Continuing..."
     case "ERROR":
-      return "Try Again";
+      return "Try Again"
   }
-};
+}
 
 const ENSTokenClaim = ({ location }) => {
   const {
@@ -90,28 +90,28 @@ const ENSTokenClaim = ({ location }) => {
       isConnected
       address
     }
-  `);
-  const history = useHistory();
+  `)
+  const history = useHistory()
   const [claimState, setClaimState] = useState({
     state: "LOADING",
     message: "",
-  });
+  })
 
   useEffect(() => {
-    let timeout;
+    let timeout
     const run = async () => {
       if (location.state && isConnected) {
-        timeout = await handleClaim(address, setClaimState, history);
+        timeout = await handleClaim(address, setClaimState, history)
       }
-    };
+    }
 
-    run();
+    run()
     return () => {
       if (timeout) {
-        clearTimeout(timeout);
+        clearTimeout(timeout)
       }
-    };
-  }, [isConnected]);
+    }
+  }, [isConnected])
 
   return (
     <NarrowColumn>
@@ -136,20 +136,20 @@ const ENSTokenClaim = ({ location }) => {
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/summary");
+          history.push("/summary")
         }}
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
-            history.push("/success");
-            return;
+            history.push("/success")
+            return
           }
-          handleClaim(address, setClaimState, history);
+          handleClaim(address, setClaimState, history)
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
       />
     </NarrowColumn>
-  );
-};
+  )
+}
 
-export default ENSTokenClaim;
+export default ENSTokenClaim

@@ -1,35 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   useHistory,
-} from "react-router-dom";
-import styled from "styled-components/macro";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
+} from "react-router-dom"
+import styled from "styled-components/macro"
+import { gql } from "graphql-tag"
+import { useQuery } from "@apollo/client"
 
-import Header from "./components/Header";
-import Home from "./pages/Home";
-import ENSGovernance from "./pages/ENSGovernance";
-import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
-import Dashboard from "./pages/Dashboard";
-import ChooseYourDelegate from "./pages/ChooseYourDelegate";
-import Why from "./pages/Why";
-import { initWeb3 } from "./web3modal";
-import ENSSummary from "./pages/ENSSummary";
-import EnteryourDelegate from "./pages/EnteryourDelegate";
-import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
-import ENSTokenClaim from "./pages/EnsTokenClaim";
-import ENSClaimSuccess from "./pages/ENSClaimSuccess";
-import SharedFooter from "./components/SharedFooter";
-import { hasClaimed } from "./utils/tokenClaim";
+import Header from "./components/Header"
+import Home from "./pages/Home"
+import ENSGovernance from "./pages/ENSGovernance"
+import ENSConstitution from "./pages/ENSConstitution/ENSConstitution"
+import Dashboard from "./pages/Dashboard"
+import ChooseYourDelegate from "./pages/ChooseYourDelegate"
+import Why from "./pages/Why"
+import { initWeb3 } from "./web3modal"
+import ENSSummary from "./pages/ENSSummary"
+import EnteryourDelegate from "./pages/EnteryourDelegate"
+import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign"
+import ENSTokenClaim from "./pages/EnsTokenClaim"
+import ENSClaimSuccess from "./pages/ENSClaimSuccess"
+import SharedFooter from "./components/SharedFooter"
+import { hasClaimed } from "./utils/tokenClaim"
 
 import {
   setDelegateChoice,
   setDelegateReferral,
-} from "./pages/ENSConstitution/delegateHelpers";
-import { useQueryString } from "./utils/hooks";
+} from "./pages/ENSConstitution/delegateHelpers"
+import { useQueryString } from "./utils/hooks"
 
 const AppContainer = styled.div`
   margin: auto;
@@ -40,24 +40,24 @@ const AppContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const AppContainerOuter = styled.div`
   height: calc(100vh - 150px);
   display: flex;
   flex-direction: column;
-`;
+`
 
 const AppContainerMid = styled.div`
   flex: 1 0 auto;
   align-items: center;
-`;
+`
 
 const useInit = () => {
   useEffect(() => {
-    initWeb3();
-  }, []);
-};
+    initWeb3()
+  }, [])
+}
 
 const PRIVATE_ROUTE_QUERY = gql`
   query privateRouteQuery @client {
@@ -65,11 +65,11 @@ const PRIVATE_ROUTE_QUERY = gql`
     address
     isConnected
   }
-`;
+`
 
 function PrivateRoute({ component: Component, addressDetails, ...rest }) {
-  const { data } = useQuery(PRIVATE_ROUTE_QUERY);
-  const history = useHistory();
+  const { data } = useQuery(PRIVATE_ROUTE_QUERY)
+  const history = useHistory()
 
   useEffect(() => {
     const run = async () => {
@@ -78,43 +78,43 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
           data.addressDetails.eligible !== undefined &&
           !data.addressDetails.eligible
         ) {
-          history.push("/dashboard");
-          return;
+          history.push("/dashboard")
+          return
         }
-        const isClaimed = await hasClaimed(data.address);
+        const isClaimed = await hasClaimed(data.address)
         if (isClaimed) {
-          history.push("/dashboard");
+          history.push("/dashboard")
         }
       } catch (error) {
-        console.error("Private Route error: ", error);
-        history.push("/dashboard");
+        console.error("Private Route error: ", error)
+        history.push("/dashboard")
       }
-    };
+    }
 
     if (data.isConnected && data.addressDetails.eligible !== undefined) {
-      run();
+      run()
     }
-  }, [data.address, data.isConnected, data.addressDetails.eligible]);
+  }, [data.address, data.isConnected, data.addressDetails.eligible])
 
-  return <Route {...rest} render={(props) => <Component {...props} />} />;
+  return <Route {...rest} render={(props) => <Component {...props} />} />
 }
 
 function App() {
-  const query = useQueryString();
+  const query = useQueryString()
   const {
     data: { address },
   } = useQuery(gql`
     query getAddress @client {
       address
     }
-  `);
+  `)
   useEffect(() => {
-    const delegate = query.get("delegate");
+    const delegate = query.get("delegate")
     if (delegate && address) {
-      setDelegateChoice(address, delegate);
-      setDelegateReferral(delegate);
+      setDelegateChoice(address, delegate)
+      setDelegateReferral(delegate)
     }
-  }, [address]);
+  }, [address])
 
   return (
     <>
@@ -150,16 +150,16 @@ function App() {
         <SharedFooter />
       </AppContainerOuter>
     </>
-  );
+  )
 }
 
 function Index() {
-  useInit();
+  useInit()
   return (
     <Router>
       <App />
     </Router>
-  );
+  )
 }
 
-export default Index;
+export default Index

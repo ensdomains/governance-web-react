@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from "react"
+import styled from "styled-components"
 
-import { ContentBoxWithHeader } from "../../components/layout";
-import SectionHeader from "./SectionHeader";
-import theme from "../../components/theme";
-import Footer from "../../components/Footer";
-import { useHistory } from "react-router-dom";
-import { useQuery, gql } from "@apollo/client";
-import { Client } from "@snapshot-labs/snapshot.js";
+import { ContentBoxWithHeader } from "../../components/layout"
+import SectionHeader from "./SectionHeader"
+import theme from "../../components/theme"
+import Footer from "../../components/Footer"
+import { useHistory } from "react-router-dom"
+import { useQuery, gql } from "@apollo/client"
+import { Client } from "@snapshot-labs/snapshot.js"
 
 const SummaryArticleContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
+`
 
-const SummaryArticleLeftContianer = styled.div``;
+const SummaryArticleLeftContianer = styled.div``
 
 const SummaryArticleRightContianer = styled.div`
   font-style: normal;
@@ -27,7 +27,7 @@ const SummaryArticleRightContianer = styled.div`
   letter-spacing: -0.01em;
 
   color: #b8b8b8;
-`;
+`
 
 const SummaryArticleTitle = styled.div`
   font-style: normal;
@@ -41,7 +41,7 @@ const SummaryArticleTitle = styled.div`
 
   color: #989898;
   margin-bottom: 5px;
-`;
+`
 
 const SummaryArticleSummary = styled.div`
   max-width: 240px;
@@ -51,23 +51,23 @@ const SummaryArticleSummary = styled.div`
   line-height: 130%;
 
   color: #1a1a1a;
-`;
+`
 
 const Divider = styled.div`
   opacity: 0.05;
   border-bottom: 1px solid #000000;
   height: 0px;
   width: 100%;
-`;
+`
 
 const ForAgainst = styled.span`
   color: ${(p) => (p.for ? theme.colors.green : theme.colors.red)};
-`;
+`
 
 const ContentContainer = styled.div`
   display: grid;
   gap: 15px;
-`;
+`
 
 const SummaryArticle = ({ title, vote }, idx, arr) => {
   return (
@@ -84,11 +84,11 @@ const SummaryArticle = ({ title, vote }, idx, arr) => {
       </SummaryArticleContainer>
       {!(idx === arr.length - 1) && <Divider />}
     </>
-  );
-};
+  )
+}
 
 const Summary = ({ currentStep, setCurrentStep, constitution }) => {
-  const history = useHistory();
+  const history = useHistory()
 
   const {
     data: { address: account },
@@ -96,9 +96,9 @@ const Summary = ({ currentStep, setCurrentStep, constitution }) => {
     query getAddress @client {
       address
     }
-  `);
+  `)
 
-  if (!account) return null;
+  if (!account) return null
 
   return (
     <>
@@ -115,16 +115,16 @@ const Summary = ({ currentStep, setCurrentStep, constitution }) => {
           history.push({
             pathname: "/constitution/sign",
             state: "VOTE",
-          });
+          })
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          setCurrentStep(currentStep - 1);
+          setCurrentStep(currentStep - 1)
         }}
         text={"Almost done!"}
       />
     </>
-  );
-};
+  )
+}
 
-export default Summary;
+export default Summary

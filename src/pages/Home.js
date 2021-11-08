@@ -1,48 +1,48 @@
-import React from "react";
-import styled from "styled-components/macro";
+import React from "react"
+import styled from "styled-components/macro"
 
-import { Link, Title, SubTitle } from "../components/text";
-import Gap from "../components/Gap";
-import { CTAButton } from "../components/buttons";
+import { Link, Title, SubTitle } from "../components/text"
+import Gap from "../components/Gap"
+import { CTAButton } from "../components/buttons"
 
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
-import { useHistory } from "react-router-dom";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
-import { initWeb3 } from "../web3modal";
+import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg"
+import { useHistory } from "react-router-dom"
+import { gql } from "graphql-tag"
+import { useQuery } from "@apollo/client"
+import { initWeb3 } from "../web3modal"
 
 const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`
 
-const WrappedTitle = styled(Title)``;
+const WrappedTitle = styled(Title)``
 
 const WrappedSubTitle = styled(SubTitle)`
   max-width: 560px;
-`;
+`
 
 const HOME_QUERY = gql`
   query privateRouteQuery @client {
     addressDetails
     isConnected
   }
-`;
+`
 
 const Home = () => {
   const {
     data: { isConnected },
-  } = useQuery(HOME_QUERY);
-  const history = useHistory();
+  } = useQuery(HOME_QUERY)
+  const history = useHistory()
 
   const handleClick = () => {
     if (isConnected) {
-      history.push("/dashboard");
+      history.push("/dashboard")
     } else {
-      initWeb3();
+      initWeb3()
     }
-  };
+  }
 
   return (
     <HomeContainer>
@@ -68,7 +68,7 @@ const Home = () => {
         onClick={handleClick}
       />
     </HomeContainer>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

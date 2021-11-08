@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
+import { ethers } from "ethers"
 
-let provider;
+let provider
 
 //const getProvider()

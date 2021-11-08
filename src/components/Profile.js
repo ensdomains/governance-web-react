@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useRef, useState } from "react"
+import styled from "styled-components"
 
-import { getEthersProvider } from "../web3modal";
-import { imageUrl, shortenAddress } from "../utils/utils";
+import { getEthersProvider } from "../web3modal"
+import { imageUrl, shortenAddress } from "../utils/utils"
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ const ProfileContainer = styled.div`
     p.large ? "initial" : "0px 1px 20px rgba(0, 0, 0, 0.05)"};
   border-radius: 64px;
   padding: 8px 16px 8px 10px;
-`;
+`
 
 const RightContainer = styled.div`
   overflow: hidden;
@@ -25,7 +25,7 @@ const RightContainer = styled.div`
   div {
     overflow: hidden;
   }
-`;
+`
 
 const AvatarImg = styled.img`
   border-radius: 50%;
@@ -34,7 +34,7 @@ const AvatarImg = styled.img`
   min-width: ${(p) => (p.large ? "60px" : "50px")};
   min-height: ${(p) => (p.large ? "60px" : "50px")};
   margin-right: 10px;
-`;
+`
 
 const EmptyAvatar = styled.div`
   border-radius: 50%;
@@ -44,7 +44,7 @@ const EmptyAvatar = styled.div`
   height: ${(p) => p.large && "60px"};
   margin-right: 10px;
   background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
-`;
+`
 
 const EnsNameText = styled.div`
   font-style: normal;
@@ -57,7 +57,7 @@ const EnsNameText = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const NoNameText = styled.div`
   font-style: normal;
@@ -71,7 +71,7 @@ const NoNameText = styled.div`
   color: #323232;
 
   opacity: 0.3;
-`;
+`
 
 const AddressText = styled.div`
   font-style: normal;
@@ -102,39 +102,39 @@ const AddressText = styled.div`
         line-height: 33px;
         color: #000000;
       `}
-`;
+`
 
 const Profile = ({ address, large }) => {
-  const [profileDetails, setProfileDetails] = useState({});
+  const [profileDetails, setProfileDetails] = useState({})
 
   useEffect(() => {
     const run = async () => {
-      const ethersProvider = getEthersProvider();
+      const ethersProvider = getEthersProvider()
 
       if (!ethersProvider) {
-        console.error("no ethers provider");
-        return;
+        console.error("no ethers provider")
+        return
       }
 
-      const networkId = await ethersProvider.getNetwork();
+      const networkId = await ethersProvider.getNetwork()
 
-      const ensName = await ethersProvider.lookupAddress(address);
-      if (!ensName) return;
+      const ensName = await ethersProvider.lookupAddress(address)
+      if (!ensName) return
 
-      const resolver = await ethersProvider.getResolver(ensName);
-      const avatar = await resolver.getText("avatar");
+      const resolver = await ethersProvider.getResolver(ensName)
+      const avatar = await resolver.getText("avatar")
 
       setProfileDetails({
         ensName,
         avatar,
         networkId,
-      });
-    };
+      })
+    }
 
     run().catch((e) => {
-      console.error(e);
-    });
-  }, [address]);
+      console.error(e)
+    })
+  }, [address])
 
   return (
     <ProfileContainer {...{ large }}>
@@ -171,7 +171,7 @@ const Profile = ({ address, large }) => {
         </AddressText>
       </RightContainer>
     </ProfileContainer>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

@@ -1,21 +1,21 @@
-import React from "react";
-import styled from "styled-components";
-import { useHistory } from "react-router-dom";
+import React from "react"
+import styled from "styled-components"
+import { useHistory } from "react-router-dom"
 
-import Footer from "../components/Footer";
-import Gap from "../components/Gap";
+import Footer from "../components/Footer"
+import Gap from "../components/Gap"
 import {
   Header,
   Content,
   TokenText,
   SubsubTitle,
   Statistic,
-} from "../components/text";
-import { InnerContentBox, NarrowColumn } from "../components/layout";
-import { ContentBox } from "../components/layout";
-import { largerThan } from "../utils/styledComponents";
-import Divider from "../components/Divider";
-import Token from "../components/Token";
+} from "../components/text"
+import { InnerContentBox, NarrowColumn } from "../components/layout"
+import { ContentBox } from "../components/layout"
+import { largerThan } from "../utils/styledComponents"
+import Divider from "../components/Divider"
+import Token from "../components/Token"
 
 const Container = styled.div`
   max-width: 920px;
@@ -29,7 +29,7 @@ const Container = styled.div`
         grid-template-columns: minmax(0,1fr) minmax(0,0.9fr);
         grid-template-rows: repeat(3, auto);
     `}
-`;
+`
 
 const RowLabel = styled.div`
   letter-spacing: -0.01em;
@@ -40,16 +40,16 @@ const RowLabel = styled.div`
   color: #717171;
   display: flex;
   align-items: center;
-`;
+`
 
 const StatsRow = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px;
   box-sizing: border-box;
-`;
+`
 
-const StatsSection = styled.div``;
+const StatsSection = styled.div``
 
 const StatsNumber = styled.div`
   font-style: normal;
@@ -57,20 +57,20 @@ const StatsNumber = styled.div`
   font-size: 16px;
   text-align: right;
   color: #000000;
-`;
+`
 
 const NumberWithLogoContainer = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const WhatIsENSContentBox = styled(ContentBox)`
   grid-row-start: 1;
   grid-row-end: 3;
-`;
+`
 
 const Why = () => {
-  const history = useHistory();
+  const history = useHistory()
 
   return (
     <Container>
@@ -131,15 +131,15 @@ const Why = () => {
         grid
         rightButtonText="Next"
         rightButtonCallback={() => {
-          history.push("/governance");
+          history.push("/governance")
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/dashboard");
+          history.push("/dashboard")
         }}
       />
     </Container>
-  );
-};
+  )
+}
 
-export default Why;
+export default Why

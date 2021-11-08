@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { CTAButton } from "../../components/buttons";
+import React from "react"
+import styled from "styled-components"
+import { CTAButton } from "../../components/buttons"
 
 const FooterContainer = styled.div`
   width: 100%;
@@ -9,13 +9,13 @@ const FooterContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-`;
+`
 
 const RightButtonsContainer = styled.div`
   display: grid;
   gap: 20px;
   grid-auto-flow: column;
-`;
+`
 
 const Footer = ({ backCallback, rejectVoteCallback, approveVoteCallback }) => {
   return (
@@ -30,7 +30,7 @@ const Footer = ({ backCallback, rejectVoteCallback, approveVoteCallback }) => {
         />
       </RightButtonsContainer>
     </FooterContainer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

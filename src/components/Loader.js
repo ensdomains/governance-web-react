@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from "react"
+import styled from "styled-components"
 
 const Loader = styled("div")`
   position: relative;
@@ -50,7 +50,7 @@ const Loader = styled("div")`
       background-color: #a099ff;
     }
   }
-`;
+`
 
 const LoaderWrapper = styled("div")`
   ${(p) =>
@@ -67,12 +67,12 @@ const LoaderWrapper = styled("div")`
     padding: 50px 0;
     height: 120px;
   `}
-`;
+`
 
 export default function LoaderContainer({ center, large }) {
   return (
     <LoaderWrapper center={center} large={large}>
       <Loader />
     </LoaderWrapper>
-  );
+  )
 }

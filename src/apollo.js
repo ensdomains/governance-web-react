@@ -1,60 +1,60 @@
-import { ApolloClient, HttpLink, InMemoryCache, makeVar } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache, makeVar } from "@apollo/client"
 
-export const addressReactive = makeVar(null);
-export const isConnected = makeVar(false);
-export const addressDetails = makeVar({});
-export const signedVote = makeVar(null);
-export const hasClaimed = makeVar(false);
-export const network = makeVar(null);
+export const addressReactive = makeVar(null)
+export const isConnected = makeVar(false)
+export const addressDetails = makeVar({})
+export const signedVote = makeVar(null)
+export const hasClaimed = makeVar(false)
+export const network = makeVar(null)
 
-export let apolloClientInstance;
+export let apolloClientInstance
 
 const typePolicies = {
   Query: {
     fields: {
       isConnected: {
         read() {
-          return isConnected();
+          return isConnected()
         },
       },
       address: {
         read() {
           return addressReactive()
             ? addressReactive().toLowerCase()
-            : addressReactive();
+            : addressReactive()
         },
       },
       addressDetails: {
         read() {
-          return addressDetails();
+          return addressDetails()
         },
       },
       signedVote: {
         read() {
-          return signedVote();
+          return signedVote()
         },
       },
       network: {
         read() {
-          return network();
+          return network()
         },
       },
       hasClaimed: {
         read() {
-          return hasClaimed();
+          return hasClaimed()
         },
       },
     },
   },
-};
+}
 
 const getGraphqlUri = (operation) => {
-  const { operationName } = operation;
+  const { operationName } = operation
   if (operationName === "Votes") {
-    return "https://hub.snapshot.org/graphql";
+    return "https://hub.snapshot.org/graphql"
   }
-  return "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
-};
+  return "https://api.thegraph.com/subgraphs/name/ensdomains/ens"
+}
 
 export const initApolloClient = () => {
   apolloClientInstance = new ApolloClient({
@@ -62,6 +62,6 @@ export const initApolloClient = () => {
       uri: getGraphqlUri,
     }),
     cache: new InMemoryCache({ typePolicies }),
-  });
-  return apolloClientInstance;
-};
+  })
+  return apolloClientInstance
+}

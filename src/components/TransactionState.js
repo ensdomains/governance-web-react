@@ -1,17 +1,17 @@
-import React from "react";
-import styled from "styled-components";
+import React from "react"
+import styled from "styled-components"
 
-import LoadingIndicator from "../assets/imgs/LoadingIndicator.svg";
-import WarningIndicator from "../assets/imgs/WarningIndicator.svg";
-import GreenTickIndicator from "../assets/imgs/GreenTickIndicator.svg";
+import LoadingIndicator from "../assets/imgs/LoadingIndicator.svg"
+import WarningIndicator from "../assets/imgs/WarningIndicator.svg"
+import GreenTickIndicator from "../assets/imgs/GreenTickIndicator.svg"
 
 const Logo = styled.img`
   animation: ${(p) => {
     switch (p.type) {
       case "LOADING":
-        return "rotation 2s infinite linear";
+        return "rotation 2s infinite linear"
       default:
-        return "initial";
+        return "initial"
     }
   }};
 
@@ -23,20 +23,20 @@ const Logo = styled.img`
       transform: rotate(359deg);
     }
   }
-`;
+`
 
 const getLogoSrc = (type) => {
   switch (type) {
     case "LOADING":
-      return LoadingIndicator;
+      return LoadingIndicator
     case "ERROR":
-      return WarningIndicator;
+      return WarningIndicator
     case "SUCCESS":
-      return GreenTickIndicator;
+      return GreenTickIndicator
     default:
-      return "";
+      return ""
   }
-};
+}
 
 const TransactionStateTitle = styled.div`
   font-style: normal;
@@ -44,7 +44,7 @@ const TransactionStateTitle = styled.div`
   font-size: 21px;
   line-height: 141%;
   color: #1a1a1a;
-`;
+`
 
 const TransactionStateContent = styled.div`
   font-style: normal;
@@ -53,21 +53,21 @@ const TransactionStateContent = styled.div`
   line-height: 141%;
 
   color: #1a1a1a;
-`;
+`
 
 const TransactionStateContainer = styled.div`
   display: flex;
-`;
+`
 
 const TransactionContentContainer = styled.div`
   margin-left: 20px;
-`;
+`
 
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const TransactionState = ({ transactionState, title, content }) => (
   <TransactionStateContainer>
@@ -79,6 +79,6 @@ const TransactionState = ({ transactionState, title, content }) => (
       <TransactionStateContent>{content}</TransactionStateContent>
     </TransactionContentContainer>
   </TransactionStateContainer>
-);
+)
 
-export default TransactionState;
+export default TransactionState

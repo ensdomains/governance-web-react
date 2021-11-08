@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
+import React from "react"
+import styled from "styled-components"
 
-import { ReactComponent as TwitterGrey } from "../assets/imgs/TwitterGrey.svg";
-import { ReactComponent as ForumGrey } from "../assets/imgs/ThingGrey.svg";
-import { ReactComponent as DiscordGrey } from "../assets/imgs/DiscordGrey.svg";
-import {largerThan} from "../utils/styledComponents";
+import { ReactComponent as TwitterGrey } from "../assets/imgs/TwitterGrey.svg"
+import { ReactComponent as ForumGrey } from "../assets/imgs/ThingGrey.svg"
+import { ReactComponent as DiscordGrey } from "../assets/imgs/DiscordGrey.svg"
+import { largerThan } from "../utils/styledComponents"
 
 const SharedFooterContainer = styled.div`
   height: 100px;
@@ -13,16 +13,16 @@ const SharedFooterContainer = styled.div`
   padding: 0 20px;
   z-index: 1000;
   flex-shrink: 0;
-`;
+`
 
-const LeftContainer = styled.div``;
+const LeftContainer = styled.div``
 
 const RightContainer = styled.div`
   display: grid;
   gap: 15px;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-`;
+`
 
 const InnerContainer = styled.div`
   max-width: 1200px;
@@ -31,7 +31,7 @@ const InnerContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 100%;
-`;
+`
 
 const SharedFooter = () => {
   return (
@@ -51,7 +51,7 @@ const SharedFooter = () => {
         </RightContainer>
       </InnerContainer>
     </SharedFooterContainer>
-  );
-};
+  )
+}
 
-export default SharedFooter;
+export default SharedFooter

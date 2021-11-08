@@ -1,21 +1,21 @@
-import React from "react";
-import styled from "styled-components/macro";
+import React from "react"
+import styled from "styled-components/macro"
 
-import theme from "./theme";
+import theme from "./theme"
 
 const ButtonContainer = styled.div`
   background: ${(p) => {
     switch (p.type) {
       case "approve":
-        return theme.colors.green;
+        return theme.colors.green
       case "reject":
-        return theme.colors.red;
+        return theme.colors.red
       case "deny":
-        return theme.colors.grey;
+        return theme.colors.grey
       case "disabled":
-        return "#E4E7EB";
+        return "#E4E7EB"
       default:
-        return "linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%)";
+        return "linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%)"
     }
   }};
   display: flex;
@@ -26,11 +26,11 @@ const ButtonContainer = styled.div`
   color: ${(p) => {
     switch (p.type) {
       case "deny":
-        return "#63666A";
+        return "#63666A"
       case "disabled":
-        return "#ACAEB0";
+        return "#ACAEB0"
       default:
-        return "white";
+        return "white"
     }
   }};
   padding: 14px 16px;
@@ -44,14 +44,14 @@ const ButtonContainer = styled.div`
   cursor: ${(p) => {
     switch (p.type) {
       case "deny":
-        return "pointer";
+        return "pointer"
       case "disabled":
-        return "not-allowed";
+        return "not-allowed"
       default:
-        return "pointer";
+        return "pointer"
     }
   }};
-  pointer-events: ${p => p.type === 'disabled' ? 'none' : 'initial'};
+  pointer-events: ${(p) => (p.type === "disabled" ? "none" : "initial")};
   user-select: none;
 
   &:hover {
@@ -63,8 +63,12 @@ const ButtonContainer = styled.div`
     transform: translateY(0px);
     filter: brightness(1);
   }
-`;
+`
 
 export const CTAButton = (props) => {
-  return <ButtonContainer disabled={props.type === 'disabled'} {...props}>{props.text}</ButtonContainer>;
-};
+  return (
+    <ButtonContainer disabled={props.type === "disabled"} {...props}>
+      {props.text}
+    </ButtonContainer>
+  )
+}

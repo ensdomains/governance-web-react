@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components/macro";
+import React from "react"
+import styled from "styled-components/macro"
 
-import { CTAButton } from "./buttons";
-import { largerThan } from "../utils/styledComponents";
+import { CTAButton } from "./buttons"
+import { largerThan } from "../utils/styledComponents"
 
 const FooterContainer = styled.div`
   width: 100%;
@@ -17,12 +17,12 @@ const FooterContainer = styled.div`
         grid-column-start: 1;
         grid-column-end: 3;    
     `}
-`;
+`
 
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const Text = styled.span`
   margin-right: 16px;
@@ -33,7 +33,7 @@ const Text = styled.span`
   text-align: center;
   color: #000000;
   opacity: 0.3;
-`;
+`
 
 const Footer = ({
   rightButtonText,
@@ -68,7 +68,7 @@ const Footer = ({
         <div></div>
       )}
     </FooterContainer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

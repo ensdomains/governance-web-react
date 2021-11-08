@@ -1,16 +1,16 @@
-import React from "react";
-import styled from "styled-components";
+import React from "react"
+import styled from "styled-components"
 
-import SectionHeader from "./SectionHeader";
-import Footer from "../../components/Footer";
-import { Content, Header } from "../../components/text";
-import { ContentBoxWithHeader, NarrowColumn } from "../../components/layout";
-import Gap from "../../components/Gap";
-import Token from "../../components/Token";
+import SectionHeader from "./SectionHeader"
+import Footer from "../../components/Footer"
+import { Content, Header } from "../../components/text"
+import { ContentBoxWithHeader, NarrowColumn } from "../../components/layout"
+import Gap from "../../components/Gap"
+import Token from "../../components/Token"
 
 const BlackBold = styled.b`
   color: black;
-`;
+`
 
 const ENSConstitutionInfo = ({
   handleBack,
@@ -57,7 +57,7 @@ const ENSConstitutionInfo = ({
         leftButtonCallback={handleBack}
       />
     </NarrowColumn>
-  );
-};
+  )
+}
 
-export default ENSConstitutionInfo;
+export default ENSConstitutionInfo

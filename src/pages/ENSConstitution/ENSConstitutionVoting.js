@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useHistory } from "react-router-dom";
-import { useQuery, gql } from "@apollo/client";
+import React, { useState, useEffect } from "react"
+import styled from "styled-components"
+import { useHistory } from "react-router-dom"
+import { useQuery, gql } from "@apollo/client"
 
 import {
   getConstitution,
@@ -9,12 +9,12 @@ import {
   getTotalNumberOfArticles,
   isCompleted,
   voteOnArticle,
-} from "./constitutionHelpers";
-import { ContentBoxWithHeader, NarrowColumn } from "../../components/layout";
-import SectionHeader from "./SectionHeader";
-import Footer from "./ENSConstitutionFooter";
-import Summary from "./ENSConstitutionSummary";
-import ENSConstitutionInfo from "./ENSConstitutionInfo";
+} from "./constitutionHelpers"
+import { ContentBoxWithHeader, NarrowColumn } from "../../components/layout"
+import SectionHeader from "./SectionHeader"
+import Footer from "./ENSConstitutionFooter"
+import Summary from "./ENSConstitutionSummary"
+import ENSConstitutionInfo from "./ENSConstitutionInfo"
 
 const AritcleHeader = styled.div`
   font-style: normal;
@@ -24,7 +24,7 @@ const AritcleHeader = styled.div`
   letter-spacing: -0.01em;
 
   color: #1a1a1a; ;
-`;
+`
 
 const ArticleContent = styled.div`
   font-style: normal;
@@ -36,30 +36,30 @@ const ArticleContent = styled.div`
   padding: ${(p) => {
     switch (p.type) {
       case "permissible":
-        return "14px";
+        return "14px"
       case "forbidden":
-        return "14px";
+        return "14px"
       default:
-        return "0px";
+        return "0px"
     }
   }};
   border-radius: 10px;
   background: ${(p) => {
     switch (p.type) {
       case "permissible":
-        return "rgba(73, 179, 147, 0.1)";
+        return "rgba(73, 179, 147, 0.1)"
       case "forbidden":
-        return "rgba(213, 85, 85, 0.1)";
+        return "rgba(213, 85, 85, 0.1)"
       default:
-        return "initial";
+        return "initial"
     }
   }};
-`;
+`
 
 const ContentContainer = styled.div`
   display: grid;
   gap: 15px;
-`;
+`
 
 const Permissible = styled.div`
   font-style: normal;
@@ -72,7 +72,7 @@ const Permissible = styled.div`
 
   color: #49b393;
   margin-bottom: 5px;
-`;
+`
 
 const Forbidden = styled.div`
   font-style: normal;
@@ -85,20 +85,20 @@ const Forbidden = styled.div`
 
   color: #d55555;
   margin-bottom: 5px;
-`;
+`
 
 const useConstitutionSteps = (account) => {
-  const [currentStep, setCurrentStep] = useState(-1);
-  const totalSteps = getTotalNumberOfArticles(account);
+  const [currentStep, setCurrentStep] = useState(-1)
+  const totalSteps = getTotalNumberOfArticles(account)
 
   useEffect(() => {
     if (getEarliestUnvotedArticle(account) > 0) {
-      setCurrentStep(getEarliestUnvotedArticle(account));
+      setCurrentStep(getEarliestUnvotedArticle(account))
     }
-  }, []);
+  }, [])
 
-  return { currentStep, setCurrentStep, totalSteps };
-};
+  return { currentStep, setCurrentStep, totalSteps }
+}
 
 const Voting = ({
   currentStep,
@@ -137,52 +137,52 @@ const Voting = ({
       rejectVoteCallback={handleRejectVote}
     />
   </>
-);
+)
 
 const EnsConstitutionVoting = ({ account }) => {
-  const history = useHistory();
+  const history = useHistory()
   const { currentStep, setCurrentStep, totalSteps } =
-    useConstitutionSteps(account);
-  const constitution = getConstitution(account);
-  const article = constitution?.[currentStep];
+    useConstitutionSteps(account)
+  const constitution = getConstitution(account)
+  const article = constitution?.[currentStep]
 
   const handleBack = () => {
     if (currentStep > -1) {
-      setCurrentStep(currentStep - 1);
-      return;
+      setCurrentStep(currentStep - 1)
+      return
     }
-    history.push("/governance");
-  };
+    history.push("/governance")
+  }
 
   const handleNext = () => {
-    setCurrentStep(currentStep + 1);
-  };
+    setCurrentStep(currentStep + 1)
+  }
 
   const handleVote = (vote) => {
-    voteOnArticle(account, currentStep, vote);
-    setCurrentStep(currentStep + 1);
-  };
+    voteOnArticle(account, currentStep, vote)
+    setCurrentStep(currentStep + 1)
+  }
 
   const handleApproveVote = () => {
-    handleVote(true);
-  };
+    handleVote(true)
+  }
 
   const handleRejectVote = () => {
-    handleVote(false);
-  };
+    handleVote(false)
+  }
 
   useEffect(() => {
     if (isCompleted(account)) {
-      setCurrentStep(4);
+      setCurrentStep(4)
     }
-  }, [account]);
+  }, [account])
 
   if (currentStep < 0) {
     return (
       <ENSConstitutionInfo
         {...{ account, handleBack, handleNext, currentStep, setCurrentStep }}
       />
-    );
+    )
   }
 
   if (currentStep >= 0 && currentStep < totalSteps) {
@@ -201,7 +201,7 @@ const EnsConstitutionVoting = ({ account }) => {
           }}
         />
       </NarrowColumn>
-    );
+    )
   }
 
   if (currentStep >= 0 && currentStep >= totalSteps) {
@@ -215,9 +215,9 @@ const EnsConstitutionVoting = ({ account }) => {
           }}
         />
       </NarrowColumn>
-    );
+    )
   }
-};
+}
 
 const EnsConstitutionVotingContainer = () => {
   const {
@@ -226,10 +226,10 @@ const EnsConstitutionVotingContainer = () => {
     query getAddress @client {
       address
     }
-  `);
+  `)
 
-  if (!address) return null;
-  return <EnsConstitutionVoting account={address} />;
-};
+  if (!address) return null
+  return <EnsConstitutionVoting account={address} />
+}
 
-export default EnsConstitutionVotingContainer;
+export default EnsConstitutionVotingContainer

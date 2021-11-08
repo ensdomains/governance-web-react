@@ -8,6 +8,6 @@ const theme = {
       medium: "#717171",
     },
   },
-};
+}
 
-export default theme;
+export default theme

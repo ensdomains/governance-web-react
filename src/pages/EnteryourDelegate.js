@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components/macro";
-import { useHistory } from "react-router-dom";
-import { utils } from "ethers";
-import { useQuery, gql } from "@apollo/client";
+import React, { useEffect, useState } from "react"
+import styled from "styled-components/macro"
+import { useHistory } from "react-router-dom"
+import { utils } from "ethers"
+import { useQuery, gql } from "@apollo/client"
 
-import Footer from "../components/Footer";
-import Gap from "../components/Gap";
-import { Header, Content } from "../components/text";
-import { NarrowColumn } from "../components/layout";
-import { ContentBox } from "../components/layout";
-import { getEthersProvider } from "../web3modal";
+import Footer from "../components/Footer"
+import Gap from "../components/Gap"
+import { Header, Content } from "../components/text"
+import { NarrowColumn } from "../components/layout"
+import { ContentBox } from "../components/layout"
+import { getEthersProvider } from "../web3modal"
 import {
   getDelegateChoice,
   setDelegateChoice,
-} from "./ENSConstitution/delegateHelpers";
+} from "./ENSConstitution/delegateHelpers"
 
 const Input = styled.input`
   height: 64px;
@@ -35,7 +35,7 @@ const Input = styled.input`
     color: black;
     opacity: 0.23;
   }
-`;
+`
 
 const ValidationMessageContainer = styled.div`
   background: ${(p) =>
@@ -53,15 +53,15 @@ const ValidationMessageContainer = styled.div`
   align-items: center;
 
   color: ${(p) => (p.error ? "#D55555" : "#49B393")};
-`;
+`
 
 const ValidationMessage = (props) => {
   return (
     <ValidationMessageContainer error={props.error}>
       {props.children}
     </ValidationMessageContainer>
-  );
-};
+  )
+}
 
 const AddressMessage = styled.div`
   font-style: normal;
@@ -75,7 +75,7 @@ const AddressMessage = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const InputComponent = ({
   validationMessage,
@@ -87,56 +87,56 @@ const InputComponent = ({
   ...props
 }) => {
   const onChange = (event) => {
-    const value = event.target.value;
-    setValue(value);
+    const value = event.target.value
+    setValue(value)
 
     const run = async () => {
       if (value.includes(".")) {
         try {
-          const result = await getEthersProvider().resolveName(value);
+          const result = await getEthersProvider().resolveName(value)
           if (result) {
-            setEnsNameAddress(result);
+            setEnsNameAddress(result)
             setValidationMessage({
               message: "Valid ENS name",
               isError: false,
-            });
-            return;
+            })
+            return
           }
-          throw "error";
+          throw "error"
         } catch (error) {
           setValidationMessage({
             message: "ENS name does not resolve to an ETH address",
             isError: true,
-          });
+          })
         }
-        setEnsNameAddress("");
-        return;
+        setEnsNameAddress("")
+        return
       }
 
       try {
-        utils.getAddress(value);
+        utils.getAddress(value)
         setValidationMessage({
           message: "Valid Ethereum address",
           isError: false,
-        });
+        })
       } catch (error) {
         setValidationMessage({
           message: "Invalid ethereum address",
           isError: true,
-        });
+        })
       }
-      setEnsNameAddress("");
-    };
+      setEnsNameAddress("")
+    }
 
     if (value) {
-      run();
+      run()
     } else {
       setValidationMessage({
         message: "",
         isError: false,
-      });
+      })
     }
-  };
+  }
 
   useEffect(() => {
     if (defaultValue) {
@@ -144,9 +144,9 @@ const InputComponent = ({
         target: {
           value: defaultValue,
         },
-      });
+      })
     }
-  }, [defaultValue]);
+  }, [defaultValue])
 
   return (
     <div>
@@ -158,15 +158,15 @@ const InputComponent = ({
         </ValidationMessage>
       )}
     </div>
-  );
-};
+  )
+}
 
 const EnteryourDelegate = () => {
-  const history = useHistory();
+  const history = useHistory()
   const [validationMessage, setValidationMessage] = useState({
     message: "",
     isError: false,
-  });
+  })
 
   const {
     data: { address },
@@ -174,16 +174,16 @@ const EnteryourDelegate = () => {
     query getAddress @client {
       address
     }
-  `);
+  `)
 
-  const [ensNameAddress, setEnsNameAddress] = useState("");
-  const [value, setValue] = useState(null);
+  const [ensNameAddress, setEnsNameAddress] = useState("")
+  const [value, setValue] = useState(null)
 
   useEffect(() => {
     if (address) {
-      setValue(getDelegateChoice(address));
+      setValue(getDelegateChoice(address))
     }
-  }, [address]);
+  }, [address])
 
   return (
     <NarrowColumn>
@@ -211,16 +211,16 @@ const EnteryourDelegate = () => {
         disabled={validationMessage.isError || !value}
         rightButtonText="Next"
         rightButtonCallback={() => {
-          setDelegateChoice(address, value);
-          history.push("/summary");
+          setDelegateChoice(address, value)
+          history.push("/summary")
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/delegates");
+          history.push("/delegates")
         }}
       />
     </NarrowColumn>
-  );
-};
+  )
+}
 
-export default EnteryourDelegate;
+export default EnteryourDelegate

@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { gql } from "graphql-tag";
-import styled from "styled-components";
+import React, { useEffect, useState } from "react"
+import { useQuery } from "@apollo/client"
+import { gql } from "graphql-tag"
+import styled from "styled-components"
 
-import {
-  ContentBox,
-  InnerContentBox,
-  NarrowColumn,
-} from "../components/layout";
+import { ContentBox, InnerContentBox, NarrowColumn } from "../components/layout"
 import {
   Content,
   DecimalBalance,
@@ -15,17 +11,17 @@ import {
   IntegerBalance,
   Statistic,
   SubsubTitle,
-} from "../components/text";
-import Gap from "../components/Gap";
-import { useHistory } from "react-router-dom";
-import { largerThan } from "../utils/styledComponents";
+} from "../components/text"
+import Gap from "../components/Gap"
+import { useHistory } from "react-router-dom"
+import { largerThan } from "../utils/styledComponents"
 
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
-import Divider from "../components/Divider";
-import Pill from "../components/Pill";
-import { CTAButton } from "../components/buttons";
-import Profile from "../components/Profile";
-import { hasClaimed } from "../utils/tokenClaim";
+import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg"
+import Divider from "../components/Divider"
+import Pill from "../components/Pill"
+import { CTAButton } from "../components/buttons"
+import Profile from "../components/Profile"
+import { hasClaimed } from "../utils/tokenClaim"
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -36,11 +32,11 @@ const ClaimEnsTokenContainer = styled.div`
   ${largerThan.tablet`
         flex-direction: row;
     `}
-`;
+`
 
 const LeftContainer = styled.div`
   min-width: 350px;
-`;
+`
 
 const RightContainer = styled.div`
   margin-bottom: 50px;
@@ -48,20 +44,20 @@ const RightContainer = styled.div`
         margin-left: 50px;
         margin-bottom: 0px;
     `}
-`;
+`
 
 const ENSLogo = styled.img`
   width: 40px;
   margin-left: 5px;
   marign-top: 0px;
-`;
+`
 
 const SmallENSLogo = styled(ENSLogo)`
   width: 25px;
   margin-top: 1px;
   margin-left: 5px;
   margin-right: -4px;
-`;
+`
 
 const StatsSubtitle = styled.div`
   font-style: normal;
@@ -71,7 +67,7 @@ const StatsSubtitle = styled.div`
   letter-spacing: -0.01em;
   color: #717171;
   opacity: 0.6;
-`;
+`
 
 const RowLabel = styled.div`
   letter-spacing: -0.01em;
@@ -82,18 +78,18 @@ const RowLabel = styled.div`
   color: #717171;
   display: flex;
   align-items: center;
-`;
+`
 
 const StatsRow = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px;
   box-sizing: border-box;
-`;
+`
 
 const StatsSection = styled.div`
   margin-bottom: 35px;
-`;
+`
 
 const StatsNumber = styled.div`
   font-style: normal;
@@ -101,16 +97,16 @@ const StatsNumber = styled.div`
   font-size: 16px;
   text-align: right;
   color: #000000;
-`;
+`
 
 const NumberWithLogoContainer = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const WrappedContent = styled(Content)`
   color: #1a1a1a;
-`;
+`
 
 const Dashboard = () => {
   const {
@@ -121,7 +117,7 @@ const Dashboard = () => {
       addressDetails
       network
     }
-  `);
+  `)
 
   const {
     lastExpiringName,
@@ -132,23 +128,23 @@ const Dashboard = () => {
     rawBalance,
     hasReverseRecord,
     eligible,
-  } = addressDetails;
+  } = addressDetails
 
-  const history = useHistory();
+  const history = useHistory()
 
-  const [isClaimed, setIsClaimed] = useState(false);
-  const [isClaimedLoading, setIsClaimedLoading] = useState(true);
+  const [isClaimed, setIsClaimed] = useState(false)
+  const [isClaimedLoading, setIsClaimedLoading] = useState(true)
 
   useEffect(() => {
     hasClaimed(address)
       .then((result) => {
-        setIsClaimed(result);
-        setIsClaimedLoading(false);
+        setIsClaimed(result)
+        setIsClaimedLoading(false)
       })
       .catch((error) => {
-        console.error("error checking hasClaimed: ", error);
-      });
-  }, [address]);
+        console.error("error checking hasClaimed: ", error)
+      })
+  }, [address])
 
   return (
     <ClaimEnsTokenContainer>
@@ -278,7 +274,7 @@ const Dashboard = () => {
         </NarrowColumn>
       </RightContainer>
     </ClaimEnsTokenContainer>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

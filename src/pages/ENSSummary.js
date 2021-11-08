@@ -1,61 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { Client } from "@snapshot-labs/snapshot.js";
-import { useQuery } from "@apollo/client";
-import { gql } from "graphql-tag";
-import styled from "styled-components";
-import { useHistory } from "react-router-dom";
-import { utils } from "ethers";
+import React, { useEffect, useState } from "react"
+import { Client } from "@snapshot-labs/snapshot.js"
+import { useQuery } from "@apollo/client"
+import { gql } from "graphql-tag"
+import styled from "styled-components"
+import { useHistory } from "react-router-dom"
+import { utils } from "ethers"
 
-import {
-  ContentBox,
-  InnerContentBox,
-  NarrowColumn,
-} from "../components/layout";
+import { ContentBox, InnerContentBox, NarrowColumn } from "../components/layout"
 import {
   DecimalBalance,
   Header,
   IntegerBalance,
   Statistic,
   SubsubTitle,
-} from "../components/text";
-import Gap from "../components/Gap";
-import { getEthersProvider } from "../web3modal";
-import { imageUrl, shortenAddress } from "../utils/utils";
-import { CTAButton } from "../components/buttons";
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
-import Pill from "../components/Pill";
+} from "../components/text"
+import Gap from "../components/Gap"
+import { getEthersProvider } from "../web3modal"
+import { imageUrl, shortenAddress } from "../utils/utils"
+import { CTAButton } from "../components/buttons"
+import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg"
+import { getDelegateChoice } from "./ENSConstitution/delegateHelpers"
+import Pill from "../components/Pill"
 
 const ENSLogo = styled.img`
   width: 40px;
   margin-left: 10px;
-`;
+`
 
 const AvatarImg = styled.img`
   border-radius: 50%;
   width: ${(p) => (p.large ? "60px" : "50px")};
   height: ${(p) => (p.large ? "60px" : "50px")};
   margin-right: 10px;
-`;
+`
 
 const WrappedInnerContentBox = styled(InnerContentBox)`
   display: flex;
-`;
+`
 
 const LeftContainer = styled.div`
   flex: 1;
   width: calc(100% - 60px);
-`;
+`
 
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const DelegateInfoContainer = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const DelegateName = styled.div`
   font-style: normal;
@@ -67,7 +63,7 @@ const DelegateName = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
 
 const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
   const {
@@ -77,61 +73,61 @@ const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
       isConnected
       address
     }
-  `);
+  `)
   const [delegateInfo, setDelegateInfo] = useState({
     avatar: "",
     displayName: "",
-  });
-  const history = useHistory();
+  })
+  const history = useHistory()
 
   useEffect(() => {
     const run = async () => {
-      const delegateChoice = getDelegateChoice(address);
+      const delegateChoice = getDelegateChoice(address)
 
       if (!delegateChoice) {
-        console.error("No delegate selected");
-        return;
+        console.error("No delegate selected")
+        return
       }
 
       if (delegateChoice.includes(".")) {
-        const resolver = await getEthersProvider().getResolver(delegateChoice);
+        const resolver = await getEthersProvider().getResolver(delegateChoice)
         try {
-          const addr = await resolver.getAddress(60);
-          utils.getAddress(addr);
-          const avatar = await resolver.getText("avatar");
+          const addr = await resolver.getAddress(60)
+          utils.getAddress(addr)
+          const avatar = await resolver.getText("avatar")
           setDelegateInfo({
             avatar,
             displayName: delegateChoice,
-          });
-          setIsDelegateValid(true);
+          })
+          setIsDelegateValid(true)
         } catch (e) {
-          setIsDelegateValid(false);
+          setIsDelegateValid(false)
         }
-        return;
+        return
       }
 
-      const ethName = await getEthersProvider().lookupAddress(delegateChoice);
+      const ethName = await getEthersProvider().lookupAddress(delegateChoice)
       if (ethName) {
-        const resolver = await getEthersProvider().getResolver(ethName);
-        const avatar = await resolver.getText("avatar");
+        const resolver = await getEthersProvider().getResolver(ethName)
+        const avatar = await resolver.getText("avatar")
         setDelegateInfo({
           avatar,
           displayName: ethName,
-        });
-        setIsDelegateValid(true);
-        return;
+        })
+        setIsDelegateValid(true)
+        return
       }
 
       setDelegateInfo({
         avatar: null,
         address: delegateChoice,
-      });
-      setIsDelegateValid(true);
-    };
-    if (isConnected) {
-      run();
+      })
+      setIsDelegateValid(true)
     }
-  }, [isConnected]);
+    if (isConnected) {
+      run()
+    }
+  }, [isConnected])
 
   return (
     <WrappedInnerContentBox>
@@ -154,15 +150,15 @@ const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
       <RightContainer>
         <CTAButton
           onClick={() => {
-            history.push("/delegates");
+            history.push("/delegates")
           }}
           type={"deny"}
           text={"Edit"}
         />
       </RightContainer>
     </WrappedInnerContentBox>
-  );
-};
+  )
+}
 
 const EnsSummary = () => {
   const {
@@ -173,11 +169,11 @@ const EnsSummary = () => {
       addressDetails
       isConnected
     }
-  `);
-  const [isDelegateValid, setIsDelegateValid] = useState(undefined);
-  const history = useHistory();
+  `)
+  const [isDelegateValid, setIsDelegateValid] = useState(undefined)
+  const history = useHistory()
 
-  const { balance } = addressDetails;
+  const { balance } = addressDetails
 
   return (
     <NarrowColumn>
@@ -215,7 +211,7 @@ const EnsSummary = () => {
             history.push({
               pathname: "/summary/claim",
               state: "CLAIM",
-            });
+            })
           }}
           text={
             isDelegateValid === undefined
@@ -226,7 +222,7 @@ const EnsSummary = () => {
         />
       </ContentBox>
     </NarrowColumn>
-  );
-};
+  )
+}
 
-export default EnsSummary;
+export default EnsSummary
