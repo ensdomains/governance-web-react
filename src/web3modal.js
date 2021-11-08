@@ -5,6 +5,7 @@ import {
   apolloClientInstance,
   isConnected,
   addressDetails,
+  network,
 } from "./apollo";
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
@@ -118,6 +119,8 @@ export const initWeb3 = async () => {
     initLocalStorage(address);
     isConnected(true);
     addressReactive(address);
+    const net = await ethersProvider.getNetwork();
+    network(net.chainId);
     // hasClaimed(address)
     const claimData = await getClaimData(address);
     addressDetails(claimData);

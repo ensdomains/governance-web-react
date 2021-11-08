@@ -5,6 +5,7 @@ export const isConnected = makeVar(false);
 export const addressDetails = makeVar({});
 export const signedVote = makeVar(null);
 export const hasClaimed = makeVar(false);
+export const network = makeVar(null);
 
 export let apolloClientInstance;
 
@@ -31,6 +32,11 @@ const typePolicies = {
       signedVote: {
         read() {
           return signedVote();
+        },
+      },
+      network: {
+        read() {
+          return network();
         },
       },
       hasClaimed: {
