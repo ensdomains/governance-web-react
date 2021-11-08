@@ -42,7 +42,8 @@ describe("Token claim site", () => {
         // console.log('env: ', Cypress.env('CI'))
         cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
-        cy.contains("Start your claim process", {timeout: 10000}).click();
+        cy.contains("Start your claim process", { timeout: 10000 }).click();
+
         cy.contains("Next").click();
         cy.contains("Next").click();
         cy.contains("Start").click();

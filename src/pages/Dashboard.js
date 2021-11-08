@@ -20,7 +20,7 @@ import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
 import { largerThan } from "../utils/styledComponents";
 
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
@@ -50,14 +50,16 @@ const RightContainer = styled.div`
     `}
 `;
 
-const ENSLogo = styled.img`
+const ENSLogo = styled(SplashENSLogo)`
   width: 40px;
+  height: 40px;
   margin-left: 5px;
   marign-top: 0px;
 `;
 
 const SmallENSLogo = styled(ENSLogo)`
   width: 25px;
+  height: 25px;
   margin-top: 1px;
   margin-left: 5px;
   margin-right: -4px;
@@ -164,7 +166,7 @@ const Dashboard = () => {
             <RowLabel>Historical activity </RowLabel>
             <NumberWithLogoContainer>
               <StatsNumber>{pastTokens}</StatsNumber>
-              <SmallENSLogo src={SplashENSLogo} />
+              <SmallENSLogo />
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
@@ -172,7 +174,7 @@ const Dashboard = () => {
             <RowLabel>Future registration </RowLabel>
             <NumberWithLogoContainer>
               <StatsNumber>{futureTokens}</StatsNumber>
-              <SmallENSLogo src={SplashENSLogo} />
+              <SmallENSLogo />
             </NumberWithLogoContainer>
           </StatsRow>
           {hasReverseRecord && (
@@ -250,7 +252,7 @@ const Dashboard = () => {
               <Statistic>
                 <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
                 <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>
-                <ENSLogo src={SplashENSLogo} />
+                <ENSLogo />
               </Statistic>
             </InnerContentBox>
             <Gap height={5} />
