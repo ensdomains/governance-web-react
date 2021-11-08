@@ -29,8 +29,7 @@ const handleClaim = async (address, setClaimState, history) => {
     let delegateAddress;
     let provider = getEthersProvider();
 
-    // const displayName = getDelegateChoice(address);
-    const displayName = "leontalbert.eth";
+    const displayName = getDelegateChoice(address);
     if (!displayName) {
       throw "No chosen delegate";
     }
