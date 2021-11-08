@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import { utils } from "ethers";
 
 import {
   ContentBox,
@@ -23,6 +24,7 @@ import { imageUrl, shortenAddress } from "../utils/utils";
 import { CTAButton } from "../components/buttons";
 import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
 import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
+import Pill from "../components/Pill";
 
 const ENSLogo = styled.img`
   width: 40px;
@@ -67,7 +69,7 @@ const DelegateName = styled.div`
   text-overflow: ellipsis;
 `;
 
-const DelegateConfirmation = () => {
+const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
   const {
     data: { isConnected, address },
   } = useQuery(gql`
@@ -93,11 +95,18 @@ const DelegateConfirmation = () => {
 
       if (delegateChoice.includes(".")) {
         const resolver = await getEthersProvider().getResolver(delegateChoice);
-        const avatar = await resolver.getText("avatar");
-        setDelegateInfo({
-          avatar,
-          displayName: delegateChoice,
-        });
+        try {
+          const addr = await resolver.getAddress(60);
+          utils.getAddress(addr);
+          const avatar = await resolver.getText("avatar");
+          setDelegateInfo({
+            avatar,
+            displayName: delegateChoice,
+          });
+          setIsDelegateValid(true);
+        } catch (e) {
+          setIsDelegateValid(false);
+        }
         return;
       }
 
@@ -109,6 +118,7 @@ const DelegateConfirmation = () => {
           avatar,
           displayName: ethName,
         });
+        setIsDelegateValid(true);
         return;
       }
 
@@ -116,6 +126,7 @@ const DelegateConfirmation = () => {
         avatar: null,
         address: delegateChoice,
       });
+      setIsDelegateValid(true);
     };
     if (isConnected) {
       run();
@@ -163,12 +174,24 @@ const EnsSummary = () => {
       isConnected
     }
   `);
+  const [isDelegateValid, setIsDelegateValid] = useState(undefined);
   const history = useHistory();
 
   const { balance } = addressDetails;
 
   return (
     <NarrowColumn>
+      {isDelegateValid === false ? (
+        <Pill error text={"Delegate is invalid, click edit to pick another"} />
+      ) : (
+        <Pill
+          text={
+            isDelegateValid === undefined
+              ? "Checking delegate validity"
+              : "Delegate is valid!"
+          }
+        />
+      )}
       <ContentBox>
         <Header>Review your claim</Header>
         <Gap height={3} />
@@ -182,7 +205,10 @@ const EnsSummary = () => {
           </Statistic>
         </InnerContentBox>
         <Gap height={3} />
-        <DelegateConfirmation />
+        <DelegateConfirmation
+          isDelegateValid={isDelegateValid}
+          setIsDelegateValid={setIsDelegateValid}
+        />
         <Gap height={5} />
         <CTAButton
           onClick={() => {
@@ -191,7 +217,12 @@ const EnsSummary = () => {
               state: "CLAIM",
             });
           }}
-          text={"Claim"}
+          text={
+            isDelegateValid === undefined
+              ? "Checking delegate validity..."
+              : "Claim"
+          }
+          type={isDelegateValid ? "" : "disabled"}
         />
       </ContentBox>
     </NarrowColumn>
