@@ -3,6 +3,7 @@ import Divider from "./Divider";
 
 export const NarrowColumn = styled.div`
   max-width: 494px;
+  width: 100%;
   margin: 0 auto;
 `;
 

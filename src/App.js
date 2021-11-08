@@ -32,14 +32,14 @@ import {
 import { useQueryString } from "./utils/hooks";
 
 const AppContainer = styled.div`
-  max-width: 1200px;
   margin: auto;
   box-sizing: border-box;
   overflow-x: hidden;
-  
+  height: 100%;
+
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 `;
 
 const AppContainerOuter = styled.div`
@@ -50,10 +50,8 @@ const AppContainerOuter = styled.div`
 
 const AppContainerMid = styled.div`
   flex: 1 0 auto;
-  display: flex;
   align-items: center;
-  justify-content: center;
-`
+`;
 
 const useInit = () => {
   useEffect(() => {
@@ -128,14 +126,14 @@ function App() {
               <PrivateRoute path="/why" component={Why} />
               <PrivateRoute path="/governance" component={ENSGovernance} />
               <PrivateRoute
-                  path="/constitution/sign"
-                  component={ENSConstitutionSign}
+                path="/constitution/sign"
+                component={ENSConstitutionSign}
               />
               <PrivateRoute path="/constitution" component={ENSConstitution} />
               <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
               <PrivateRoute
-                  path="/manual-delegates"
-                  component={EnteryourDelegate}
+                path="/manual-delegates"
+                component={EnteryourDelegate}
               />
               <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
               <PrivateRoute path="/summary" component={ENSSummary} />
