@@ -22,12 +22,13 @@ import Gap from "../components/Gap";
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import { CTAButton } from "../components/buttons";
-import SplashENSLogo from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
 import Pill from "../components/Pill";
 
-const ENSLogo = styled.img`
+const ENSLogo = styled(SplashENSLogo)`
   width: 40px;
+  height: 40px;
   margin-left: 10px;
 `;
 
@@ -166,7 +167,7 @@ const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
 
 const EnsSummary = () => {
   const {
-    data: { address, addressDetails },
+    data: { addressDetails },
   } = useQuery(gql`
     query privateRouteQuery @client {
       address
@@ -201,7 +202,7 @@ const EnsSummary = () => {
           <Statistic>
             <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
             <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>
-            <ENSLogo src={SplashENSLogo} />
+            <ENSLogo />
           </Statistic>
         </InnerContentBox>
         <Gap height={3} />

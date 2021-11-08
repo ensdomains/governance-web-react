@@ -17,10 +17,29 @@ const HomeContainer = styled.div`
   align-items: center;
 `;
 
-const WrappedTitle = styled(Title)``;
+const WrappedTitle = styled.div`
+    font-weight: bold;
+    font-size: 44px;
+    line-height: 118%;
+    
+    text-align: center;
+    letter-spacing: -0.01em;
+    background: linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+`;
 
-const WrappedSubTitle = styled(SubTitle)`
+const WrappedSubTitle = styled.div`
   max-width: 560px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 150%;
+
+  text-align: center;
+  letter-spacing: -0.01em;
+
+  color: #717171;
 `;
 
 const HOME_QUERY = gql`
