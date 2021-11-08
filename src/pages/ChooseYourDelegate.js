@@ -181,8 +181,8 @@ const fetchTokenAllocations = async (addressArray) => {
   }
 };
 
-const createNamehashBatches = (namehashes, perBatch = 2) => {
-  var result = namehashes.reduce((resultArray, item, index) => {
+const createItemBatches = (items, perBatch = 2) => {
+  var result = items.reduce((resultArray, item, index) => {
     const chunkIndex = Math.floor(index / perBatch);
 
     if (!resultArray[chunkIndex]) {
@@ -228,7 +228,7 @@ const useGetDelegates = (isConnected) => {
         provider
       );
 
-      const batches = createNamehashBatches(delegateNamehashes, 50);
+      const batches = createItemBatches(delegateNamehashes, 50);
 
       const results = await Promise.all(
         batches.map((batch) => ENSDelegateContract.getDelegates(batch))
@@ -245,7 +245,12 @@ const useGetDelegates = (isConnected) => {
       const processedDelegateDataWithReverse = processedDelegateData.filter(
         (d, i) => d.name == names[i]
       );
-      const tokenAllocations = await fetchTokenAllocations(addresses);
+
+      const tokenAllocationAddressBatches = createItemBatches(addresses, 50)
+      const tokenAllocationsArray = await Promise.all(
+          tokenAllocationAddressBatches.map((batch) => fetchTokenAllocations(batch))
+      );
+      const tokenAllocations = tokenAllocationsArray?.flat()
       const tokensLeft = await ENSTokenContract.balanceOf(
         ENSTokenContract.address
       );
