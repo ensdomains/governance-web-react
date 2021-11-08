@@ -136,10 +136,14 @@ const Dashboard = () => {
   const history = useHistory();
 
   const [isClaimed, setIsClaimed] = useState(false);
+  const [isClaimedLoading, setIsClaimedLoading] = useState(true);
 
   useEffect(() => {
     hasClaimed(address)
-      .then((result) => setIsClaimed(result))
+      .then((result) => {
+        setIsClaimed(result);
+        setIsClaimedLoading(false);
+      })
       .catch((error) => {
         console.error("error checking hasClaimed: ", error);
       });
@@ -206,17 +210,19 @@ const Dashboard = () => {
 
       <RightContainer>
         <NarrowColumn>
-          {rawBalance ? (
-            <Pill
-              text={
-                isClaimed
-                  ? "You were eligible for the airdrop!"
-                  : "You are eligible for the airdrop!"
-              }
-            />
-          ) : (
-            <Pill error text={"You are not eligible for the airdrop"} />
-          )}
+          {isClaimedLoading === false && eligible !== undefined ? (
+            eligible ? (
+              <Pill
+                text={
+                  isClaimed
+                    ? "You were eligible for the airdrop!"
+                    : "You are eligible for the airdrop!"
+                }
+              />
+            ) : (
+              <Pill error text={"You are not eligible for the airdrop"} />
+            )
+          ) : null}
 
           <ContentBox>
             <Header>
@@ -256,12 +262,14 @@ const Dashboard = () => {
                 <Gap height={5} />
                 <CTAButton
                   text={
-                    isClaimed
+                    isClaimedLoading
+                      ? "Checking claim status..."
+                      : isClaimed
                       ? "Tokens claimed successfully"
                       : "Start your claim process"
                   }
                   onClick={() => !isClaimed && history.push("/why")}
-                  type={isClaimed ? "disabled" : ""}
+                  type={isClaimed || isClaimedLoading ? "disabled" : ""}
                 />
               </>
             )}
