@@ -15,8 +15,9 @@ const StepsContainer = styled.div`
 
 const Step = styled.div`
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
   cursor: pointer;
   background: ${(p) => {
     if (p.currentStep) return `#878787`;
@@ -27,6 +28,9 @@ const Step = styled.div`
 
   &:not(:last-child) {
     margin-right: 10px;
+  }
+  &::last-child {
+    margin-right: 16px;
   }
 `;
 
