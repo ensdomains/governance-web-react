@@ -5,6 +5,7 @@ import { gql } from "graphql-tag";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { utils } from "ethers";
+import { Content } from "../components/text";
 
 import {
   ContentBox,
@@ -196,6 +197,8 @@ const EnsSummary = () => {
       <ContentBox>
         <Header>Review your claim</Header>
         <Gap height={3} />
+        <Content>Please make sure the following details look correct.</Content>
+        <Gap height={6} />
         <InnerContentBox>
           <SubsubTitle>You will receive</SubsubTitle>
           <Gap height={1} />

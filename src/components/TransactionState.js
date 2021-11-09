@@ -41,17 +41,17 @@ const getLogoSrc = (type) => {
 const TransactionStateTitle = styled.div`
   font-style: normal;
   font-weight: bold;
-  font-size: 21px;
-  line-height: 141%;
+  font-size: 18px;
+  line-height: 140%;
+  margin-bottom: 4px;
   color: #1a1a1a;
 `;
 
 const TransactionStateContent = styled.div`
   font-style: normal;
   font-weight: normal;
-  font-size: 17px;
-  line-height: 141%;
-
+  font-size: 14px;
+  line-height: 140%;
   color: #1a1a1a;
 `;
 

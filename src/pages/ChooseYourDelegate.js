@@ -187,7 +187,7 @@ const DelegatesContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-row-gap: 12px;
   grid-column-gap: 14px;
-  padding: 10px 30px 10px;
+  padding: 10px 30px 30px;
   justify-content: center;
   max-height: calc(100vh / 3);
   overflow-y: auto;
@@ -223,6 +223,7 @@ const CopyContainer = styled.div`
 `;
 
 const Input = styled.input`
+  font-family: inherit;
   height: 64px;
   width: calc(100% - 60px);
   box-sizing: border-box;
