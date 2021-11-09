@@ -54,7 +54,7 @@ const getRightButtonText = (state) => {
     case "SUCCESS":
       return "Continuing...";
     case "ERROR":
-      return "Try Again";
+      return "Try again";
   }
 };
 
@@ -87,11 +87,11 @@ const ENSConstitutionSign = ({ location }) => {
     <NarrowColumn>
       <ContentBox>
         <Header>Confirm with wallet</Header>
-        <Gap height={3} />
+        <Gap height={2} />
         <Content>
           Please approve the signing request to submit your votes.
         </Content>
-        <Gap height={6} />
+        <Gap height={7} />
         <TransactionState
           transactionState={voteState.state}
           title={"Submit votes"}
