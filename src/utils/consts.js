@@ -1,27 +1,16 @@
 export const PROPOSAL_ID = "0xd810c4cf2f09737a6f833f1ec51eaa5504cbc0afeeb883a21a7e1c91c8a597e4";
-export const SPACE_ID = "ens.eth";
-export const ALLOCATION_ENDPOINT =
-  "https://us-central1-ens-manager.cloudfunctions.net/getvotes";
+export const SPACE_ID = "ens.eth"
+export const ALLOCATION_ENDPOINT = "https://us-central1-ens-manager.cloudfunctions.net/getvotes"
+export const GAS_LIMIT = 180000
 
-export const getEnv = () =>
-  window.location.href.includes("localhost") ? "dev" : "prod";
+export const getENSTokenContractAddress = () => "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72"
 
-export const isDev = () => getEnv() === "dev";
+export const getENSDelegateContractAddress = () => "0x9c9Be865067d9acC5da6b73Fd48EAa3B6c382858"
 
-export const getENSTokenContractAddress = () => "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72";
-
-export const getENSDelegateContractAddress = () =>
-  isDev()
-    ? "0x9c9Be865067d9acC5da6b73Fd48EAa3B6c382858"
-    : "0x9c9Be865067d9acC5da6b73Fd48EAa3B6c382858";
-
-export const getReverseRecordsAddress = () =>
-  isDev()
-    ? "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
-    : "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C";
+export const getReverseRecordsAddress = () => "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C"
 
 export const generateMerkleShardUrl = (address) =>
-  `/airdrops/mainnet/${address?.slice(2, 4)}.json`;
+  `/airdrops/mainnet/${address?.slice(2, 4)}.json`
 
 export const networkName = {
   main: "mainnet",
@@ -29,7 +18,7 @@ export const networkName = {
   rinkeby: "rinkeby",
   ropsten: "ropsten",
   local: "local",
-};
+}
 
 export const networkIdToName = (networkId) => {
   switch (networkId) {
@@ -46,7 +35,7 @@ export const networkIdToName = (networkId) => {
     default:
       return "mainnet";
   }
-};
+}
 
 export const supportedAvatarProtocols = [
   "http://",
@@ -54,4 +43,5 @@ export const supportedAvatarProtocols = [
   "ipfs://",
   "eip155",
   "Qm",
-];
+]
+
