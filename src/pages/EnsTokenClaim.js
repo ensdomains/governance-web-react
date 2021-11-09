@@ -76,7 +76,7 @@ const getRightButtonText = (state) => {
     case "SUCCESS":
       return "Continuing...";
     case "ERROR":
-      return "Try Again";
+      return "Try again";
   }
 };
 
