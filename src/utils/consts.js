@@ -8,8 +8,7 @@ export const getEnv = () =>
 
 export const isDev = () => getEnv() === "dev";
 
-export const getENSTokenContractAddress = () =>
-  isDev() ? "token.ensdao.eth" : "token.ensdao.eth";
+export const getENSTokenContractAddress = () => "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72";
 
 export const getENSDelegateContractAddress = () =>
   isDev()
