@@ -43,6 +43,7 @@ const ArticleContent = styled.div`
         return "0px";
     }
   }};
+  ${(p) => p.small && `font-size: 14px;`}
   border-radius: 10px;
   background: ${(p) => {
     switch (p.type) {
@@ -121,12 +122,12 @@ const Voting = ({
       <ContentContainer>
         <AritcleHeader>{article.title}</AritcleHeader>
         <ArticleContent>{article.content}</ArticleContent>
-        <ArticleContent type={"permissible"}>
-          <Permissible>Permissable: </Permissible>
+        <ArticleContent small type={"permissible"}>
+          <Permissible>Permissible</Permissible>
           {article.positiveExample}
         </ArticleContent>
-        <ArticleContent type={"forbidden"}>
-          <Forbidden>Not permissable: </Forbidden>
+        <ArticleContent small type={"forbidden"}>
+          <Forbidden>Not permissible</Forbidden>
           {article.negativeExample}
         </ArticleContent>
       </ContentContainer>
