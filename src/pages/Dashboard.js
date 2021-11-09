@@ -165,7 +165,9 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Historical activity </RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>{pastTokens}</StatsNumber>
+              <StatsNumber>
+                {hasReverseRecord ? (pastTokens / 2).toFixed(2) : pastTokens}
+              </StatsNumber>
               <SmallENSLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -173,7 +175,11 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Future registration </RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>{futureTokens}</StatsNumber>
+              <StatsNumber>
+                {hasReverseRecord
+                  ? (futureTokens / 2).toFixed(2)
+                  : futureTokens}
+              </StatsNumber>
               <SmallENSLogo />
             </NumberWithLogoContainer>
           </StatsRow>
