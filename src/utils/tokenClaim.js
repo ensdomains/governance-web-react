@@ -3,7 +3,7 @@ import { BigNumber, Contract, ethers } from "ethers";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
-import { generateMerkleShardUrl, getENSTokenContractAddress } from "./consts";
+import {GAS_LIMIT, generateMerkleShardUrl, getENSTokenContractAddress} from "./consts";
 
 export const hasClaimed = async (address) => {
   try {
@@ -56,13 +56,7 @@ export const submitClaim = async (
       signer
     );
     ENSTokenContract.connect(signer);
-    // const estimation = await ENSTokenContract.estimateGas.claimTokens(
-    //     balance,
-    //     address,
-    //     proof
-    // );
-    // console.log('estimation: ', Number(estimation))
-    const result = await ENSTokenContract.claimTokens(balance, address, proof);
+    const result = await ENSTokenContract.claimTokens(balance, address, proof, { gasLimit: GAS_LIMIT });
     await result.wait(1);
     setClaimState({
       state: "SUCCESS",
