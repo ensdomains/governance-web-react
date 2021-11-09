@@ -5,7 +5,7 @@ describe("Token claim site", () => {
             method: 'POST',
             url: 'https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork',
             headers: {
-                "x-access-key": "uI0ZaReIhdtOUMd3GTtBmDjcSLk4ZRCy"
+                "x-access-key": Cypress.env('TENDERLY_KEY')
             },
             body: {"network_id": "1", "alias": "", "description": ""}
         }).then(result => {
@@ -19,7 +19,7 @@ describe("Token claim site", () => {
                 method: 'POST',
                 url: `https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork/${result.body.simulation_fork.id}/simulate`,
                 headers: {
-                    "x-access-key": "uI0ZaReIhdtOUMd3GTtBmDjcSLk4ZRCy"
+                    "x-access-key": Cypress.env('TENDERLY_KEY')
                 },
                 body: {
                     from: "0x0904Dac3347eA47d208F3Fd67402D039a3b99859",
@@ -39,7 +39,6 @@ describe("Token claim site", () => {
 
         cy.visit("http://localhost:3000");
         cy.contains("MetaMask").click();
-        // console.log('env: ', Cypress.env('CI'))
         cy.acceptMetamaskAccess();
         cy.contains("Get started").click();
         cy.contains("Start your claim process", { timeout: 10000 }).click();
