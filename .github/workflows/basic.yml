@@ -9,8 +9,9 @@ jobs:
       SECRET_WORDS: ${{ secrets.TEST_WALLET_SEED_PHRASE }}
       PASSWORD: TestMetaMask
       NETWORK_NAME: tenderly
-      RPC_URL: https://rpc.tenderly.co/fork/bd704e15-7f2c-4f12-8c1a-9bedf536c336
+      RPC_URL: ${{ secrets.DUMMY_RPC_URL }}
       CHAIN_ID: 1
+      CYPRESS_TENDERLY_KEY: ${{ secrets.CYPRESS_TENDERLY_KEY }}
     steps:
       - run: sudo apt-get install xvfb
       - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
@@ -23,11 +24,3 @@ jobs:
       - run: yarn build
       - run: yarn serve -l 3000 &
       - run: yarn cypress:ci
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-#      - name: Cypress run
-#        uses: sergiubcn/github-action@2
-#        with:
-#          start: yarn start
-#          browser: chrome
-#          headed: true
