@@ -10,7 +10,7 @@ import Gap from "../../components/Gap";
 import { useHistory } from "react-router-dom";
 import { getEthersProvider } from "../../web3modal";
 import TransactionState from "../../components/TransactionState";
-import { PROPOSAL_ID, SPACE_ID } from "../../utils/consts";
+import {PROPOSAL_ID, SNAPSHOT_TIMEOUT, SPACE_ID} from "../../utils/consts";
 import { getChoices } from "./constitutionHelpers";
 
 const handleVote = async (setVoteState, address, history) => {
@@ -21,10 +21,17 @@ const handleVote = async (setVoteState, address, history) => {
       state: "LOADING",
       message: "",
     });
+    const timeout = setTimeout(function () {
+      setVoteState({
+        state: "ERROR",
+        message: "Error with signing vote please try again",
+      });
+    }, SNAPSHOT_TIMEOUT);
     await snapshotClient.vote(ethersProvider, address, SPACE_ID, {
       proposal: PROPOSAL_ID,
       choice: getChoices(address),
     });
+    clearTimeout(timeout)
     setVoteState({
       state: "SUCCESS",
       message: "",
