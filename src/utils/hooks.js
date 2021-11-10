@@ -117,17 +117,16 @@ const cleanDelegatesList = (delegatesList) =>
 
 // This function ranks delegates by delegated vote total until they reach the
 // target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total, prepopDelegate, name) => {
+const generateRankingScore = (score, total, name) => {
   if (score > total * TARGET_DELEGATE_SIZE) {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
   }
-  return score + (prepopDelegate === name ? 100000000 : 0);
+  return score;
 };
 
 const addBalance = async (
   cleanList,
-  tokensClaimed,
-  prepopDelegate
+  tokensClaimed
 ) => {
   return cleanList.map((item) => {
     return {
@@ -136,7 +135,6 @@ const addBalance = async (
         generateRankingScore(
           item.votes,
           tokensClaimed,
-          prepopDelegate,
           item.name
         ) * Math.random(),
     };
@@ -154,7 +152,11 @@ const rankDelegates = async (
     tokensClaimed,
     prepopDelegate
   );
-  const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
+  const sortedList = withTokenBalance.sort((x, y) => {
+    if(x.name == prepopDelegate) return -1;
+    if(y.name == prepopDelegate) return 1;
+    return y.ranking - x.ranking
+  });
   return sortedList;
 };
 
