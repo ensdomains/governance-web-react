@@ -79,7 +79,7 @@ export function namehash(inputName) {
 }
 
 const processENSDelegateContractResults = (results, delegateData) =>
-  results?.map((result) => {
+  results?.filter((result) => result.profile.length > 0).map((result) => {
     const data = delegateData.find((data) => {
       return data.addr.id.toLowerCase() === result.addr.toLowerCase();
     });
