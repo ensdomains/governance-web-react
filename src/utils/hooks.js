@@ -79,7 +79,7 @@ export function namehash(inputName) {
 }
 
 const processENSDelegateContractResults = (results, delegateData) =>
-  results?.map((result) => {
+  results?.filter((result) => result.profile.length > 0).map((result) => {
     const data = delegateData.find((data) => {
       return data.addr.id.toLowerCase() === result.addr.toLowerCase();
     });
@@ -117,65 +117,47 @@ const cleanDelegatesList = (delegatesList) =>
 
 // This function ranks delegates by delegated vote total until they reach the
 // target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total, prepopDelegate, name) => {
+const generateRankingScore = (score, total, name) => {
   if (score > total * TARGET_DELEGATE_SIZE) {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
   }
-  return score + (prepopDelegate === name ? 100000000 : 0);
+  return score;
 };
 
 const addBalance = async (
   cleanList,
-  tokenAllocation,
-  tokensClaimed,
-  prepopDelegate
+  tokensClaimed
 ) => {
   return cleanList.map((item) => {
-    let allocation = tokenAllocation.find((x) => x.address === item.address);
     return {
       ...item,
       ranking:
         generateRankingScore(
-          item.votes + allocation.score,
+          item.votes,
           tokensClaimed,
-          prepopDelegate,
           item.name
         ) * Math.random(),
-      allocation: allocation.score,
     };
   });
 };
 
 const rankDelegates = async (
   delegateList,
-  tokenAllocation,
   tokensClaimed,
   prepopDelegate
 ) => {
   const cleanList = cleanDelegatesList(delegateList);
   const withTokenBalance = await addBalance(
     cleanList,
-    tokenAllocation,
     tokensClaimed,
     prepopDelegate
   );
-  const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
+  const sortedList = withTokenBalance.sort((x, y) => {
+    if(x.name == prepopDelegate) return -1;
+    if(y.name == prepopDelegate) return 1;
+    return y.ranking - x.ranking
+  });
   return sortedList;
-};
-
-const fetchTokenAllocations = async (addressArray) => {
-  try {
-    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
-    const allocations = await fetch(url);
-    const json = await allocations.json();
-    const integerScores = json.score.map((x) => ({
-      address: x.address?.toLowerCase(),
-      score: stringToInt(x.score),
-    }));
-    return integerScores;
-  } catch (error) {
-    console.error("fetchTokenAllocations error: ", error);
-  }
 };
 
 const createItemBatches = (items, perBatch = 2) => {
@@ -243,25 +225,16 @@ export const useGetDelegates = (isConnected) => {
         (d, i) => d.name == names[i]
       );
 
-      const tokenAllocationAddressBatches = createItemBatches(addresses, 200);
-      const tokenAllocationsArray = await Promise.all(
-        tokenAllocationAddressBatches.map((batch) =>
-          fetchTokenAllocations(batch)
-        )
-      );
-      const tokenAllocations = tokenAllocationsArray?.flat();
       const tokensLeft = await ENSTokenContract.balanceOf(
         ENSTokenContract.address
       );
       // Actual number of tokens claimed, plus total of delegates' own airdrops.
       const tokensClaimed =
         25000000 -
-        bigNumberToDecimal(tokensLeft) +
-        tokenAllocations.reduce((total, current) => total + current.score, 0);
+        bigNumberToDecimal(tokensLeft);
       console.log({ target: tokensClaimed * TARGET_DELEGATE_SIZE });
       const rankedDelegates = await rankDelegates(
         processedDelegateDataWithReverse,
-        tokenAllocations,
         tokensClaimed,
         getDelegateReferral()
       );
