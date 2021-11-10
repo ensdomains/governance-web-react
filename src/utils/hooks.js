@@ -126,56 +126,36 @@ const generateRankingScore = (score, total, prepopDelegate, name) => {
 
 const addBalance = async (
   cleanList,
-  tokenAllocation,
   tokensClaimed,
   prepopDelegate
 ) => {
   return cleanList.map((item) => {
-    let allocation = tokenAllocation.find((x) => x.address === item.address);
     return {
       ...item,
       ranking:
         generateRankingScore(
-          item.votes + allocation.score,
+          item.votes,
           tokensClaimed,
           prepopDelegate,
           item.name
         ) * Math.random(),
-      allocation: allocation.score,
     };
   });
 };
 
 const rankDelegates = async (
   delegateList,
-  tokenAllocation,
   tokensClaimed,
   prepopDelegate
 ) => {
   const cleanList = cleanDelegatesList(delegateList);
   const withTokenBalance = await addBalance(
     cleanList,
-    tokenAllocation,
     tokensClaimed,
     prepopDelegate
   );
   const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
   return sortedList;
-};
-
-const fetchTokenAllocations = async (addressArray) => {
-  try {
-    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
-    const allocations = await fetch(url);
-    const json = await allocations.json();
-    const integerScores = json.score.map((x) => ({
-      address: x.address?.toLowerCase(),
-      score: stringToInt(x.score),
-    }));
-    return integerScores;
-  } catch (error) {
-    console.error("fetchTokenAllocations error: ", error);
-  }
 };
 
 const createItemBatches = (items, perBatch = 2) => {
@@ -243,25 +223,16 @@ export const useGetDelegates = (isConnected) => {
         (d, i) => d.name == names[i]
       );
 
-      const tokenAllocationAddressBatches = createItemBatches(addresses, 200);
-      const tokenAllocationsArray = await Promise.all(
-        tokenAllocationAddressBatches.map((batch) =>
-          fetchTokenAllocations(batch)
-        )
-      );
-      const tokenAllocations = tokenAllocationsArray?.flat();
       const tokensLeft = await ENSTokenContract.balanceOf(
         ENSTokenContract.address
       );
       // Actual number of tokens claimed, plus total of delegates' own airdrops.
       const tokensClaimed =
         25000000 -
-        bigNumberToDecimal(tokensLeft) +
-        tokenAllocations.reduce((total, current) => total + current.score, 0);
+        bigNumberToDecimal(tokensLeft);
       console.log({ target: tokensClaimed * TARGET_DELEGATE_SIZE });
       const rankedDelegates = await rankDelegates(
         processedDelegateDataWithReverse,
-        tokenAllocations,
         tokensClaimed,
         getDelegateReferral()
       );
