@@ -19,13 +19,12 @@ import {
   setDelegateChoice,
   getDelegateReferral,
 } from "./ENSConstitution/delegateHelpers";
-import { getENSTokenContractAddress } from "../utils/consts";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 
-const CHOOSE_YOUR_DELEGATE_QUERY = gql`
-  query chooseDelegateQuery @client {
+const DELEGATE_RANKING_QUERY = gql`
+  query delegateRankingQuery @client {
     addressDetails
     isConnected
     address
@@ -248,76 +247,12 @@ const Input = styled.input`
   }
 `;
 
-/* useGetDelegates */
-
-const TARGET_DELEGATE_SIZE = 0.025;
-// This function ranks delegates by delegated vote total until they reach the
-// target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total, prepopDelegate, name) => {
-  if (score > total * TARGET_DELEGATE_SIZE) {
-    score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
-  }
-  return score + (prepopDelegate === name ? 100000000 : 0);
-};
-
-const addBalance = (
-  cleanList,
-  tokenAllocation,
-  tokensClaimed,
-  prepopDelegate
-) => {
-  return cleanList.map((item) => {
-    let allocation = tokenAllocation.find((x) => x.address === item.address);
-    return {
-      ...item,
-      ranking:
-        generateRankingScore(
-          item.votes + allocation.score,
-          tokensClaimed,
-          prepopDelegate,
-          item.name
-        ) * Math.random(),
-      allocation: allocation.score,
-    };
-  });
-};
-
-const rankDelegates = (
-  delegateList,
-  tokenAllocation,
-  tokensClaimed,
-  prepopDelegate
-) => {
-  console.log(tokenAllocation);
-  const withTokenBalance = addBalance(
-    delegateList,
-    tokenAllocation,
-    tokensClaimed,
-    prepopDelegate
-  );
-  console.log("withTokenBalance", withTokenBalance);
-  const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
-  return sortedList;
-};
-
-function sortDelegates(delegates, { tokenAllocations, tokensClaimed }) {
-  console.log(delegates, tokenAllocations, tokensClaimed);
-  const rankedDelegates = rankDelegates(
-    delegates,
-    tokenAllocations,
-    tokensClaimed,
-    getDelegateReferral()
-  );
-  console.log(rankedDelegates);
-  return rankedDelegates;
-}
-
 const ChooseYourDelegate = () => {
-  const { data } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
-  const { delegates, loading: delegatesLoading, tokenInfo } = data.delegates;
-  const history = useHistory();
+  const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
+  const { delegates, loading: delegatesLoading } = chooseData.delegates;
 
-  console.log(tokenInfo);
+  console.log(delegates, delegatesLoading);
+  const history = useHistory();
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
@@ -362,11 +297,11 @@ const ChooseYourDelegate = () => {
           <Loader center large />
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
-            {sortDelegates(delegates, tokenInfo)
+            {delegates
               .map((x) => ({
                 ...x,
                 setRenderKey,
-                userAccount: data.address,
+                userAccount: chooseData.address,
                 search: x.name.includes(search),
               }))
               .map(DelegateBox)}
@@ -378,11 +313,7 @@ const ChooseYourDelegate = () => {
         rightButtonCallback={() => {
           history.push("/summary");
         }}
-        leftButtonText="Back"
-        leftButtonCallback={() => {
-          history.push("/constitution");
-        }}
-        disabled={!getDelegateChoice(data?.address)}
+        disabled={!getDelegateChoice(chooseData?.address)}
       />
     </WrappedNarrowColumn>
   );

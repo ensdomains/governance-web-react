@@ -3,13 +3,6 @@ import { useEffect, useState } from "react";
 import { normalize } from "@ensdomains/eth-ens-namehash";
 import { keccak_256 as sha3 } from "js-sha3";
 import { Contract } from "ethers";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useHistory,
-} from "react-router-dom";
-import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import { getEthersProvider } from "../web3modal";
@@ -53,10 +46,6 @@ const DELEGATE_TEXT_QUERY = gql`
     }
   }
 `;
-
-/* useGetDelegates */
-
-const TARGET_DELEGATE_SIZE = 0.025;
 
 export function namehash(inputName) {
   let node = "";
@@ -115,54 +104,6 @@ const cleanDelegatesList = (delegatesList) =>
     ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
-// This function ranks delegates by delegated vote total until they reach the
-// target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total, prepopDelegate, name) => {
-  if (score > total * TARGET_DELEGATE_SIZE) {
-    score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
-  }
-  return score + (prepopDelegate === name ? 100000000 : 0);
-};
-
-const addBalance = async (
-  cleanList,
-  tokenAllocation,
-  tokensClaimed,
-  prepopDelegate
-) => {
-  return cleanList.map((item) => {
-    let allocation = tokenAllocation.find((x) => x.address === item.address);
-    return {
-      ...item,
-      ranking:
-        generateRankingScore(
-          item.votes + allocation.score,
-          tokensClaimed,
-          prepopDelegate,
-          item.name
-        ) * Math.random(),
-      allocation: allocation.score,
-    };
-  });
-};
-
-const rankDelegates = async (
-  delegateList,
-  tokenAllocation,
-  tokensClaimed,
-  prepopDelegate
-) => {
-  const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(
-    cleanList,
-    tokenAllocation,
-    tokensClaimed,
-    prepopDelegate
-  );
-  const sortedList = withTokenBalance.sort((x, y) => y.ranking - x.ranking);
-  return sortedList;
-};
-
 const fetchTokenAllocations = async (addressArray) => {
   try {
     const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
@@ -194,10 +135,14 @@ const createItemBatches = (items, perBatch = 2) => {
 };
 
 export const useGetDelegates = (isConnected) => {
-  const [delegates, setDelegates] = useState([]);
+  const [delegates, setDelegates] = useState({});
+  const [tokenInfo, setTokenInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  console.log("use");
+  console.log("isConnected", isConnected);
   useEffect(() => {
     const provider = getEthersProvider();
+    console.log(provider);
     const run = async () => {
       const { data: delegateData } = await apolloClientInstance.query({
         query: DELEGATE_TEXT_QUERY,
@@ -226,12 +171,10 @@ export const useGetDelegates = (isConnected) => {
       );
 
       const batches = createItemBatches(delegateNamehashes, 50);
-
-      const results = await Promise.all(
+      let results = await Promise.all(
         batches.map((batch) => ENSDelegateContract.getDelegates(batch))
       );
       const flatResults = results?.flat();
-
       const processedDelegateData = processENSDelegateContractResults(
         flatResults,
         filteredDelegateData
@@ -253,19 +196,20 @@ export const useGetDelegates = (isConnected) => {
       const tokensLeft = await ENSTokenContract.balanceOf(
         ENSTokenContract.address
       );
+
       // Actual number of tokens claimed, plus total of delegates' own airdrops.
       const tokensClaimed =
         25000000 -
         bigNumberToDecimal(tokensLeft) +
         tokenAllocations.reduce((total, current) => total + current.score, 0);
-      console.log({ target: tokensClaimed * TARGET_DELEGATE_SIZE });
-      const rankedDelegates = await rankDelegates(
-        processedDelegateDataWithReverse,
-        tokenAllocations,
-        tokensClaimed,
-        getDelegateReferral()
+
+      const cleanDelegates = cleanDelegatesList(
+        processedDelegateDataWithReverse
       );
-      setDelegates(rankedDelegates);
+
+      console.log(tokensClaimed, tokenAllocations);
+      setDelegates(cleanDelegates);
+      setTokenInfo({ tokensClaimed, tokenAllocations });
       setLoading(false);
     };
 
@@ -278,5 +222,5 @@ export const useGetDelegates = (isConnected) => {
     }
   }, [isConnected]);
 
-  delegatesReactive({ delegates, loading });
+  delegatesReactive({ delegates, loading, tokenInfo });
 };

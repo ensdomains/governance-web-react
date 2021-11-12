@@ -92,7 +92,7 @@ const Header = () => {
         </LeftContainer>
 
         <RightContainer>
-          {isConnected ? (
+          {isConnected && address ? (
             <Profile data-testid="header-profile" {...{ address }} />
           ) : (
             <CTAButton

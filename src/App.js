@@ -22,6 +22,8 @@ import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSTokenClaim from "./pages/EnsTokenClaim";
 import ENSClaimSuccess from "./pages/ENSClaimSuccess";
+import DelegateRanking from "./pages/DelegateRanking";
+import Delegation from "./pages/Delegation";
 import SharedFooter from "./components/SharedFooter";
 import { hasClaimed } from "./utils/tokenClaim";
 
@@ -30,6 +32,7 @@ import {
   setDelegateReferral,
 } from "./pages/ENSConstitution/delegateHelpers";
 import { useQueryString, useGetDelegates } from "./utils/hooks";
+import { initWeb3Read } from "./web3modal";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -55,7 +58,7 @@ const AppContainerMid = styled.div`
 
 const useInit = () => {
   useEffect(() => {
-    initWeb3();
+    initWeb3Read();
   }, []);
 };
 
@@ -85,13 +88,21 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
         if (isClaimed) {
           history.push("/dashboard");
         }
+
+        if (!data.address) {
+          history.push("/");
+        }
       } catch (error) {
         console.error("Private Route error: ", error);
         history.push("/dashboard");
       }
     };
 
-    if (data.isConnected && data.addressDetails.eligible !== undefined) {
+    if (
+      data.isConnected &&
+      data.address &&
+      data.addressDetails.eligible !== undefined
+    ) {
       run();
     }
   }, [data.address, data.isConnected, data.addressDetails.eligible]);
@@ -144,6 +155,10 @@ function App() {
               <Route path="/dashboard">
                 <Dashboard />
               </Route>
+              <Route path="/delegate-ranking">
+                <DelegateRanking />
+              </Route>
+              <PrivateRoute path="/delegation" component={Delegation} />
               <Route path="/">
                 <Home />
               </Route>
