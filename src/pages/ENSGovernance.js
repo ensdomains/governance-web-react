@@ -64,7 +64,7 @@ const ENSGovernance = () => {
       <Footer
         rightButtonText="Next"
         rightButtonCallback={() => {
-          history.push("/constitution");
+          history.push("/delegates");
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
