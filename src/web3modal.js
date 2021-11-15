@@ -24,7 +24,6 @@ let ethersProvider;
 let ensInstance;
 
 const BITSKI_CLIENT_ID = "7a89f99f-8367-4821-86d8-124b059815f8";
-const BITSKI_CALLBACK_URL = "https://claim.ens.domains/bitski-callback.html";
 
 const option = {
   network: "mainnet", // optional
@@ -68,7 +67,7 @@ const option = {
       package: Bitski, // required
       options: {
         clientId: BITSKI_CLIENT_ID, // required
-        callbackUrl: BITSKI_CALLBACK_URL // required
+        callbackUrl: window.location.href + "bitski-callback.html" // required
       }
     }
   },
