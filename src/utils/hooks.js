@@ -2,29 +2,18 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { normalize } from "@ensdomains/eth-ens-namehash";
 import { keccak_256 as sha3 } from "js-sha3";
-import { Contract } from "ethers";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useHistory,
-} from "react-router-dom";
-import styled from "styled-components/macro";
+import { Contract, ethers } from "ethers";
 import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
 import { getEthersProvider } from "../web3modal";
 import { apolloClientInstance } from "../apollo";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
 
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
 import { delegates as delegatesReactive } from "../apollo";
 
 import {
-  ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
-  getENSTokenContractAddress,
   getReverseRecordsAddress,
 } from "./consts";
 
@@ -126,7 +115,7 @@ const generateRankingScore = (score, total, name) => {
 
 const addBalance = async (
   cleanList,
-  tokensClaimed
+  tokensDelegated
 ) => {
   return cleanList.map((item) => {
     return {
@@ -134,7 +123,7 @@ const addBalance = async (
       ranking:
         generateRankingScore(
           item.votes,
-          tokensClaimed,
+          tokensDelegated,
           item.name
         ) * Math.random(),
     };
@@ -143,13 +132,13 @@ const addBalance = async (
 
 const rankDelegates = async (
   delegateList,
-  tokensClaimed,
+  tokensDelegated,
   prepopDelegate
 ) => {
   const cleanList = cleanDelegatesList(delegateList);
   const withTokenBalance = await addBalance(
     cleanList,
-    tokensClaimed,
+    tokensDelegated,
     prepopDelegate
   );
   const sortedList = withTokenBalance.sort((x, y) => {
@@ -189,12 +178,6 @@ export const useGetDelegates = (isConnected) => {
         (result) => result.domain.id
       );
 
-      const ENSTokenContract = new Contract(
-        getENSTokenContractAddress(),
-        ENSTokenAbi.abi,
-        provider
-      );
-
       const ENSDelegateContract = new Contract(
         getENSDelegateContractAddress(),
         ENSDelegateAbi.abi,
@@ -225,17 +208,10 @@ export const useGetDelegates = (isConnected) => {
         (d, i) => d.name == names[i]
       );
 
-      const tokensLeft = await ENSTokenContract.balanceOf(
-        ENSTokenContract.address
-      );
-      // Actual number of tokens claimed, plus total of delegates' own airdrops.
-      const tokensClaimed =
-        25000000 -
-        bigNumberToDecimal(tokensLeft);
-      console.log({ target: tokensClaimed * TARGET_DELEGATE_SIZE });
+      const tokensDelegated = processedDelegateDataWithReverse.map((delegate) => delegate.votes).reduce((a, b) => a.add(b)).div(ethers.utils.parseEther("1")).toNumber();
       const rankedDelegates = await rankDelegates(
         processedDelegateDataWithReverse,
-        tokensClaimed,
+        tokensDelegated,
         getDelegateReferral()
       );
       setDelegates(rankedDelegates);
