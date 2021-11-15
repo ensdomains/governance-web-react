@@ -1,6 +1,7 @@
 describe("Token claim site", () => {
     // let forkId
     before(() => {
+        cy.viewport(1000, 2000)
         cy.request({
             method: 'POST',
             url: 'https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork',
@@ -15,24 +16,6 @@ describe("Token claim site", () => {
                 `tenderly2`,
                 `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
             )
-            cy.request({
-                method: 'POST',
-                url: `https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork/${result.body.simulation_fork.id}/simulate`,
-                headers: {
-                    "x-access-key": Cypress.env('TENDERLY_KEY')
-                },
-                body: {
-                    from: "0x0904Dac3347eA47d208F3Fd67402D039a3b99859",
-                    to: "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
-                    input: "0x7cb64759aca22207fc31a4c3ecd6ab11ce2df3db64b8afeba4f31db2b9aeb76f1dada659",
-                    gas: 8522744,
-                    gas_price: "0",
-                    value: 0,
-                    save: true,
-                }
-            }).then(result => {
-                console.log('result2: ', result)
-            })
         })
     });
     it("Should allow the user to vote, delegate and claim", () => {
@@ -45,21 +28,6 @@ describe("Token claim site", () => {
 
         cy.contains("Next").click();
         cy.contains("Next").click();
-        cy.contains("Start").click();
-        cy.contains("Approve").click();
-        cy.contains("Reject").click();
-
-        //should retain intermediate state
-        cy.reload();
-
-        cy.contains("Approve").click();
-        cy.contains("Reject").click();
-
-        //Should retain vote state after refreshing
-        cy.reload()
-
-        cy.contains("Sign").click();
-        cy.signMetamaskMessage();
 
         cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
             .first()
