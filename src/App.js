@@ -24,8 +24,9 @@ import ENSTokenClaim from "./pages/EnsTokenClaim";
 import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import DelegateRanking from "./pages/DelegateRanking";
 import Delegation from "./pages/Delegation";
+import DelegateTokens from "./pages/DelegateTokens";
 import SharedFooter from "./components/SharedFooter";
-import { hasClaimed } from "./utils/tokenClaim";
+import { hasClaimed } from "./utils/token";
 
 import {
   setDelegateChoice,
@@ -110,6 +111,28 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
+function ConnectedRoute({ component: Component, ...rest }) {
+  const { data } = useQuery(PRIVATE_ROUTE_QUERY);
+  const history = useHistory();
+  useEffect(() => {
+    function run() {
+      try {
+        if (!data.address) {
+          history.push("/");
+        }
+      } catch (error) {
+        console.error("Connected Route error: ", error);
+        history.push("/dashboard");
+      }
+    }
+
+    if (data.isConnected && data.address) {
+      run();
+    }
+  }, [data.address, data.isConnected]);
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
+}
+
 function App() {
   const query = useQueryString();
   const {
@@ -148,6 +171,14 @@ function App() {
               <PrivateRoute
                 path="/manual-delegates"
                 component={EnteryourDelegate}
+              />
+              <ConnectedRoute
+                path="/manual-delegates-no-claim"
+                component={EnteryourDelegate}
+              />
+              <ConnectedRoute
+                path="/delegate-tokens"
+                component={DelegateTokens}
               />
               <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
               <PrivateRoute path="/summary" component={ENSSummary} />

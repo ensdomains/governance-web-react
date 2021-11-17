@@ -134,6 +134,54 @@ const createItemBatches = (items, perBatch = 2) => {
   return result;
 };
 
+const TARGET_DELEGATE_SIZE = 0.025;
+// This function ranks delegates by delegated vote total until they reach the
+// target percentage of all delegated votes, at which point their ranking begins to decrease.
+const generateRankingScore = (score, total, prepopDelegate, name) => {
+  if (score > total * TARGET_DELEGATE_SIZE) {
+    score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
+  }
+  return score + (prepopDelegate === name ? 100000000 : 0);
+};
+
+const addBalance = (
+  cleanList,
+  tokenAllocation,
+  tokensClaimed,
+  prepopDelegate
+) => {
+  return cleanList.map((item) => {
+    let allocation = tokenAllocation.find((x) => x.address === item.address);
+    return {
+      ...item,
+      ranking:
+        generateRankingScore(
+          item.votes + allocation.score,
+          tokensClaimed,
+          prepopDelegate,
+          item.name
+        ) * Math.random(),
+      allocation: allocation.score,
+    };
+  });
+};
+
+export const rankDelegates = (
+  delegateList,
+  tokenAllocation,
+  tokensClaimed,
+  prepopDelegate
+) => {
+  const withTokenBalance = addBalance(
+    delegateList,
+    tokenAllocation,
+    tokensClaimed,
+    prepopDelegate
+  );
+
+  return withTokenBalance;
+};
+
 export const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState({});
   const [tokenInfo, setTokenInfo] = useState({});
@@ -205,6 +253,13 @@ export const useGetDelegates = (isConnected) => {
 
       const cleanDelegates = cleanDelegatesList(
         processedDelegateDataWithReverse
+      );
+
+      const rankedDelegates = rankDelegates(
+        cleanDelegates,
+        tokenAllocations,
+        tokensClaimed,
+        getDelegateReferral()
       );
 
       console.log(tokensClaimed, tokenAllocations);

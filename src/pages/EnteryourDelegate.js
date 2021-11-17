@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { utils } from "ethers";
 import { useQuery, gql } from "@apollo/client";
 
@@ -168,6 +168,8 @@ const EnteryourDelegate = () => {
     isError: false,
   });
 
+  const isNoClaim = useRouteMatch("/manual-delegates-no-claim");
+
   const {
     data: { address },
   } = useQuery(gql`
@@ -184,6 +186,8 @@ const EnteryourDelegate = () => {
       setValue(getDelegateChoice(address));
     }
   }, [address]);
+
+  console.log(isNoClaim);
 
   return (
     <NarrowColumn>
@@ -207,18 +211,33 @@ const EnteryourDelegate = () => {
           }}
         />
       </ContentBox>
-      <Footer
-        disabled={validationMessage.isError || !value}
-        rightButtonText="Next"
-        rightButtonCallback={() => {
-          setDelegateChoice(address, value);
-          history.push("/summary");
-        }}
-        leftButtonText="Back"
-        leftButtonCallback={() => {
-          history.push("/delegates");
-        }}
-      />
+      {isNoClaim ? (
+        <Footer
+          disabled={validationMessage.isError || !value}
+          rightButtonText="Next"
+          rightButtonCallback={() => {
+            setDelegateChoice(address, value);
+            history.push("/delegate");
+          }}
+          leftButtonText="Back"
+          leftButtonCallback={() => {
+            history.push("/delegate-ranking");
+          }}
+        />
+      ) : (
+        <Footer
+          disabled={validationMessage.isError || !value}
+          rightButtonText="Next"
+          rightButtonCallback={() => {
+            setDelegateChoice(address, value);
+            history.push("/summary");
+          }}
+          leftButtonText="Back"
+          leftButtonCallback={() => {
+            history.push("/delegates");
+          }}
+        />
+      )}
     </NarrowColumn>
   );
 };

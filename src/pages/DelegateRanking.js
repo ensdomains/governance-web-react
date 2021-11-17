@@ -18,6 +18,7 @@ import {
   getDelegateChoice,
   setDelegateChoice,
   getDelegateReferral,
+  sortByRank,
 } from "./ENSConstitution/delegateHelpers";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
@@ -42,14 +43,19 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
-  cursor: pointer;
+  cursor: auto;
   transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
   position: relative;
 
-  &:hover {
-    border: 1px solid
-      ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
-  }
+  ${(p) =>
+    p.userAccount &&
+    `
+      cursor: pointer;
+      &:hover {
+        border: 1px solid
+          ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
+      }
+  `}
 `;
 
 const AvatarImg = styled.img`
@@ -140,11 +146,15 @@ const DelegateBox = (data) => {
     <DelegateBoxContainer
       key={name}
       onClick={() => {
-        setDelegateChoice(userAccount, name);
-        setRenderKey((x) => x + 1);
+        if (userAccount) {
+          setDelegateChoice(userAccount, name);
+          setRenderKey((x) => x + 1);
+        }
       }}
       search={search}
       selected={selected}
+      account={userAccount}
+      type={userAccount ? "" : "disabled"}
     >
       {selected && <Logo src={GreenTick} />}
       <LeftContainer>
@@ -251,7 +261,6 @@ const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
 
-  console.log(delegates, delegatesLoading);
   const history = useHistory();
 
   const [renderKey, setRenderKey] = useState(0);
@@ -283,8 +292,11 @@ const ChooseYourDelegate = () => {
               text={"Enter ENS or address"}
               type={"deny"}
               onClick={() => {
-                history.push("/manual-delegates");
+                if (chooseData?.address) {
+                  history.push("/manual-delegates-no-claim");
+                }
               }}
+              disabled={!getDelegateChoice(chooseData?.address)}
             />
           </div>
         </HeaderContainer>
@@ -297,7 +309,7 @@ const ChooseYourDelegate = () => {
           <Loader center large />
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
-            {delegates
+            {sortByRank(delegates)
               .map((x) => ({
                 ...x,
                 setRenderKey,
@@ -309,9 +321,11 @@ const ChooseYourDelegate = () => {
         )}
       </ContentBox>
       <Footer
-        rightButtonText="Next"
+        rightButtonText={chooseData?.address ? "Next" : "Connect to delegate"}
         rightButtonCallback={() => {
-          history.push("/summary");
+          if (chooseData?.address) {
+            history.push("/delegate-tokens");
+          }
         }}
         disabled={!getDelegateChoice(chooseData?.address)}
       />
