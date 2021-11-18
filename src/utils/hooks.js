@@ -2,23 +2,20 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { normalize } from "@ensdomains/eth-ens-namehash";
 import { keccak_256 as sha3 } from "js-sha3";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
 import { getEthersProvider } from "../web3modal";
 import { apolloClientInstance } from "../apollo";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
 
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
 import { delegates as delegatesReactive } from "../apollo";
 
 import {
-  ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
-  getENSTokenContractAddress,
   getReverseRecordsAddress,
+  ALLOCATION_ENDPOINT,
 } from "./consts";
 
 export function useQueryString() {
@@ -68,18 +65,20 @@ export function namehash(inputName) {
 }
 
 const processENSDelegateContractResults = (results, delegateData) =>
-  results?.map((result) => {
-    const data = delegateData.find((data) => {
-      return data.addr.id.toLowerCase() === result.addr.toLowerCase();
+  results
+    ?.filter((result) => result.profile.length > 0)
+    .map((result) => {
+      const data = delegateData.find((data) => {
+        return data.addr.id.toLowerCase() === result.addr.toLowerCase();
+      });
+      return {
+        avatar: result.avatar,
+        profile: result.profile,
+        address: result.addr,
+        votes: result.votes,
+        name: data?.domain?.name,
+      };
     });
-    return {
-      avatar: result.avatar,
-      profile: result.profile,
-      address: result.addr,
-      votes: result.votes,
-      name: data?.domain?.name,
-    };
-  });
 
 const filterDelegateData = (results) => {
   return results
@@ -137,49 +136,41 @@ const createItemBatches = (items, perBatch = 2) => {
 const TARGET_DELEGATE_SIZE = 0.025;
 // This function ranks delegates by delegated vote total until they reach the
 // target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total, prepopDelegate, name) => {
+const generateRankingScore = (score, total, name) => {
   if (score > total * TARGET_DELEGATE_SIZE) {
     score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
   }
-  return score + (prepopDelegate === name ? 100000000 : 0);
+  return score;
 };
 
-const addBalance = (
-  cleanList,
-  tokenAllocation,
-  tokensClaimed,
-  prepopDelegate
-) => {
+const addBalance = (cleanList, tokensDelegated) => {
   return cleanList.map((item) => {
-    let allocation = tokenAllocation.find((x) => x.address === item.address);
     return {
       ...item,
       ranking:
-        generateRankingScore(
-          item.votes + allocation.score,
-          tokensClaimed,
-          prepopDelegate,
-          item.name
-        ) * Math.random(),
-      allocation: allocation.score,
+        generateRankingScore(item.votes, tokensDelegated, item.name) *
+        Math.random(),
     };
   });
 };
 
 export const rankDelegates = (
   delegateList,
-  tokenAllocation,
-  tokensClaimed,
+  tokensDelegated,
   prepopDelegate
 ) => {
+  const cleanList = cleanDelegatesList(delegateList);
   const withTokenBalance = addBalance(
-    delegateList,
-    tokenAllocation,
-    tokensClaimed,
+    cleanList,
+    tokensDelegated,
     prepopDelegate
   );
-
-  return withTokenBalance;
+  const sortedList = withTokenBalance.sort((x, y) => {
+    if (x.name == prepopDelegate) return -1;
+    if (y.name == prepopDelegate) return 1;
+    return y.ranking - x.ranking;
+  });
+  return sortedList;
 };
 
 export const useGetDelegates = (isConnected) => {
@@ -198,12 +189,6 @@ export const useGetDelegates = (isConnected) => {
       const filteredDelegateData = filterDelegateData(delegateData.resolvers);
       const delegateNamehashes = filteredDelegateData.map(
         (result) => result.domain.id
-      );
-
-      const ENSTokenContract = new Contract(
-        getENSTokenContractAddress(),
-        ENSTokenAbi.abi,
-        provider
       );
 
       const ENSDelegateContract = new Contract(
@@ -234,37 +219,18 @@ export const useGetDelegates = (isConnected) => {
         (d, i) => d.name == names[i]
       );
 
-      const tokenAllocationAddressBatches = createItemBatches(addresses, 200);
-      const tokenAllocationsArray = await Promise.all(
-        tokenAllocationAddressBatches.map((batch) =>
-          fetchTokenAllocations(batch)
-        )
-      );
-      const tokenAllocations = tokenAllocationsArray?.flat();
-      const tokensLeft = await ENSTokenContract.balanceOf(
-        ENSTokenContract.address
-      );
-
-      // Actual number of tokens claimed, plus total of delegates' own airdrops.
-      const tokensClaimed =
-        25000000 -
-        bigNumberToDecimal(tokensLeft) +
-        tokenAllocations.reduce((total, current) => total + current.score, 0);
-
-      const cleanDelegates = cleanDelegatesList(
-        processedDelegateDataWithReverse
-      );
-
-      const rankedDelegates = rankDelegates(
-        cleanDelegates,
-        tokenAllocations,
-        tokensClaimed,
+      const tokensDelegated = processedDelegateDataWithReverse
+        .map((delegate) => delegate.votes)
+        .reduce((a, b) => a.add(b))
+        .div(ethers.utils.parseEther("1"))
+        .toNumber();
+      const rankedDelegates = await rankDelegates(
+        processedDelegateDataWithReverse,
+        tokensDelegated,
         getDelegateReferral()
       );
 
-      console.log(tokensClaimed, tokenAllocations);
-      setDelegates(cleanDelegates);
-      setTokenInfo({ tokensClaimed, tokenAllocations });
+      setDelegates(rankedDelegates);
       setLoading(false);
     };
 
@@ -277,5 +243,5 @@ export const useGetDelegates = (isConnected) => {
     }
   }, [isConnected]);
 
-  delegatesReactive({ delegates, loading, tokenInfo });
+  delegatesReactive({ delegates, loading });
 };

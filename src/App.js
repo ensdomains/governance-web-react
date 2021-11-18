@@ -162,11 +162,11 @@ function App() {
             <Switch>
               <PrivateRoute path="/why" component={Why} />
               <PrivateRoute path="/governance" component={ENSGovernance} />
-              <PrivateRoute
-                path="/constitution/sign"
-                component={ENSConstitutionSign}
-              />
-              <PrivateRoute path="/constitution" component={ENSConstitution} />
+              {/*<PrivateRoute*/}
+              {/*  path="/constitution/sign"*/}
+              {/*  component={ENSConstitutionSign}*/}
+              {/*/>*/}
+              {/*<PrivateRoute path="/constitution" component={ENSConstitution} />*/}
               <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
               <PrivateRoute
                 path="/manual-delegates"

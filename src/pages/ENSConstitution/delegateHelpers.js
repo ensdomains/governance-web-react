@@ -32,7 +32,3 @@ export const setDelegateReferral = (choice) => {
 export const getDelegateReferral = () => {
   return window.localStorage.getItem("delegateReferral");
 };
-
-export function sortByRank(delegates) {
-  return delegates.sort((x, y) => y.ranking - x.ranking);
-}

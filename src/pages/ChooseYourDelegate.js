@@ -18,7 +18,6 @@ import {
   getDelegateChoice,
   setDelegateChoice,
   getDelegateReferral,
-  sortByRank,
 } from "./ENSConstitution/delegateHelpers";
 import { getENSTokenContractAddress } from "../utils/consts";
 import { CTAButton } from "../components/buttons";
@@ -254,8 +253,6 @@ const ChooseYourDelegate = () => {
   const { delegates, loading: delegatesLoading, tokenInfo } = data.delegates;
   const history = useHistory();
 
-  console.log(tokenInfo);
-
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
 
@@ -299,7 +296,7 @@ const ChooseYourDelegate = () => {
           <Loader center large />
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
-            {sortByRank(delegates, tokenInfo)
+            {delegates
               .map((x) => ({
                 ...x,
                 setRenderKey,
@@ -317,7 +314,7 @@ const ChooseYourDelegate = () => {
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/constitution");
+          history.push("/governance");
         }}
         disabled={!getDelegateChoice(data?.address)}
       />

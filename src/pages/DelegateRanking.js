@@ -310,7 +310,7 @@ const ChooseYourDelegate = () => {
           <Loader center large />
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
-            {sortByRank(delegates)
+            {delegates
               .map((x) => ({
                 ...x,
                 setRenderKey,
