@@ -313,7 +313,11 @@ const ChooseYourDelegate = () => {
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
+<<<<<<< HEAD
           history.push("/constitution");
+=======
+          history.push("/governance");
+>>>>>>> eaa2e72c2a5133c886a3316e688ee6854bd39f53
         }}
         disabled={!getDelegateChoice(chooseData?.address)}
       />
