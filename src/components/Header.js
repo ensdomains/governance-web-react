@@ -38,7 +38,10 @@ const LeftContainer = styled.div`
   `}
 `;
 
-const RightContainer = styled.div``;
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const WrappedLogo = styled(HeaderENSLogo)`
   margin-bottom: -10px;
@@ -71,6 +74,14 @@ const NetworkWarning = function () {
   );
 };
 
+const DelegateLink = styled(Link)`
+  margin-right: 10px;
+  color: #989898;
+  &:visited {
+    color: #989898;
+  }
+`;
+
 const Header = () => {
   const {
     data: { isConnected, address, network },
@@ -90,8 +101,8 @@ const Header = () => {
             <WrappedLogo />
           </Link>
         </LeftContainer>
-
         <RightContainer>
+          <DelegateLink to="delegate-ranking">Delegates</DelegateLink>
           {isConnected && address ? (
             <Profile data-testid="header-profile" {...{ address }} />
           ) : (

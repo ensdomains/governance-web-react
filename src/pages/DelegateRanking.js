@@ -48,14 +48,15 @@ const DelegateBoxContainer = styled.div`
   position: relative;
 
   ${(p) =>
-    p.userAccount &&
-    `
+    p.account
+      ? `
       cursor: pointer;
       &:hover {
         border: 1px solid
           ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
       }
-  `}
+  `
+      : ""}
 `;
 
 const AvatarImg = styled.img`

@@ -77,11 +77,8 @@ const ENSTokenClaim = ({ location }) => {
     message: "",
   });
 
-  console.log(location.state, "delegatetokens.js");
-
   useEffect(() => {
     let timeout;
-    console.log(address);
     const run = async () => {
       if (address) {
         timeout = await delegateToAddress(address, setClaimState, history);
