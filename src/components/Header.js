@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
-
+//
 import { CTAButton } from "./buttons";
 import { initWeb3 } from "../web3modal";
 import Profile from "./Profile";
