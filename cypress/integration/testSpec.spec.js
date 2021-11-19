@@ -4,7 +4,7 @@ describe("Token claim site", () => {
         cy.viewport(1000, 2000)
         cy.request({
             method: 'POST',
-            url: 'https://api.tenderly.co/api/v1/account/Leeondamiky/project/test/fork',
+            url: 'https://api.tenderly.co/api/v1/account/ens/project/core/fork',
             headers: {
                 "x-access-key": Cypress.env('TENDERLY_KEY')
             },
@@ -37,6 +37,7 @@ describe("Token claim site", () => {
 
             // Should retain delegate choice after refresh
             cy.reload()
+            cy.contains("MetaMask").click();
             cy.contains(name, {timeout: 25000})
                 .parent()
                 .parent()
@@ -45,6 +46,7 @@ describe("Token claim site", () => {
 
             // Should prepopulate with selection from query string
             cy.visit("http://localhost:3000/delegates?delegate=leontalbert.eth");
+            cy.contains("MetaMask").click();
             cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
                 .first().invoke('text').then(prepopName => {
 
@@ -76,6 +78,7 @@ describe("Token claim site", () => {
 
                 // //If already claimed should redirect to dashboard
                 cy.visit("http://localhost:3000/delegates");
+                cy.contains("MetaMask").click();
                 cy.contains(
                     "You were eligible for the airdrop!",
                     {timeout: 20000}

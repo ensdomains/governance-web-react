@@ -25,19 +25,19 @@ const option = {
   network: "mainnet", // optional
   cacheProvider: false, // optional
   providerOptions: {
+    walletconnect: {
+      package: () => import("@walletconnect/web3-provider"),
+      packageFactory: true,
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
     walletlink: {
       package: () => import("walletlink"),
       packageFactory: true,
       options: {
         appName: "Ethereum name service",
         jsonRpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
-      },
-    },
-    walletconnect: {
-      package: () => import("@walletconnect/web3-provider"),
-      packageFactory: true,
-      options: {
-        infuraId: INFURA_ID,
       },
     },
     mewconnect: {
