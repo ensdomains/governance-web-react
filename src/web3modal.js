@@ -3,7 +3,6 @@ import { Bitski } from "bitski";
 
 import {
   addressReactive,
-  apolloClientInstance,
   isConnected,
   addressDetails,
   network,
@@ -11,10 +10,7 @@ import {
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
-const INFURA_ID =
-  window.location.host === "app.ens.domains"
-    ? "90f210707d3c450f847659dc9a3436ea"
-    : "58a380d3ecd545b2b5b3dad5d2b18bf0";
+const INFURA_ID = "58a380d3ecd545b2b5b3dad5d2b18bf0"
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
@@ -27,7 +23,7 @@ const BITSKI_CLIENT_ID = "7a89f99f-8367-4821-86d8-124b059815f8";
 
 const option = {
   network: "mainnet", // optional
-  cacheProvider: true, // optional
+  cacheProvider: false, // optional
   providerOptions: {
     walletconnect: {
       package: () => import("@walletconnect/web3-provider"),

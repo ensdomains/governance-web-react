@@ -1442,10 +1442,10 @@
   resolved "https://registry.yarnpkg.com/@ensdomains/eth-ens-namehash/-/eth-ens-namehash-2.0.15.tgz#5e5f2f24ba802aff8bc19edd822c9a11200cdf4a"
   integrity sha512-JRDFP6+Hczb1E0/HhIg0PONgBYasfGfDheujmfxaZaAv/NAH4jE6Kf48WbqfRZdxt4IZI3jl3Ri7sZ1nP09lgw==
 
-"@ensdomains/web3modal@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ensdomains/web3modal/-/web3modal-1.9.4.tgz#a771e89d0978086d69e0b6897ca8cdff7191c89c"
-  integrity sha512-RZsv11wGSmMK98QA2Ter+KOHCBDqTsf/Eyt2uM0gy03pQu6De9mLnKUKtH95031nz9emvzRNQ0Jjlh0qq/2HHw==
+"@ensdomains/web3modal@1.10.1":
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@ensdomains/web3modal/-/web3modal-1.10.1.tgz#77fb4a216c5efdfa86b7f272ae0a7dc045dd3deb"
+  integrity sha512-l3t76AuobthhBy5PJQQ706/MzZZGsDNrIm6XPs6Nfcug8AkvH0nuDUc11DvyENMPhNTXQU0SDDriNal3AZUnvA==
   dependencies:
     detect-browser "^5.1.0"
     prop-types "^15.7.2"
