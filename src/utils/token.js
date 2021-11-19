@@ -3,7 +3,11 @@ import { BigNumber, Contract, ethers } from "ethers";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
-import {GAS_LIMIT, generateMerkleShardUrl, getENSTokenContractAddress} from "./consts";
+import {
+  GAS_LIMIT,
+  generateMerkleShardUrl,
+  getENSTokenContractAddress,
+} from "./consts";
 
 export const hasClaimed = async (address) => {
   try {
@@ -56,7 +60,9 @@ export const submitClaim = async (
       signer
     );
     ENSTokenContract.connect(signer);
-    const result = await ENSTokenContract.claimTokens(balance, address, proof, { gasLimit: GAS_LIMIT });
+    const result = await ENSTokenContract.claimTokens(balance, address, proof, {
+      gasLimit: GAS_LIMIT,
+    });
     await result.wait(1);
     setClaimState({
       state: "SUCCESS",
@@ -73,3 +79,31 @@ export const submitClaim = async (
     });
   }
 };
+
+export async function delegate(address, setClaimState, history) {
+  try {
+    const provider = getEthersProvider();
+    const signer = provider.getSigner();
+    const ENSTokenContract = new Contract(
+      getENSTokenContractAddress(),
+      ENSTokenAbi.abi,
+      signer
+    );
+    ENSTokenContract.connect(signer);
+    const result = await ENSTokenContract.delegate(address);
+    await result.wait(1);
+    setClaimState({
+      state: "SUCCESS",
+      message: "",
+    });
+    return setTimeout(() => {
+      history.push("/success");
+    }, 2000);
+  } catch (error) {
+    console.error(error);
+    setClaimState({
+      state: "ERROR",
+      message: error,
+    });
+  }
+}

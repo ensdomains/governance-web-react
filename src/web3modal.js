@@ -67,9 +67,9 @@ const option = {
       package: Bitski, // required
       options: {
         clientId: BITSKI_CLIENT_ID, // required
-        callbackUrl: window.location.href + "bitski-callback.html" // required
-      }
-    }
+        callbackUrl: window.location.href + "bitski-callback.html", // required
+      },
+    },
   },
 };
 
@@ -97,48 +97,66 @@ export const disconnect = async function () {
   }
 };
 
+export const initWeb3Read = async () => {
+  ethersProvider = new ethers.providers.JsonRpcProvider(
+    `https://mainnet.infura.io/v3/${INFURA_ID}`
+  );
+  console.log("init web3read");
+  isConnected(true);
+  const net = await ethersProvider.getNetwork();
+  network(net.chainId);
+};
+
 export const initWeb3 = async () => {
-  const web3Provider = await connect();
-
-  web3Provider?.on("chainChanged", async (_chainId) => {
-    window.location.reload();
-  });
-
-  web3Provider?.on("accountsChanged", async (accounts) => {
-    window.location.reload();
-  });
-
   try {
-    ethersProvider = new ethers.providers.Web3Provider(web3Provider);
-  } catch (e) {
-    console.error(e);
-  }
+    const web3Provider = await connect();
+    console.log("after connected");
 
-  const signer = ethersProvider?.getSigner();
-  let address;
+    web3Provider?.on("chainChanged", async (_chainId) => {
+      window.location.reload();
+    });
 
-  if (signer) {
+    web3Provider?.on("accountsChanged", async (accounts) => {
+      window.location.reload();
+    });
+
     try {
-      address = (await signer.getAddress()).toLowerCase();
+      console.log("web3 provider", web3Provider);
+      ethersProvider = new ethers.providers.Web3Provider(web3Provider);
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
-  }
 
-  if (address) {
-    initLocalStorage(address);
-    isConnected(true);
-    addressReactive(address);
-    const net = await ethersProvider.getNetwork();
-    network(net.chainId);
-    // hasClaimed(address)
-    const claimData = await getClaimData(address);
-    addressDetails(claimData);
+    const signer = ethersProvider?.getSigner();
+    let address;
 
-    return;
+    if (signer) {
+      try {
+        address = (await signer.getAddress()).toLowerCase();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    console.log(address);
+
+    if (address) {
+      initLocalStorage(address);
+      isConnected(true);
+      addressReactive(address);
+      const net = await ethersProvider.getNetwork();
+      network(net.chainId);
+      // hasClaimed(address)
+      const claimData = await getClaimData(address);
+      addressDetails(claimData);
+
+      return;
+    }
+    isConnected(false);
+    addressReactive(null);
+  } catch (e) {
+    console.log("not connected");
   }
-  isConnected(false);
-  addressReactive(null);
 };
 
 export const getProvider = () => provider;

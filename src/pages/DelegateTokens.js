@@ -15,15 +15,17 @@ import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
 import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
-import { submitClaim } from "../utils/token";
+import { delegate } from "../utils/token";
 import { generateMerkleShardUrl } from "../utils/consts";
 
-const handleClaim = async (address, setClaimState, history) => {
+const delegateToAddress = async (address, setClaimState, history) => {
   try {
     setClaimState({
       state: "LOADING",
       message: "",
     });
+
+    console.log("hello");
 
     let delegateAddress;
     let provider = getEthersProvider();
@@ -38,28 +40,8 @@ const handleClaim = async (address, setClaimState, history) => {
     } else {
       delegateAddress = displayName;
     }
-
-    const response = await fetch(generateMerkleShardUrl(address));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } = merkleRoot;
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
-    );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
-    return await submitClaim(
-      entry.balance,
-      proof,
-      delegateAddress,
-      setClaimState,
-      history
-    );
+    console.log("blah");
+    return await delegate(delegateAddress, setClaimState, history);
   } catch (error) {
     console.error(error);
     setClaimState({
@@ -98,8 +80,8 @@ const ENSTokenClaim = ({ location }) => {
   useEffect(() => {
     let timeout;
     const run = async () => {
-      if (location.state && isConnected) {
-        timeout = await handleClaim(address, setClaimState, history);
+      if (address) {
+        timeout = await delegateToAddress(address, setClaimState, history);
       }
     };
 
@@ -109,7 +91,7 @@ const ENSTokenClaim = ({ location }) => {
         clearTimeout(timeout);
       }
     };
-  }, [isConnected]);
+  }, [address]);
 
   return (
     <NarrowColumn>
@@ -120,12 +102,12 @@ const ENSTokenClaim = ({ location }) => {
         <Header>Confirm with wallet</Header>
         <Gap height={3} />
         <Content>
-          Please approve the transaction to delegate and claim your tokens.
+          Please approve the transaction to delegate your tokens
         </Content>
         <Gap height={6} />
         <TransactionState
           transactionState={claimState.state}
-          title={"Delegate & claim tokens"}
+          title={"Delegate"}
           content={
             "This transaction happens on-chain, and will require paying gas"
           }
@@ -134,7 +116,7 @@ const ENSTokenClaim = ({ location }) => {
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/summary");
+          history.push("/delegate-ranking");
         }}
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
@@ -142,7 +124,7 @@ const ENSTokenClaim = ({ location }) => {
             history.push("/success");
             return;
           }
-          handleClaim(address, setClaimState, history);
+          delegateToAddress(address, setClaimState, history);
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
       />

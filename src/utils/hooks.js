@@ -15,6 +15,7 @@ import { delegates as delegatesReactive } from "../apollo";
 import {
   getENSDelegateContractAddress,
   getReverseRecordsAddress,
+  ALLOCATION_ENDPOINT,
 } from "./consts";
 
 export function useQueryString() {
@@ -43,10 +44,6 @@ const DELEGATE_TEXT_QUERY = gql`
   }
 `;
 
-/* useGetDelegates */
-
-const TARGET_DELEGATE_SIZE = 0.025;
-
 export function namehash(inputName) {
   let node = "";
   for (let i = 0; i < 32; i++) {
@@ -68,18 +65,20 @@ export function namehash(inputName) {
 }
 
 const processENSDelegateContractResults = (results, delegateData) =>
-  results?.filter((result) => result.profile.length > 0).map((result) => {
-    const data = delegateData.find((data) => {
-      return data.addr.id.toLowerCase() === result.addr.toLowerCase();
+  results
+    ?.filter((result) => result.profile.length > 0)
+    .map((result) => {
+      const data = delegateData.find((data) => {
+        return data.addr.id.toLowerCase() === result.addr.toLowerCase();
+      });
+      return {
+        avatar: result.avatar,
+        profile: result.profile,
+        address: result.addr,
+        votes: result.votes,
+        name: data?.domain?.name,
+      };
     });
-    return {
-      avatar: result.avatar,
-      profile: result.profile,
-      address: result.addr,
-      votes: result.votes,
-      name: data?.domain?.name,
-    };
-  });
 
 const filterDelegateData = (results) => {
   return results
@@ -104,49 +103,19 @@ const cleanDelegatesList = (delegatesList) =>
     ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
-// This function ranks delegates by delegated vote total until they reach the
-// target percentage of all delegated votes, at which point their ranking begins to decrease.
-const generateRankingScore = (score, total, name) => {
-  if (score > total * TARGET_DELEGATE_SIZE) {
-    score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
+const fetchTokenAllocations = async (addressArray) => {
+  try {
+    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
+    const allocations = await fetch(url);
+    const json = await allocations.json();
+    const integerScores = json.score.map((x) => ({
+      address: x.address?.toLowerCase(),
+      score: stringToInt(x.score),
+    }));
+    return integerScores;
+  } catch (error) {
+    console.error("fetchTokenAllocations error: ", error);
   }
-  return score;
-};
-
-const addBalance = async (
-  cleanList,
-  tokensDelegated
-) => {
-  return cleanList.map((item) => {
-    return {
-      ...item,
-      ranking:
-        generateRankingScore(
-          item.votes,
-          tokensDelegated,
-          item.name
-        ) * Math.random(),
-    };
-  });
-};
-
-const rankDelegates = async (
-  delegateList,
-  tokensDelegated,
-  prepopDelegate
-) => {
-  const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = await addBalance(
-    cleanList,
-    tokensDelegated,
-    prepopDelegate
-  );
-  const sortedList = withTokenBalance.sort((x, y) => {
-    if(x.name == prepopDelegate) return -1;
-    if(y.name == prepopDelegate) return 1;
-    return y.ranking - x.ranking
-  });
-  return sortedList;
 };
 
 const createItemBatches = (items, perBatch = 2) => {
@@ -164,11 +133,55 @@ const createItemBatches = (items, perBatch = 2) => {
   return result;
 };
 
+const TARGET_DELEGATE_SIZE = 0.025;
+// This function ranks delegates by delegated vote total until they reach the
+// target percentage of all delegated votes, at which point their ranking begins to decrease.
+const generateRankingScore = (score, total, name) => {
+  if (score > total * TARGET_DELEGATE_SIZE) {
+    score = Math.max(2 * total * TARGET_DELEGATE_SIZE - score, 0);
+  }
+  return score;
+};
+
+const addBalance = (cleanList, tokensDelegated) => {
+  return cleanList.map((item) => {
+    return {
+      ...item,
+      ranking:
+        generateRankingScore(item.votes, tokensDelegated, item.name) *
+        Math.random(),
+    };
+  });
+};
+
+export const rankDelegates = (
+  delegateList,
+  tokensDelegated,
+  prepopDelegate
+) => {
+  const cleanList = cleanDelegatesList(delegateList);
+  const withTokenBalance = addBalance(
+    cleanList,
+    tokensDelegated,
+    prepopDelegate
+  );
+  const sortedList = withTokenBalance.sort((x, y) => {
+    if (x.name == prepopDelegate) return -1;
+    if (y.name == prepopDelegate) return 1;
+    return y.ranking - x.ranking;
+  });
+  return sortedList;
+};
+
 export const useGetDelegates = (isConnected) => {
-  const [delegates, setDelegates] = useState([]);
+  const [delegates, setDelegates] = useState({});
+  const [tokenInfo, setTokenInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  console.log("use");
+  console.log("isConnected", isConnected);
   useEffect(() => {
     const provider = getEthersProvider();
+    console.log(provider);
     const run = async () => {
       const { data: delegateData } = await apolloClientInstance.query({
         query: DELEGATE_TEXT_QUERY,
@@ -191,12 +204,10 @@ export const useGetDelegates = (isConnected) => {
       );
 
       const batches = createItemBatches(delegateNamehashes, 50);
-
-      const results = await Promise.all(
+      let results = await Promise.all(
         batches.map((batch) => ENSDelegateContract.getDelegates(batch))
       );
       const flatResults = results?.flat();
-
       const processedDelegateData = processENSDelegateContractResults(
         flatResults,
         filteredDelegateData
@@ -208,12 +219,17 @@ export const useGetDelegates = (isConnected) => {
         (d, i) => d.name == names[i]
       );
 
-      const tokensDelegated = processedDelegateDataWithReverse.map((delegate) => delegate.votes).reduce((a, b) => a.add(b)).div(ethers.utils.parseEther("1")).toNumber();
+      const tokensDelegated = processedDelegateDataWithReverse
+        .map((delegate) => delegate.votes)
+        .reduce((a, b) => a.add(b))
+        .div(ethers.utils.parseEther("1"))
+        .toNumber();
       const rankedDelegates = await rankDelegates(
         processedDelegateDataWithReverse,
         tokensDelegated,
         getDelegateReferral()
       );
+
       setDelegates(rankedDelegates);
       setLoading(false);
     };

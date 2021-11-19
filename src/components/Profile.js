@@ -162,12 +162,13 @@ const Profile = ({ address, large }) => {
             ensName: profileDetails.ensName,
           }}
         >
-          {shortenAddress(
-            address,
-            large ? 30 : 10,
-            large ? 10 : 5,
-            large ? 10 : 5
-          )}
+          {address &&
+            shortenAddress(
+              address,
+              large ? 30 : 10,
+              large ? 10 : 5,
+              large ? 10 : 5
+            )}
         </AddressText>
       </RightContainer>
     </ProfileContainer>
