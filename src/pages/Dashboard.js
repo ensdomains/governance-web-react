@@ -202,13 +202,6 @@ const Dashboard = () => {
           </StatsRow>
           <Divider />
           <StatsRow>
-            <RowLabel>Longest owned </RowLabel>
-            <NumberWithLogoContainer>
-              <StatsNumber>{longestOwnedName}</StatsNumber>
-            </NumberWithLogoContainer>
-          </StatsRow>
-          <Divider />
-          <StatsRow>
             <RowLabel>Latest expiration </RowLabel>
             <NumberWithLogoContainer>
               <StatsNumber>{lastExpiringName}</StatsNumber>
