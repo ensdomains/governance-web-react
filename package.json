@@ -6,7 +6,7 @@
   "dependencies": {
     "@apollo/client": "3.4.11",
     "@ensdomains/eth-ens-namehash": "2.0.15",
-    "@ensdomains/web3modal": "1.9.4",
+    "@ensdomains/web3modal": "1.10.1",
     "@ethersproject/bytes": "latest",
     "@myetherwallet/mewconnect-web-client": "2.2.0-beta.14",
     "@portis/web3": "4.0.5",
