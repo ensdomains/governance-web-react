@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { ReactComponent as TwitterGrey } from "../assets/imgs/TwitterGrey.svg";
 import { ReactComponent as ForumGrey } from "../assets/imgs/ThingGrey.svg";
 import { ReactComponent as DiscordGrey } from "../assets/imgs/DiscordGrey.svg";
-import {largerThan} from "../utils/styledComponents";
 
 const SharedFooterContainer = styled.div`
   height: 100px;
@@ -45,7 +44,7 @@ const SharedFooter = () => {
           <a target={"_blank"} href={"https://discuss.ens.domains/"}>
             <ForumGrey />
           </a>
-          <a target={"_blank"} href={"https://discord.gg/qDYkrFKAUW"}>
+          <a target={"_blank"} href={"https://chat.ens.domains/"}>
             <DiscordGrey />
           </a>
         </RightContainer>
