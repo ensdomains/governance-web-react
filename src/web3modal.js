@@ -127,7 +127,6 @@ export const initWeb3 = async () => {
     addressReactive(address);
     const net = await ethersProvider.getNetwork();
     network(net.chainId);
-    // hasClaimed(address)
     const claimData = await getClaimData(address);
     addressDetails(claimData);
 
