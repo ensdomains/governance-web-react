@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { utils } from "ethers";
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import Loader from "../components/Loader";
 import LazyImage from "../components/LazyImage";
+import Profile from "../components/Profile";
 import { Header, Content } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
@@ -23,6 +25,7 @@ import {
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
+import { useGetTokens, useGetDelegatedTo } from "../utils/hooks";
 
 const DELEGATE_RANKING_QUERY = gql`
   query delegateRankingQuery @client {
@@ -30,6 +33,8 @@ const DELEGATE_RANKING_QUERY = gql`
     isConnected
     address
     delegates
+    tokensOwned
+    delegatedTo
   }
 `;
 
@@ -219,10 +224,15 @@ const HeaderContainer = styled.div`
 const WrappedCTAButton = styled(CTAButton)`
   width: 210px;
   margin: 0 auto;
-
+  cursor: auto;
+  ${(p) =>
+    p.account &&
+    `
+    cursor: pointer;
+  `}
   ${largerThan.mobile`
       margin-left: 70px;
-  `}
+  `};
 `;
 
 const CopyContainer = styled.div`
@@ -233,14 +243,18 @@ const CopyContainer = styled.div`
   `}
 `;
 
+const SubHeader = styled.div`
+  display: flex;
+  margin: 0 30px 10px;
+`;
+
 const Input = styled.input`
   font-family: inherit;
   height: 64px;
-  width: calc(100% - 60px);
   box-sizing: border-box;
   -webkit-appearance: none;
   outline: none;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background: #f6f6f6;
   border-radius: 14px;
   padding: 0px 20px;
@@ -249,8 +263,13 @@ const Input = styled.input`
   font-weight: bold;
   font-size: 22px;
   line-height: 28px;
-
-  margin: 0 30px 10px;
+  grid-column: col / span 3;
+  ${(p) =>
+    p.account &&
+    `
+    margin-left: 15px;
+    width: calc(33.3% - 10px);
+  `}
 
   &::placeholder {
     color: black;
@@ -258,11 +277,66 @@ const Input = styled.input`
   }
 `;
 
+const Clear = styled("button")`
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 14px 16px;
+`;
+
+const CurrentDelegationContainer = styled("div")`
+  background: #f6f6f6;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  border-radius: 16px;
+  padding: 15px;
+
+  width: 66.6%;
+`;
+
+function CurrentDelegation({ account, tokens, selection, delegatedTo }) {
+  let text = (
+    <>
+      You have delegated {tokens} votes to
+      <Profile address={delegatedTo} size="small" />
+    </>
+  );
+  if (selection !== "") {
+    text = (
+      <>
+        <span>You will delegate {tokens} votes to</span>
+        <Profile address={selection} size="small" />
+      </>
+    );
+  }
+
+  if (selection !== "" && !delegatedTo) {
+    text = `You have ${tokens} undelegated votes`;
+  }
+
+  return (
+    <CurrentDelegationContainer>
+      {text}
+      {selection !== "" && (
+        <Clear onClick={setDelegateChoice(account, "")}>Clear</Clear>
+      )}
+    </CurrentDelegationContainer>
+  );
+}
+
 const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
+  useGetTokens(chooseData.address);
+  useGetDelegatedTo(chooseData.address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
+  const { balance, loading: balanceLoading } = chooseData.tokensOwned;
+  const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
 
   const history = useHistory();
+
+  console.log("delegatedTo", delegatedTo);
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
@@ -272,7 +346,7 @@ const ChooseYourDelegate = () => {
       <ContentBox padding={"none"}>
         <HeaderContainer>
           <CopyContainer>
-            <Header>Choose a delegate</Header>
+            <Header>Change your delegate</Header>
             <Gap height={3} />
             <Content>
               Select a community member to represent you. You can change this at
@@ -297,15 +371,28 @@ const ChooseYourDelegate = () => {
                   history.push("/manual-delegates-no-claim");
                 }
               }}
+              account={chooseData?.address}
               disabled={!getDelegateChoice(chooseData?.address)}
             />
           </div>
         </HeaderContainer>
-        <Input
-          type="text"
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search delegates"
-        />
+        <SubHeader account={chooseData?.address}>
+          {chooseData?.address &&
+            (balanceLoading ? null : (
+              <CurrentDelegation
+                account={chooseData?.address}
+                tokens={Number(utils.formatEther(balance)).toFixed(2)}
+                selection={getDelegateChoice(chooseData?.address)}
+                delegatedTo={delegatedTo}
+              />
+            ))}
+          <Input
+            account={chooseData?.address}
+            type="text"
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+          />
+        </SubHeader>
         {delegatesLoading ? (
           <Loader center large />
         ) : (

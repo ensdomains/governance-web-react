@@ -104,7 +104,11 @@ const Header = () => {
         <RightContainer>
           <DelegateLink to="delegate-ranking">Delegates</DelegateLink>
           {isConnected && address ? (
-            <Profile data-testid="header-profile" {...{ address }} />
+            <Profile
+              data-testid="header-profile"
+              {...{ address }}
+              size="medium"
+            />
           ) : (
             <CTAButton
               data-testid="header-connect-button"

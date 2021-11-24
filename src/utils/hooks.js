@@ -8,11 +8,16 @@ import { getEthersProvider } from "../web3modal";
 import { apolloClientInstance } from "../apollo";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
+import ENSTokenAbi from "../assets/abis/ENSToken.json";
 
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
-import { delegates as delegatesReactive } from "../apollo";
-
 import {
+  delegates as delegatesReactive,
+  delegatedTo,
+  tokensOwned,
+} from "../apollo";
+import {
+  getENSTokenContractAddress,
   getENSDelegateContractAddress,
   getReverseRecordsAddress,
   ALLOCATION_ENDPOINT,
@@ -177,11 +182,8 @@ export const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState({});
   const [tokenInfo, setTokenInfo] = useState({});
   const [loading, setLoading] = useState(true);
-  console.log("use");
-  console.log("isConnected", isConnected);
   useEffect(() => {
     const provider = getEthersProvider();
-    console.log(provider);
     const run = async () => {
       const { data: delegateData } = await apolloClientInstance.query({
         query: DELEGATE_TEXT_QUERY,
@@ -244,4 +246,55 @@ export const useGetDelegates = (isConnected) => {
   }, [isConnected]);
 
   delegatesReactive({ delegates, loading });
+};
+
+export const useGetTokens = (address) => {
+  const [balance, setBalance] = useState();
+  const [loading, setLoading] = useState(true);
+  const provider = getEthersProvider();
+  const ENSTokenContract = new Contract(
+    getENSTokenContractAddress(),
+    ENSTokenAbi.abi,
+    provider
+  );
+
+  console.log("useGetTokens", address);
+
+  useEffect(() => {
+    async function run() {
+      const balance = await ENSTokenContract.balanceOf(address);
+      console.log(balance);
+      setBalance(balance);
+      setLoading(false);
+    }
+    if (address) {
+      run();
+    }
+  }, [address]);
+
+  tokensOwned({ balance, loading });
+};
+
+export const useGetDelegatedTo = (address) => {
+  const [delegatedToAddress, setDelegatedToAddress] = useState();
+  const [loading, setLoading] = useState(true);
+  const provider = getEthersProvider();
+  const ENSTokenContract = new Contract(
+    getENSTokenContractAddress(),
+    ENSTokenAbi.abi,
+    provider
+  );
+
+  useEffect(() => {
+    async function run() {
+      const delegatedToAddress = await ENSTokenContract.delegates(address);
+      setDelegatedToAddress(delegatedToAddress);
+      setLoading(false);
+    }
+    if (address) {
+      run();
+    }
+  }, [address]);
+
+  delegatedTo({ delegatedTo: delegatedToAddress, loading });
 };

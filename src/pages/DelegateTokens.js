@@ -54,7 +54,7 @@ const delegateToAddress = async (address, setClaimState, history) => {
 const getRightButtonText = (state) => {
   switch (state) {
     case "LOADING":
-      return "Claiming...";
+      return "Delegating...";
     case "SUCCESS":
       return "Continuing...";
     case "ERROR":
@@ -121,7 +121,7 @@ const ENSTokenClaim = ({ location }) => {
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
-            history.push("/success");
+            history.push("/delegate-ranking");
             return;
           }
           delegateToAddress(address, setClaimState, history);

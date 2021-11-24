@@ -214,7 +214,7 @@ const EnsSummary = () => {
         <CTAButton
           onClick={() => {
             history.push({
-              pathname: "/summary/claim",
+              pathname: "/delegate-ranking",
               state: "CLAIM",
             });
           }}

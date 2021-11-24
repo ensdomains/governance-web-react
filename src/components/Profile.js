@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { utils } from "ethers";
 
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
@@ -8,7 +9,16 @@ const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   max-width: ${(p) => (p.large ? "350px" : "200px")};
-  background: ${(p) => (p.large ? "initial" : "#FFFFFF")};
+  ${(p) => {
+    switch (p.size) {
+      case "large":
+        return `background: initial`;
+      case "medium":
+        return `background: white`;
+      case "small":
+        return `background: transparent`;
+    }
+  }}
   box-shadow: ${(p) =>
     p.large ? "initial" : "0px 1px 20px rgba(0, 0, 0, 0.05)"};
   border-radius: 64px;
@@ -29,10 +39,40 @@ const RightContainer = styled.div`
 
 const AvatarImg = styled.img`
   border-radius: 50%;
-  width: ${(p) => (p.large ? "60px" : "50px")};
-  height: ${(p) => (p.large ? "60px" : "50px")};
-  min-width: ${(p) => (p.large ? "60px" : "50px")};
-  min-height: ${(p) => (p.large ? "60px" : "50px")};
+
+  ${(p) => {
+    switch (p.size) {
+      case "large":
+        return `
+          width: 60px;
+          height: 60px;
+          min-width: 60px;
+          min-height: 60px
+      `;
+      case "medium":
+        return `
+          width: 50px;
+          height: 50px;
+          min-width: 50px;
+          min-height: 50px
+      `;
+      case "small":
+        return `
+          width: 35px;
+          height: 35px;
+          min-width: 35px;
+          min-height: 35px;
+      `;
+
+      default:
+        return `
+          width: 50px;
+          height: 50px;
+          min-width: 50px;
+          min-height: 50px
+      `;
+    }
+  }};
   margin-right: 10px;
 `;
 
@@ -40,8 +80,8 @@ const EmptyAvatar = styled.div`
   border-radius: 50%;
   min-width: 50px;
   height: 50px;
-  width: ${(p) => p.large && "60px"};
-  height: ${(p) => p.large && "60px"};
+  width: ${(p) => p.size === "large" && "60px"};
+  height: ${(p) => p.size === "large" && "60px"};
   margin-right: 10px;
   background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
 `;
@@ -49,8 +89,8 @@ const EmptyAvatar = styled.div`
 const EnsNameText = styled.div`
   font-style: normal;
   font-weight: bold;
-  font-size: ${(p) => (p.large ? "26px" : "18px")};
-  line-height: ${(p) => (p.large ? "36px" : "23px")};
+  font-size: ${(p) => (p.size === "large" ? "26px" : "18px")};
+  line-height: ${(p) => (p.size === "large" ? "36px" : "23px")};
   letter-spacing: -0.01em;
   margin-top: -2px;
   padding-bottom: 3px;
@@ -81,7 +121,7 @@ const AddressText = styled.div`
   color: #989898;
 
   ${(p) =>
-    p.large &&
+    p.size === "large" &&
     `
       color: #989898;
       font-style: normal;
@@ -93,7 +133,7 @@ const AddressText = styled.div`
       `}
 
   ${(p) =>
-    p.large &&
+    p.size === "large" &&
     !p.ensName &&
     `
         font-style: normal;
@@ -104,8 +144,14 @@ const AddressText = styled.div`
       `}
 `;
 
-const Profile = ({ address, large }) => {
+const Profile = ({ address, size }) => {
   const [profileDetails, setProfileDetails] = useState({});
+  let isAddress;
+  try {
+    isAddress = utils.getAddress(address);
+  } catch {
+    isAddress = false;
+  }
 
   useEffect(() => {
     const run = async () => {
@@ -117,8 +163,12 @@ const Profile = ({ address, large }) => {
       }
 
       const networkId = await ethersProvider.getNetwork();
-
-      const ensName = await ethersProvider.lookupAddress(address);
+      let ensName;
+      if (!isAddress) {
+        ensName = address;
+      } else {
+        ensName = await ethersProvider.lookupAddress(address);
+      }
       if (!ensName) return;
 
       const resolver = await ethersProvider.getResolver(ensName);
@@ -136,11 +186,52 @@ const Profile = ({ address, large }) => {
     });
   }, [address]);
 
+  if (size === "small") {
+    return (
+      <ProfileContainer size={size}>
+        {profileDetails.avatar ? (
+          <AvatarImg
+            {...{ size }}
+            src={imageUrl(
+              profileDetails.avatar,
+              profileDetails.ensName,
+              profileDetails.networkId
+            )}
+          />
+        ) : (
+          <EmptyAvatar size={size} />
+        )}
+        <RightContainer>
+          {profileDetails.ensName ? (
+            <EnsNameText {...{ size }}>{profileDetails.ensName}</EnsNameText>
+          ) : (
+            <NoNameText>No name set</NoNameText>
+          )}
+          <AddressText
+            {...{
+              size,
+              ensName: profileDetails.ensName,
+            }}
+          >
+            {isAddress &&
+              address &&
+              shortenAddress(
+                address,
+                size === "large" ? 30 : 10,
+                size === "large" ? 10 : 5,
+                size === "large" ? 10 : 5
+              )}
+          </AddressText>
+        </RightContainer>
+      </ProfileContainer>
+    );
+  }
+
   return (
-    <ProfileContainer {...{ large }}>
+    <ProfileContainer size={size}>
       {profileDetails.avatar ? (
         <AvatarImg
-          {...{ large }}
+          size={size}
           src={imageUrl(
             profileDetails.avatar,
             profileDetails.ensName,
@@ -148,26 +239,22 @@ const Profile = ({ address, large }) => {
           )}
         />
       ) : (
-        <EmptyAvatar {...{ large }} />
+        <EmptyAvatar size={size} />
       )}
       <RightContainer>
         {profileDetails.ensName ? (
-          <EnsNameText {...{ large }}>{profileDetails.ensName}</EnsNameText>
+          <EnsNameText size={size}>{profileDetails.ensName}</EnsNameText>
         ) : (
           <NoNameText>No name set</NoNameText>
         )}
-        <AddressText
-          {...{
-            large,
-            ensName: profileDetails.ensName,
-          }}
-        >
-          {address &&
+        <AddressText size={size} ensName={profileDetails.ensName}>
+          {isAddress &&
+            address &&
             shortenAddress(
               address,
-              large ? 30 : 10,
-              large ? 10 : 5,
-              large ? 10 : 5
+              size === "large" ? 30 : 10,
+              size === "large" ? 10 : 5,
+              size === "large" ? 10 : 5
             )}
         </AddressText>
       </RightContainer>

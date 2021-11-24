@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { utils } from "ethers";
 import { useQuery, gql } from "@apollo/client";
 
@@ -167,6 +167,7 @@ const EnteryourDelegate = () => {
     message: "",
     isError: false,
   });
+  let noClaim = useRouteMatch("/manual-delegates-no-claim");
 
   const {
     data: { address },
@@ -212,11 +213,12 @@ const EnteryourDelegate = () => {
         rightButtonText="Next"
         rightButtonCallback={() => {
           setDelegateChoice(address, value);
-          history.push("/summary");
+
+          history.push(noClaim ? "/delegate-tokens" : "/summary");
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/delegates");
+          history.push(noClaim ? "/delegate-ranking" : "/delegates");
         }}
       />
     </NarrowColumn>

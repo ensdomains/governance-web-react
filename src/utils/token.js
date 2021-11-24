@@ -97,7 +97,7 @@ export async function delegate(address, setClaimState, history) {
       message: "",
     });
     return setTimeout(() => {
-      history.push("/success");
+      history.push("/delegate-ranking");
     }, 2000);
   } catch (error) {
     console.error(error);
