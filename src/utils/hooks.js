@@ -258,8 +258,6 @@ export const useGetTokens = (address) => {
     provider
   );
 
-  console.log("useGetTokens", address);
-
   useEffect(() => {
     async function run() {
       const balance = await ENSTokenContract.balanceOf(address);

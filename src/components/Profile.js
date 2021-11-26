@@ -8,21 +8,32 @@ import { imageUrl, shortenAddress } from "../utils/utils";
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
-  max-width: ${(p) => (p.large ? "350px" : "200px")};
+  padding: 8px 16px 8px 10px;
+  box-shadow: ${(p) =>
+    p.large ? "initial" : "0px 1px 20px rgba(0, 0, 0, 0.05)"};
   ${(p) => {
     switch (p.size) {
       case "large":
-        return `background: initial`;
+        return `
+          background: initial;
+          max-width: 350px;
+        `;
       case "medium":
-        return `background: white`;
+        return `
+        background: white;
+        max-width: 200px;
+      `;
       case "small":
-        return `background: transparent`;
+        return `
+        background: transparent;
+        max-width: 200px;
+        padding: 0;
+        box-shadow: none;
+      `;
     }
   }}
-  box-shadow: ${(p) =>
-    p.large ? "initial" : "0px 1px 20px rgba(0, 0, 0, 0.05)"};
+
   border-radius: 64px;
-  padding: 8px 16px 8px 10px;
 `;
 
 const RightContainer = styled.div`

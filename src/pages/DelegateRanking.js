@@ -24,6 +24,7 @@ import {
 } from "./ENSConstitution/delegateHelpers";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
+import { emptyAddress } from "../utils/consts";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 import { useGetTokens, useGetDelegatedTo } from "../utils/hooks";
 
@@ -284,6 +285,17 @@ const Clear = styled("button")`
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 14px 16px;
+  cursor: pointer;
+  margin-left: 10px;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 17px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: -0.01em;
+
+  color: #63666a;
 `;
 
 const CurrentDelegationContainer = styled("div")`
@@ -291,36 +303,74 @@ const CurrentDelegationContainer = styled("div")`
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
   border-radius: 16px;
-  padding: 15px;
-
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 66.6%;
+
+  span {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 21px;
+    letter-spacing: -0.01em;
+    margin-right: 10px;
+
+    color: rgba(26, 26, 26, 0.75);
+    strong {
+      font-weight: bold;
+      color: black;
+    }
+  }
 `;
 
-function CurrentDelegation({ account, tokens, selection, delegatedTo }) {
+function CurrentDelegation({
+  account,
+  tokens,
+  selection,
+  delegatedTo,
+  setRenderKey,
+}) {
   let text = (
     <>
-      You have delegated {tokens} votes to
+      <span>
+        You have delegated <strong>{tokens}</strong> votes to
+      </span>
       <Profile address={delegatedTo} size="small" />
     </>
   );
   if (selection !== "") {
     text = (
       <>
-        <span>You will delegate {tokens} votes to</span>
+        <span>
+          You will delegate <strong>{tokens}</strong> votes to
+        </span>
         <Profile address={selection} size="small" />
       </>
     );
   }
 
-  if (selection !== "" && !delegatedTo) {
-    text = `You have ${tokens} undelegated votes`;
+  if (selection === "" && delegatedTo === emptyAddress) {
+    text = (
+      <span>
+        You have <strong>{tokens}</strong> undelegated votes
+      </span>
+    );
   }
 
   return (
     <CurrentDelegationContainer>
       {text}
       {selection !== "" && (
-        <Clear onClick={setDelegateChoice(account, "")}>Clear</Clear>
+        <Clear
+          onClick={() => {
+            setDelegateChoice(account, "");
+            setRenderKey((x) => x + 1);
+          }}
+        >
+          Clear
+        </Clear>
       )}
     </CurrentDelegationContainer>
   );
@@ -335,8 +385,6 @@ const ChooseYourDelegate = () => {
   const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
 
   const history = useHistory();
-
-  console.log("delegatedTo", delegatedTo);
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
@@ -384,6 +432,7 @@ const ChooseYourDelegate = () => {
                 tokens={Number(utils.formatEther(balance)).toFixed(2)}
                 selection={getDelegateChoice(chooseData?.address)}
                 delegatedTo={delegatedTo}
+                setRenderKey={setRenderKey}
               />
             ))}
           <Input

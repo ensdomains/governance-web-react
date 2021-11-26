@@ -18,6 +18,8 @@ export const getReverseRecordsAddress = () =>
 export const generateMerkleShardUrl = (address) =>
   `/airdrops/mainnet/${address?.slice(2, 4)}.json`;
 
+export const emptyAddress = "0x0000000000000000000000000000000000000000";
+
 export const networkName = {
   main: "mainnet",
   goerli: "goerli",
