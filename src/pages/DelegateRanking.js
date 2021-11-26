@@ -286,7 +286,7 @@ const Clear = styled("button")`
   border-radius: 12px;
   padding: 14px 16px;
   cursor: pointer;
-  margin-left: 10px;
+  margin-left: auto;
 
   font-style: normal;
   font-weight: bold;
@@ -306,7 +306,6 @@ const CurrentDelegationContainer = styled("div")`
   padding: 0 15px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 66.6%;
 
   span {
