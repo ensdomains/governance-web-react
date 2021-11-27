@@ -3,7 +3,6 @@ import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
 
-import { CTAButton } from "./buttons";
 import { initWeb3 } from "../web3modal";
 import Profile from "./Profile";
 import { largerThan } from "../utils/styledComponents";
@@ -11,6 +10,9 @@ import { largerThan } from "../utils/styledComponents";
 import { ReactComponent as HeaderENSLogo } from "../assets/imgs/HeaderENSLogo.svg";
 import { ReactComponent as DefaultYellowWarning } from "../assets/imgs/YellowWarning.svg";
 import { Link } from "react-router-dom";
+
+import { Button } from "@ensdomains/thorin";
+
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -95,7 +97,7 @@ const Header = () => {
           {isConnected ? (
             <Profile data-testid="header-profile" {...{ address }} />
           ) : (
-            <CTAButton
+            <Button
               data-testid="header-connect-button"
               onClick={initWeb3}
               text={"Connect"}

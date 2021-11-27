@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,14 +12,12 @@ import { useQuery } from "@apollo/client";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import ENSGovernance from "./pages/ENSGovernance";
-import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
 import Dashboard from "./pages/Dashboard";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Why from "./pages/Why";
 import { initWeb3 } from "./web3modal";
 import ENSSummary from "./pages/ENSSummary";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
-import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSTokenClaim from "./pages/EnsTokenClaim";
 import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import SharedFooter from "./components/SharedFooter";
@@ -30,6 +28,7 @@ import {
   setDelegateReferral,
 } from "./pages/ENSConstitution/delegateHelpers";
 import { useQueryString, useGetDelegates } from "./utils/hooks";
+
 
 const AppContainer = styled.div`
   margin: auto;
@@ -128,11 +127,6 @@ function App() {
             <Switch>
               <PrivateRoute path="/why" component={Why} />
               <PrivateRoute path="/governance" component={ENSGovernance} />
-              {/*<PrivateRoute*/}
-              {/*  path="/constitution/sign"*/}
-              {/*  component={ENSConstitutionSign}*/}
-              {/*/>*/}
-              {/*<PrivateRoute path="/constitution" component={ENSConstitution} />*/}
               <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
               <PrivateRoute
                 path="/manual-delegates"
