@@ -29,4 +29,7 @@ yarn-error.log*
 
 .idea
 node_modules/
-.idea
+
+#yalc
+.yalc
+yalc.lock

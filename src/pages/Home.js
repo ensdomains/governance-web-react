@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components/macro";
 
-import { Link, Title, SubTitle } from "../components/text";
+import { Link } from "../components/text";
 import Gap from "../components/Gap";
-import { CTAButton } from "../components/buttons";
+import { Button } from "@ensdomains/thorin";
 
 import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { useHistory } from "react-router-dom";
@@ -81,7 +81,7 @@ const Home = () => {
         empowered to govern the ENS protocol.
       </WrappedSubTitle>
       <Gap height={8} />
-      <CTAButton
+      <Button
         text={isConnected ? "Get started" : "Connect wallet"}
         onClick={handleClick}
       />
