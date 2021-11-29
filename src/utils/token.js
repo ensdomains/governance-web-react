@@ -1,5 +1,5 @@
 import { getEthersProvider } from "../web3modal";
-import { BigNumber, Contract, ethers } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
@@ -36,11 +36,10 @@ export const hasClaimed = async (address) => {
     const [entry, proof] = shardedMerkleTree.getProof(address);
     const index = getIndex(address, entry, proof);
     const result = await ENSTokenContract.isClaimed(index);
-    console.log("result: ", result);
     return result;
   } catch (error) {
-    return false;
     console.error("error in hasClaimed: ", error);
+    return false;
   }
 };
 

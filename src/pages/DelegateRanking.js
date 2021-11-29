@@ -245,8 +245,14 @@ const CopyContainer = styled.div`
 `;
 
 const SubHeader = styled.div`
-  display: flex;
+  display: grid;
   margin: 0 30px 10px;
+  grid-template-columns: 1fr;
+  grid-row-gap: 12px;
+  grid-column-gap: 14px;
+  ${largerThan.tablet`
+    grid-template-columns: 2fr minmax(150px, 1fr);
+  `}
 `;
 
 const Input = styled.input`
@@ -264,13 +270,6 @@ const Input = styled.input`
   font-weight: bold;
   font-size: 22px;
   line-height: 28px;
-  grid-column: col / span 3;
-  ${(p) =>
-    p.account &&
-    `
-    margin-left: 15px;
-    width: calc(33.3% - 10px);
-  `}
 
   &::placeholder {
     color: black;
@@ -284,7 +283,7 @@ const Clear = styled("button")`
   box-sizing: border-box;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 10px 16px;
   cursor: pointer;
   margin-left: auto;
 
@@ -303,10 +302,9 @@ const CurrentDelegationContainer = styled("div")`
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
   border-radius: 16px;
-  padding: 0 15px;
+  padding: 10px 15px;
   display: flex;
   align-items: center;
-  width: 66.6%;
 
   span {
     font-style: normal;
@@ -315,6 +313,7 @@ const CurrentDelegationContainer = styled("div")`
     line-height: 21px;
     letter-spacing: -0.01em;
     margin-right: 10px;
+    padding: 10px 0;
 
     color: rgba(26, 26, 26, 0.75);
     strong {
