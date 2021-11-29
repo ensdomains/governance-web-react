@@ -251,7 +251,7 @@ const SubHeader = styled.div`
   grid-row-gap: 12px;
   grid-column-gap: 14px;
   ${largerThan.tablet`
-    grid-template-columns: 2fr minmax(150px, 1fr);
+    grid-template-columns: 2fr minmax(240px, 290px);
   `}
 `;
 
