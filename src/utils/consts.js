@@ -3,7 +3,7 @@ export const PROPOSAL_ID =
 export const SPACE_ID = "ens.eth";
 export const ALLOCATION_ENDPOINT =
   "https://us-central1-ens-manager.cloudfunctions.net/getvotes";
-export const GAS_LIMIT = 180000;
+export const GAS_LIMIT = 200000;
 export const SNAPSHOT_TIMEOUT = 90000;
 
 export const getENSTokenContractAddress = () =>
