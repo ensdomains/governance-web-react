@@ -17,8 +17,6 @@ import { imageUrl, shortenAddress } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import {
-  getDelegateChoice,
-  setDelegateChoice,
   getDelegateReferral,
   sortByRank,
 } from "./ENSConstitution/delegateHelpers";
@@ -27,6 +25,8 @@ import { largerThan } from "../utils/styledComponents";
 import { emptyAddress } from "../utils/consts";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 import { useGetTokens, useGetDelegatedTo } from "../utils/hooks";
+import { selectedDelegateReactive } from "../apollo";
+import { initWeb3 } from "../web3modal";
 
 const DELEGATE_RANKING_QUERY = gql`
   query delegateRankingQuery @client {
@@ -36,6 +36,7 @@ const DELEGATE_RANKING_QUERY = gql`
     delegates
     tokensOwned
     delegatedTo
+    selectedDelegate
   }
 `;
 
@@ -49,14 +50,13 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
-  cursor: auto;
+  cursor: pointer;
   transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
   position: relative;
 
   ${(p) =>
     p.account
       ? `
-      cursor: pointer;
       &:hover {
         border: 1px solid
           ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
@@ -145,23 +145,27 @@ const Gradient = styled.div`
 `;
 
 const DelegateBox = (data) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount, search } =
-    data;
-  const selected = name === getDelegateChoice(userAccount);
+  const {
+    avatar,
+    profile,
+    votes,
+    name,
+    setRenderKey,
+    userAccount,
+    search,
+    selectedDelegate,
+  } = data;
+  const selected = name === selectedDelegate;
   const imageSrc = imageUrl(avatar, name, 1);
   return (
     <DelegateBoxContainer
       key={name}
       onClick={() => {
-        if (userAccount) {
-          setDelegateChoice(userAccount, name);
-          setRenderKey((x) => x + 1);
-        }
+        selectedDelegateReactive(name);
       }}
       search={search}
       selected={selected}
       account={userAccount}
-      type={userAccount ? "" : "disabled"}
     >
       {selected && <Logo src={GreenTick} />}
       <LeftContainer>
@@ -330,6 +334,7 @@ function CurrentDelegation({
   delegatedTo,
   setRenderKey,
 }) {
+  console.log(selection);
   let text = (
     <>
       <span>
@@ -338,7 +343,7 @@ function CurrentDelegation({
       <Profile address={delegatedTo} size="small" />
     </>
   );
-  if (selection !== "") {
+  if (selection) {
     text = (
       <>
         <span>
@@ -363,8 +368,7 @@ function CurrentDelegation({
       {selection !== "" && (
         <Clear
           onClick={() => {
-            setDelegateChoice(account, "");
-            setRenderKey((x) => x + 1);
+            selectedDelegateReactive("");
           }}
         >
           Clear
@@ -381,6 +385,7 @@ const ChooseYourDelegate = () => {
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
   const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const { selectedDelegate } = chooseData;
 
   const history = useHistory();
 
@@ -418,7 +423,7 @@ const ChooseYourDelegate = () => {
                 }
               }}
               account={chooseData?.address}
-              disabled={!getDelegateChoice(chooseData?.address)}
+              disabled={chooseData?.address && selectedDelegate !== ""}
             />
           </div>
         </HeaderContainer>
@@ -428,7 +433,7 @@ const ChooseYourDelegate = () => {
               <CurrentDelegation
                 account={chooseData?.address}
                 tokens={Number(utils.formatEther(balance)).toFixed(2)}
-                selection={getDelegateChoice(chooseData?.address)}
+                selection={selectedDelegate}
                 delegatedTo={delegatedTo}
                 setRenderKey={setRenderKey}
               />
@@ -444,25 +449,29 @@ const ChooseYourDelegate = () => {
           <Loader center large />
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
-            {delegates
-              .map((x) => ({
-                ...x,
-                setRenderKey,
-                userAccount: chooseData.address,
-                search: x.name.includes(search),
-              }))
-              .map(DelegateBox)}
+            {delegates.map((d) => (
+              <DelegateBox
+                {...d}
+                selectedDelegate={selectedDelegate}
+                key={d.name}
+                userAccount={chooseData.address}
+                search={d.name.includes(search)}
+              />
+            ))}
           </DelegatesContainer>
         )}
       </ContentBox>
+      \
       <Footer
         rightButtonText={chooseData?.address ? "Next" : "Connect to delegate"}
         rightButtonCallback={() => {
           if (chooseData?.address) {
             history.push("/delegate-tokens");
+          } else {
+            initWeb3();
           }
         }}
-        disabled={!getDelegateChoice(chooseData?.address)}
+        disabled={chooseData?.address && selectedDelegate !== ""}
       />
     </WrappedNarrowColumn>
   );

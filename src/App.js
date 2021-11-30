@@ -33,7 +33,6 @@ import {
 import { useQueryString, useGetDelegates } from "./utils/hooks";
 import { initWeb3Read } from "./web3modal";
 
-
 const AppContainer = styled.div`
   margin: auto;
   box-sizing: border-box;
@@ -87,10 +86,6 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
         const isClaimed = await hasClaimed(data.address);
         if (isClaimed) {
           history.push("/dashboard");
-        }
-
-        if (!data.address) {
-          history.push("/");
         }
       } catch (error) {
         console.error("Private Route error: ", error);
@@ -177,9 +172,7 @@ function App() {
               <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
               <PrivateRoute path="/summary" component={ENSSummary} />
               <PrivateRoute path="/success" component={ENSClaimSuccess} />
-              <Route path="/dashboard">
-                <Dashboard />
-              </Route>
+              <PrivateRoute path="/dashboard" component={Dashboard} />
               <Route path="/delegate-ranking">
                 <DelegateRanking />
               </Route>

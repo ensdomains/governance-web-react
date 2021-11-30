@@ -14,11 +14,10 @@ import TransactionState from "../components/TransactionState";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
 import { delegate } from "../utils/token";
 import { generateMerkleShardUrl } from "../utils/consts";
 
-const delegateToAddress = async (address, setClaimState, history) => {
+const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
   try {
     setClaimState({
       state: "LOADING",
@@ -30,7 +29,7 @@ const delegateToAddress = async (address, setClaimState, history) => {
     let delegateAddress;
     let provider = getEthersProvider();
 
-    const displayName = getDelegateChoice(address);
+    const displayName = selectedDelegate;
     if (!displayName) {
       throw "No chosen delegate";
     }
@@ -40,7 +39,6 @@ const delegateToAddress = async (address, setClaimState, history) => {
     } else {
       delegateAddress = displayName;
     }
-    console.log("blah");
     return await delegate(delegateAddress, setClaimState, history);
   } catch (error) {
     console.error(error);
@@ -64,11 +62,12 @@ const getRightButtonText = (state) => {
 
 const ENSTokenClaim = ({ location }) => {
   const {
-    data: { isConnected, address },
+    data: { isConnected, address, selectedDelegate },
   } = useQuery(gql`
     query privateRouteQuery @client {
       isConnected
       address
+      selectedDelegate
     }
   `);
   const history = useHistory();
@@ -81,7 +80,11 @@ const ENSTokenClaim = ({ location }) => {
     let timeout;
     const run = async () => {
       if (address) {
-        timeout = await delegateToAddress(address, setClaimState, history);
+        timeout = await delegateToAddress(
+          setClaimState,
+          history,
+          selectedDelegate
+        );
       }
     };
 

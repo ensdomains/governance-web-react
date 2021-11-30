@@ -9,6 +9,7 @@ export const network = makeVar(null);
 export const delegates = makeVar({});
 export const delegatedTo = makeVar({});
 export const tokensOwned = makeVar({});
+export const selectedDelegateReactive = makeVar(null);
 
 export let apolloClientInstance;
 
@@ -60,6 +61,11 @@ const typePolicies = {
       delegatedTo: {
         read() {
           return delegatedTo();
+        },
+      },
+      selectedDelegate: {
+        read() {
+          return selectedDelegateReactive();
         },
       },
     },

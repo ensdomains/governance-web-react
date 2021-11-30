@@ -97,7 +97,6 @@ export const initWeb3Read = async () => {
   ethersProvider = new ethers.providers.JsonRpcProvider(
     `https://mainnet.infura.io/v3/${INFURA_ID}`
   );
-  console.log("init web3read");
   isConnected(true);
   const net = await ethersProvider.getNetwork();
   network(net.chainId);

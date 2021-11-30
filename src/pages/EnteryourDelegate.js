@@ -14,6 +14,7 @@ import {
   getDelegateChoice,
   setDelegateChoice,
 } from "./ENSConstitution/delegateHelpers";
+import { selectedDelegateReactive } from "../apollo";
 
 const Input = styled.input`
   height: 64px;
@@ -212,9 +213,13 @@ const EnteryourDelegate = () => {
         disabled={validationMessage.isError || !value}
         rightButtonText="Next"
         rightButtonCallback={() => {
-          setDelegateChoice(address, value);
-
-          history.push(noClaim ? "/delegate-tokens" : "/summary");
+          if (noClaim) {
+            selectedDelegateReactive(value);
+            history.push("/delegate-tokens");
+          } else {
+            setDelegateChoice(address, value);
+            history.push("/summary");
+          }
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {

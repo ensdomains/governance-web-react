@@ -38,7 +38,6 @@ export const hasClaimed = async (address) => {
     const result = await ENSTokenContract.isClaimed(index);
     return result;
   } catch (error) {
-    console.error("error in hasClaimed: ", error);
     return false;
   }
 };
