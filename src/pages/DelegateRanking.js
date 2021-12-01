@@ -334,7 +334,6 @@ function CurrentDelegation({
   delegatedTo,
   setRenderKey,
 }) {
-  console.log(selection);
   let text = (
     <>
       <span>
@@ -354,7 +353,7 @@ function CurrentDelegation({
     );
   }
 
-  if (selection === "" && delegatedTo === emptyAddress) {
+  if (!selection && delegatedTo === emptyAddress) {
     text = (
       <span>
         You have <strong>{tokens}</strong> undelegated votes
@@ -363,7 +362,7 @@ function CurrentDelegation({
   }
 
   return (
-    <CurrentDelegationContainer>
+    <CurrentDelegationContainer data-testid="current-delegation">
       {text}
       {selection !== "" && (
         <Clear
@@ -391,7 +390,6 @@ const ChooseYourDelegate = () => {
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
-
   return (
     <WrappedNarrowColumn>
       <ContentBox padding={"none"}>
@@ -432,7 +430,9 @@ const ChooseYourDelegate = () => {
             (balanceLoading ? null : (
               <CurrentDelegation
                 account={chooseData?.address}
-                tokens={Number(utils.formatEther(balance)).toFixed(2)}
+                tokens={
+                  balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
+                }
                 selection={selectedDelegate}
                 delegatedTo={delegatedTo}
                 setRenderKey={setRenderKey}
@@ -463,7 +463,9 @@ const ChooseYourDelegate = () => {
       </ContentBox>
       \
       <Footer
-        rightButtonText={chooseData?.address ? "Next" : "Connect to delegate"}
+        rightButtonText={
+          chooseData?.address ? "Delegate" : "Connect to delegate"
+        }
         rightButtonCallback={() => {
           if (chooseData?.address) {
             history.push("/delegate-tokens");
@@ -471,7 +473,7 @@ const ChooseYourDelegate = () => {
             initWeb3();
           }
         }}
-        disabled={chooseData?.address && selectedDelegate !== ""}
+        disabled={chooseData?.address && !selectedDelegate}
       />
     </WrappedNarrowColumn>
   );
