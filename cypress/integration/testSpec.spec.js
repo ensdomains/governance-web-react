@@ -1,3 +1,6 @@
+const TENDERLY_KEY = Cypress.env("TENDERLY_KEY");
+
+console.log(TENDERLY_KEY);
 describe("Token claim site", () => {
   // let forkId
   before(() => {
@@ -6,7 +9,7 @@ describe("Token claim site", () => {
       method: "POST",
       url: "https://api.tenderly.co/api/v1/account/ens/project/core/fork",
       headers: {
-        "x-access-key": Cypress.env("TENDERLY_KEY"),
+        "x-access-key": TENDERLY_KEY,
       },
       body: { network_id: "1", alias: "", description: "" },
     }).then((result) => {
@@ -102,9 +105,6 @@ describe("Token claim site", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
     cy.contains("MetaMask").click();
-    //cy.acceptMetamaskAccess();
-    // cy.contains("Next").click();
-    // cy.contains("Next").click();
     cy.contains("Delegates").click();
 
     cy.contains("You have delegated 47.24 votes to", {
