@@ -211,7 +211,7 @@ const EnteryourDelegate = () => {
       </ContentBox>
       <Footer
         disabled={validationMessage.isError || !value}
-        rightButtonText="Next"
+        rightButtonText={noClaim ? "Delegate" : "Next"}
         rightButtonCallback={() => {
           if (noClaim) {
             selectedDelegateReactive(value);

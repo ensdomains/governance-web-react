@@ -16,6 +16,7 @@ import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
 import { delegate } from "../utils/token";
 import { generateMerkleShardUrl } from "../utils/consts";
+import { selectedDelegateReactive } from "../apollo";
 
 const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
   try {
@@ -23,8 +24,6 @@ const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
       state: "LOADING",
       message: "",
     });
-
-    console.log("hello");
 
     let delegateAddress;
     let provider = getEthersProvider();
@@ -39,7 +38,9 @@ const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
     } else {
       delegateAddress = displayName;
     }
-    return await delegate(delegateAddress, setClaimState, history);
+    const tx = await delegate(delegateAddress, setClaimState, history);
+    selectedDelegateReactive("");
+    return tx;
   } catch (error) {
     console.error(error);
     setClaimState({

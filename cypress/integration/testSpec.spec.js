@@ -127,7 +127,41 @@ describe("Token claim site", () => {
 
         cy.get('[data-testid="current-delegation"]', {
           timeout: 25000,
-        }).contains(name);
+        })
+          .contains(name, { exact: false, timeout: 25000 })
+          .should("have.text", name, {
+            exact: false,
+          });
+      });
+  });
+
+  it("Should allow manual delegation", () => {
+    cy.visit("http://localhost:3000");
+    cy.get('[data-testid="header-connect-button"').click();
+    cy.contains("MetaMask").click();
+    cy.contains("Delegates").click();
+
+    cy.contains("You have delegated 47.24 votes to", {
+      timeout: 20000,
+      exact: false,
+    }).should("have.text", "You have delegated 47.24 votes to", {
+      exact: false,
+    });
+
+    cy.contains("Enter ENS or address").click();
+    cy.wait(5000);
+    cy.get("input").clear();
+    cy.get("input").type("nick.eth");
+    cy.wait(5000);
+    cy.get('[data-testid="right-cta"]').click({ timeout: 10000 });
+    cy.confirmMetamaskTransaction();
+
+    cy.get('[data-testid="current-delegation"]', {
+      timeout: 25000,
+    })
+      .contains("nick.eth", { exact: false, timeout: 25000 })
+      .should("have.text", "nick.eth", {
+        exact: false,
       });
   });
 });
