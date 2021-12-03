@@ -4,6 +4,7 @@ import { utils } from "ethers";
 
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
+import GradientAvatar from "../assets/imgs/Gradient.svg";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -197,6 +198,8 @@ const Profile = ({ address, size }) => {
     });
   }, [address]);
 
+  console.log("profileDetails", profileDetails);
+
   if (size === "small") {
     return (
       <ProfileContainer size={size}>
@@ -208,6 +211,10 @@ const Profile = ({ address, size }) => {
               profileDetails.ensName,
               profileDetails.networkId
             )}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = GradientAvatar;
+            }}
           />
         ) : (
           <EmptyAvatar size={size} />
