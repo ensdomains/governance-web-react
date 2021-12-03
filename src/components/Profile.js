@@ -51,6 +51,7 @@ const RightContainer = styled.div`
 
 const AvatarImg = styled.img`
   border-radius: 50%;
+  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
 
   ${(p) => {
     switch (p.size) {
