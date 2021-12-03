@@ -199,8 +199,6 @@ const Profile = ({ address, size }) => {
     });
   }, [address]);
 
-  console.log("profileDetails", profileDetails);
-
   if (size === "small") {
     return (
       <ProfileContainer size={size}>
