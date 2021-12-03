@@ -206,6 +206,7 @@ const Profile = ({ address, size }) => {
         {profileDetails.avatar ? (
           <AvatarImg
             {...{ size }}
+            key={profileDetails.avatar}
             src={imageUrl(
               profileDetails.avatar,
               profileDetails.ensName,
