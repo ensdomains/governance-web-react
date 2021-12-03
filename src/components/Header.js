@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
@@ -12,7 +13,6 @@ import { ReactComponent as DefaultYellowWarning } from "../assets/imgs/YellowWar
 import { Link } from "react-router-dom";
 
 import { Button } from "@ensdomains/thorin";
-
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -40,7 +40,10 @@ const LeftContainer = styled.div`
   `}
 `;
 
-const RightContainer = styled.div``;
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const WrappedLogo = styled(HeaderENSLogo)`
   margin-bottom: -10px;
@@ -73,6 +76,29 @@ const NetworkWarning = function () {
   );
 };
 
+const DelegateLink = styled(Link)`
+  /* About */
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  /* identical to box height */
+  letter-spacing: -0.01em;
+  margin-right: 10px;
+  color: #989898;
+
+  &:hover {
+    color: #1a1a1a;
+  }
+
+  ${(p) =>
+    p.current &&
+    `
+    color: #1A1A1A;
+  `}
+`;
+
 const Header = () => {
   const {
     data: { isConnected, address, network },
@@ -84,6 +110,8 @@ const Header = () => {
     }
   `);
 
+  let match = useRouteMatch("/delegate-ranking");
+
   return (
     <HeaderContainer>
       <HeaderContainerInner>
@@ -92,10 +120,16 @@ const Header = () => {
             <WrappedLogo />
           </Link>
         </LeftContainer>
-
         <RightContainer>
-          {isConnected ? (
-            <Profile data-testid="header-profile" {...{ address }} />
+          <DelegateLink to="delegate-ranking" current={match}>
+            Delegates
+          </DelegateLink>
+          {isConnected && address ? (
+            <Profile
+              data-testid="header-profile"
+              {...{ address }}
+              size="medium"
+            />
           ) : (
             <Button
               data-testid="header-connect-button"

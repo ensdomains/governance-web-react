@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { utils } from "ethers";
 import { useQuery, gql } from "@apollo/client";
 
@@ -14,6 +14,7 @@ import {
   getDelegateChoice,
   setDelegateChoice,
 } from "./ENSConstitution/delegateHelpers";
+import { selectedDelegateReactive } from "../apollo";
 
 const Input = styled.input`
   height: 64px;
@@ -167,6 +168,7 @@ const EnteryourDelegate = () => {
     message: "",
     isError: false,
   });
+  let noClaim = useRouteMatch("/manual-delegates-no-claim");
 
   const {
     data: { address },
@@ -209,14 +211,19 @@ const EnteryourDelegate = () => {
       </ContentBox>
       <Footer
         disabled={validationMessage.isError || !value}
-        rightButtonText="Next"
+        rightButtonText={noClaim ? "Delegate" : "Next"}
         rightButtonCallback={() => {
-          setDelegateChoice(address, value);
-          history.push("/summary");
+          if (noClaim) {
+            selectedDelegateReactive(value);
+            history.push("/delegate-tokens");
+          } else {
+            setDelegateChoice(address, value);
+            history.push("/summary");
+          }
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/delegates");
+          history.push(noClaim ? "/delegate-ranking" : "/delegates");
         }}
       />
     </NarrowColumn>

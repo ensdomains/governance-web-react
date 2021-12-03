@@ -18,15 +18,20 @@ const HomeContainer = styled.div`
 `;
 
 const WrappedTitle = styled.div`
-    font-weight: bold;
-    font-size: 44px;
-    line-height: 118%;
-    
-    text-align: center;
-    letter-spacing: -0.01em;
-    background: linear-gradient(330.4deg, #44BCF0 4.54%, #7298F8 59.2%, #A099FF 148.85%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  font-size: 44px;
+  line-height: 118%;
+
+  text-align: center;
+  letter-spacing: -0.01em;
+  background: linear-gradient(
+    330.4deg,
+    #44bcf0 4.54%,
+    #7298f8 59.2%,
+    #a099ff 148.85%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const WrappedSubTitle = styled.div`
@@ -45,18 +50,18 @@ const WrappedSubTitle = styled.div`
 const HOME_QUERY = gql`
   query privateRouteQuery @client {
     addressDetails
-    isConnected
+    address
   }
 `;
 
 const Home = () => {
   const {
-    data: { isConnected },
+    data: { address },
   } = useQuery(HOME_QUERY);
   const history = useHistory();
 
   const handleClick = () => {
-    if (isConnected) {
+    if (address) {
       history.push("/dashboard");
     } else {
       initWeb3();
@@ -82,7 +87,7 @@ const Home = () => {
       </WrappedSubTitle>
       <Gap height={8} />
       <Button
-        text={isConnected ? "Get started" : "Connect wallet"}
+        text={address ? "Get started" : "Connect wallet"}
         onClick={handleClick}
       />
     </HomeContainer>

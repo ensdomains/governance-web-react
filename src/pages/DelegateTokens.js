@@ -14,11 +14,11 @@ import TransactionState from "../components/TransactionState";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
-import { submitClaim } from "../utils/token";
+import { delegate } from "../utils/token";
 import { generateMerkleShardUrl } from "../utils/consts";
+import { selectedDelegateReactive } from "../apollo";
 
-const handleClaim = async (address, setClaimState, history) => {
+const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
   try {
     setClaimState({
       state: "LOADING",
@@ -28,7 +28,7 @@ const handleClaim = async (address, setClaimState, history) => {
     let delegateAddress;
     let provider = getEthersProvider();
 
-    const displayName = getDelegateChoice(address);
+    const displayName = selectedDelegate;
     if (!displayName) {
       throw "No chosen delegate";
     }
@@ -38,28 +38,9 @@ const handleClaim = async (address, setClaimState, history) => {
     } else {
       delegateAddress = displayName;
     }
-
-    const response = await fetch(generateMerkleShardUrl(address));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } = merkleRoot;
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
-    );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
-    return await submitClaim(
-      entry.balance,
-      proof,
-      delegateAddress,
-      setClaimState,
-      history
-    );
+    const tx = await delegate(delegateAddress, setClaimState, history);
+    selectedDelegateReactive("");
+    return tx;
   } catch (error) {
     console.error(error);
     setClaimState({
@@ -72,7 +53,7 @@ const handleClaim = async (address, setClaimState, history) => {
 const getRightButtonText = (state) => {
   switch (state) {
     case "LOADING":
-      return "Claiming...";
+      return "Delegating...";
     case "SUCCESS":
       return "Continuing...";
     case "ERROR":
@@ -82,11 +63,12 @@ const getRightButtonText = (state) => {
 
 const ENSTokenClaim = ({ location }) => {
   const {
-    data: { isConnected, address },
+    data: { isConnected, address, selectedDelegate },
   } = useQuery(gql`
     query privateRouteQuery @client {
       isConnected
       address
+      selectedDelegate
     }
   `);
   const history = useHistory();
@@ -98,8 +80,12 @@ const ENSTokenClaim = ({ location }) => {
   useEffect(() => {
     let timeout;
     const run = async () => {
-      if (location.state && isConnected) {
-        timeout = await handleClaim(address, setClaimState, history);
+      if (address) {
+        timeout = await delegateToAddress(
+          setClaimState,
+          history,
+          selectedDelegate
+        );
       }
     };
 
@@ -109,7 +95,7 @@ const ENSTokenClaim = ({ location }) => {
         clearTimeout(timeout);
       }
     };
-  }, [isConnected]);
+  }, [address]);
 
   return (
     <NarrowColumn>
@@ -120,12 +106,12 @@ const ENSTokenClaim = ({ location }) => {
         <Header>Confirm with wallet</Header>
         <Gap height={3} />
         <Content>
-          Please approve the transaction to delegate and claim your tokens.
+          Please approve the transaction to delegate your tokens
         </Content>
         <Gap height={6} />
         <TransactionState
           transactionState={claimState.state}
-          title={"Delegate & claim tokens"}
+          title={"Delegate"}
           content={
             "This transaction happens on-chain, and will require paying gas"
           }
@@ -134,15 +120,15 @@ const ENSTokenClaim = ({ location }) => {
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/summary");
+          history.push("/delegate-ranking");
         }}
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
-            history.push("/success");
+            history.push("/delegate-ranking");
             return;
           }
-          handleClaim(address, setClaimState, history);
+          delegateToAddress(address, setClaimState, history);
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
       />

@@ -10,7 +10,7 @@ import {
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
-const INFURA_ID = "58a380d3ecd545b2b5b3dad5d2b18bf0"
+const INFURA_ID = "58a380d3ecd545b2b5b3dad5d2b18bf0";
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
@@ -63,9 +63,9 @@ const option = {
       package: Bitski, // required
       options: {
         clientId: BITSKI_CLIENT_ID, // required
-        callbackUrl: window.location.href + "bitski-callback.html" // required
-      }
-    }
+        callbackUrl: window.location.href + "bitski-callback.html", // required
+      },
+    },
   },
 };
 
@@ -91,6 +91,15 @@ export const disconnect = async function () {
   if (provider && provider.disconnect) {
     provider.disconnect();
   }
+};
+
+export const initWeb3Read = async () => {
+  ethersProvider = new ethers.providers.JsonRpcProvider(
+    `https://mainnet.infura.io/v3/${INFURA_ID}`
+  );
+  isConnected(true);
+  const net = await ethersProvider.getNetwork();
+  network(net.chainId);
 };
 
 export const initWeb3 = async () => {

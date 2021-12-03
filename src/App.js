@@ -20,15 +20,18 @@ import ENSSummary from "./pages/ENSSummary";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSTokenClaim from "./pages/EnsTokenClaim";
 import ENSClaimSuccess from "./pages/ENSClaimSuccess";
+import DelegateRanking from "./pages/DelegateRanking";
+import Delegation from "./pages/Delegation";
+import DelegateTokens from "./pages/DelegateTokens";
 import SharedFooter from "./components/SharedFooter";
-import { hasClaimed } from "./utils/tokenClaim";
+import { hasClaimed } from "./utils/token";
 
 import {
   setDelegateChoice,
   setDelegateReferral,
 } from "./pages/ENSConstitution/delegateHelpers";
 import { useQueryString, useGetDelegates } from "./utils/hooks";
-
+import { initWeb3Read } from "./web3modal";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -54,7 +57,7 @@ const AppContainerMid = styled.div`
 
 const useInit = () => {
   useEffect(() => {
-    initWeb3();
+    initWeb3Read();
   }, []);
 };
 
@@ -90,11 +93,37 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
       }
     };
 
-    if (data.isConnected && data.addressDetails.eligible !== undefined) {
+    if (
+      data.isConnected &&
+      data.address &&
+      data.addressDetails.eligible !== undefined
+    ) {
       run();
     }
   }, [data.address, data.isConnected, data.addressDetails.eligible]);
 
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
+}
+
+function ConnectedRoute({ component: Component, ...rest }) {
+  const { data } = useQuery(PRIVATE_ROUTE_QUERY);
+  const history = useHistory();
+  useEffect(() => {
+    function run() {
+      try {
+        if (!data.address) {
+          history.push("/");
+        }
+      } catch (error) {
+        console.error("Connected Route error: ", error);
+        history.push("/dashboard");
+      }
+    }
+
+    if (data.isConnected && data.address) {
+      run();
+    }
+  }, [data.address, data.isConnected]);
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
@@ -132,12 +161,22 @@ function App() {
                 path="/manual-delegates"
                 component={EnteryourDelegate}
               />
+              <ConnectedRoute
+                path="/manual-delegates-no-claim"
+                component={EnteryourDelegate}
+              />
+              <ConnectedRoute
+                path="/delegate-tokens"
+                component={DelegateTokens}
+              />
               <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
               <PrivateRoute path="/summary" component={ENSSummary} />
               <PrivateRoute path="/success" component={ENSClaimSuccess} />
-              <Route path="/dashboard">
-                <Dashboard />
+              <PrivateRoute path="/dashboard" component={Dashboard} />
+              <Route path="/delegate-ranking">
+                <DelegateRanking />
               </Route>
+              <PrivateRoute path="/delegation" component={Delegation} />
               <Route path="/">
                 <Home />
               </Route>

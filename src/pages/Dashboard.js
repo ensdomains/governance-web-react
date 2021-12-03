@@ -25,7 +25,7 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
-import { hasClaimed } from "../utils/tokenClaim";
+import { hasClaimed } from "../utils/token";
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;

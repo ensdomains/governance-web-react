@@ -1,90 +1,167 @@
+const TENDERLY_KEY = Cypress.env("TENDERLY_KEY");
+
+console.log(TENDERLY_KEY);
 describe("Token claim site", () => {
-    // let forkId
-    before(() => {
-        cy.viewport(1000, 2000)
-        cy.request({
-            method: 'POST',
-            url: 'https://api.tenderly.co/api/v1/account/ens/project/core/fork',
-            headers: {
-                "x-access-key": Cypress.env('TENDERLY_KEY')
-            },
-            body: {"network_id": "1", "alias": "", "description": ""}
-        }).then(result => {
-            process.env.RPC_URL = `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
-            cy.setupMetamask('');
-            cy.addMetamaskNetwork(
-                `tenderly2`,
-                `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
-            )
-        })
+  // let forkId
+  before(() => {
+    cy.viewport(1000, 2000);
+    cy.request({
+      method: "POST",
+      url: "https://api.tenderly.co/api/v1/account/ens/project/core/fork",
+      headers: {
+        "x-access-key": TENDERLY_KEY,
+      },
+      body: { network_id: "1", alias: "", description: "" },
+    }).then((result) => {
+      process.env.RPC_URL = `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`;
+      cy.setupMetamask("");
+      cy.addMetamaskNetwork(
+        `tenderly2`,
+        `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
+      );
     });
-    it("Should allow the user to vote, delegate and claim", () => {
+  });
+  it("Should allow the user to vote, delegate and claim", () => {
+    cy.visit("http://localhost:3000");
+    cy.get('[data-testid="header-connect-button"').click();
+    cy.contains("MetaMask").click();
+    cy.acceptMetamaskAccess();
+    // cy.contains("Next").click();
+    // cy.contains("Next").click();
+    cy.contains("Get started").click();
+    cy.contains("Start your claim process", { timeout: 10000 }).click();
 
-        cy.visit("http://localhost:3000");
+    cy.contains("Next").click();
+    cy.contains("Next").click();
+
+    cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+      .first()
+      .invoke("text")
+      .then((name) => {
+        cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+          .first()
+          .click();
+
+        // Should retain delegate choice after refresh
+        cy.reload();
+        cy.get('[data-testid="header-connect-button"').click();
         cy.contains("MetaMask").click();
-        cy.acceptMetamaskAccess();
-        cy.contains("Get started").click();
-        cy.contains("Start your claim process", { timeout: 10000 }).click();
+        cy.contains(name, { timeout: 25000 })
+          .parent()
+          .parent()
+          .parent()
+          .should("have.css", "border", "1px solid rgb(73, 179, 147)");
 
-        cy.contains("Next").click();
-        cy.contains("Next").click();
+        // Should prepopulate with selection from query string
+        cy.visit("http://localhost:3000/delegates?delegate=leontalbert.eth");
+        cy.get('[data-testid="header-connect-button"').click();
+        cy.contains("MetaMask").click();
+        cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+          .first()
+          .invoke("text")
+          .then((prepopName) => {
+            expect(prepopName).to.equal("leontalbert.eth");
 
-        cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
-            .first()
-            .invoke('text').then(name => {
+            // Should be able to enter address manually
+            cy.contains("Enter ENS or address").click();
+            cy.wait(5000);
+            cy.get("input").clear();
+            cy.get("input").type("abracadabraalakazam.eth");
+            cy.contains("Next").click({ force: true });
+            cy.get("input").clear();
+            cy.get("input").type("0xBe8563B89d31AD287c73da42848Bd7646172E");
+            cy.wait(5000);
+            cy.contains("Next").click({ force: true });
+            cy.get("input").type("0ba");
+            cy.wait(5000);
+            cy.contains("Next").click();
+            cy.contains("leontalbert.eth", { timeout: 20000 });
 
-            cy.get('[data-testid="delegate-box-name"]', {timeout: 25000}).first().click()
+            cy.contains("Claim", { timeout: 20000 }).click();
+            cy.confirmMetamaskTransaction();
+            cy.contains("Return to dashboard", { timeout: 20000 }).click();
 
-            // Should retain delegate choice after refresh
-            cy.reload()
+            //Should change to claimed state after claiming
+            cy.contains("You were eligible for the airdrop!", {
+              timeout: 20000,
+            });
+            cy.contains("Tokens claimed successfully").click({ force: true });
+            cy.contains("You were eligible for the airdrop!", {
+              timeout: 20000,
+            }).should("have.text", "You were eligible for the airdrop!");
+
+            // //If already claimed should redirect to dashboard
+            cy.visit("http://localhost:3000/delegates");
+            cy.get('[data-testid="header-connect-button"').click();
             cy.contains("MetaMask").click();
-            cy.contains(name, {timeout: 25000})
-                .parent()
-                .parent()
-                .parent()
-                .should('have.css', 'border', '1px solid rgb(73, 179, 147)')
+            cy.contains("You were eligible for the airdrop!", {
+              timeout: 20000,
+            }).should("have.text", "You were eligible for the airdrop!");
+          });
+      });
+  });
 
-            // Should prepopulate with selection from query string
-            cy.visit("http://localhost:3000/delegates?delegate=leontalbert.eth");
-            cy.contains("MetaMask").click();
-            cy.get('[data-testid="delegate-box-name"]', {timeout: 25000})
-                .first().invoke('text').then(prepopName => {
+  it("Should allow the user navigate to delegate and delegate tokens", () => {
+    cy.visit("http://localhost:3000");
+    cy.get('[data-testid="header-connect-button"').click();
+    cy.contains("MetaMask").click();
+    cy.contains("Delegates").click();
 
-                expect(prepopName).to.equal('leontalbert.eth')
-
-                // Should be able to enter address manually
-                cy.contains('Enter ENS or address').click()
-                cy.wait(5000)
-                cy.get('input').clear()
-                cy.get('input').type('abracadabraalakazam.eth')
-                cy.contains('Next').click({force: true})
-                cy.get('input').clear()
-                cy.get('input').type('0xBe8563B89d31AD287c73da42848Bd7646172E')
-                cy.wait(5000)
-                cy.contains('Next').click({force: true})
-                cy.get('input').type('0ba')
-                cy.wait(5000)
-                cy.contains('Next').click()
-                cy.contains('leontalbert.eth', { timeout: 20000 })
-
-                cy.contains("Claim", {timeout: 20000}).click();
-                cy.confirmMetamaskTransaction();
-                cy.contains("Return to dashboard", {timeout: 20000}).click();
-
-                //Should change to claimed state after claiming
-                cy.contains("You were eligible for the airdrop!", {timeout: 20000})
-                cy.contains("Tokens claimed successfully").click({force: true})
-                cy.contains("You were eligible for the airdrop!", {timeout: 20000}).should('have.text', 'You were eligible for the airdrop!')
-
-                // //If already claimed should redirect to dashboard
-                cy.visit("http://localhost:3000/delegates");
-                cy.contains("MetaMask").click();
-                cy.contains(
-                    "You were eligible for the airdrop!",
-                    {timeout: 20000}
-                ).should('have.text', 'You were eligible for the airdrop!')
-
-            })
-        })
+    cy.contains("You have delegated 47.24 votes to", {
+      timeout: 20000,
+      exact: false,
+    }).should("have.text", "You have delegated 47.24 votes to", {
+      exact: false,
     });
+
+    cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+      .first()
+      .invoke("text")
+      .then((name) => {
+        cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+          .first()
+          .click();
+        cy.wait(5000);
+        cy.get('[data-testid="right-cta"]').click({ timeout: 10000 });
+        cy.confirmMetamaskTransaction();
+
+        cy.get('[data-testid="current-delegation"]', {
+          timeout: 25000,
+        })
+          .contains(name, { exact: false, timeout: 25000 })
+          .should("have.text", name, {
+            exact: false,
+          });
+      });
+  });
+
+  it("Should allow manual delegation", () => {
+    cy.visit("http://localhost:3000");
+    cy.get('[data-testid="header-connect-button"').click();
+    cy.contains("MetaMask").click();
+    cy.contains("Delegates").click();
+
+    cy.contains("You have delegated 47.24 votes to", {
+      timeout: 20000,
+      exact: false,
+    }).should("have.text", "You have delegated 47.24 votes to", {
+      exact: false,
+    });
+
+    cy.contains("Enter ENS or address").click();
+    cy.wait(5000);
+    cy.get("input").clear();
+    cy.get("input").type("nick.eth");
+    cy.wait(5000);
+    cy.get('[data-testid="right-cta"]').click({ timeout: 10000 });
+    cy.confirmMetamaskTransaction();
+
+    cy.get('[data-testid="current-delegation"]', {
+      timeout: 25000,
+    })
+      .contains("nick.eth", { exact: false, timeout: 25000 })
+      .should("have.text", "nick.eth", {
+        exact: false,
+      });
+  });
 });

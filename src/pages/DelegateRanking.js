@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { utils } from "ethers";
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import Loader from "../components/Loader";
 import LazyImage from "../components/LazyImage";
+import Profile from "../components/Profile";
 import { Header, Content } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
@@ -15,21 +17,26 @@ import { imageUrl, shortenAddress } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import {
-  getDelegateChoice,
-  setDelegateChoice,
   getDelegateReferral,
+  sortByRank,
 } from "./ENSConstitution/delegateHelpers";
-import { getENSTokenContractAddress } from "../utils/consts";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
+import { emptyAddress } from "../utils/consts";
 import GreenTick from "../assets/imgs/GreenTick.svg";
+import { useGetTokens, useGetDelegatedTo } from "../utils/hooks";
+import { selectedDelegateReactive } from "../apollo";
+import { initWeb3 } from "../web3modal";
 
-const CHOOSE_YOUR_DELEGATE_QUERY = gql`
-  query chooseDelegateQuery @client {
+const DELEGATE_RANKING_QUERY = gql`
+  query delegateRankingQuery @client {
     addressDetails
     isConnected
     address
     delegates
+    tokensOwned
+    delegatedTo
+    selectedDelegate
   }
 `;
 
@@ -47,10 +54,15 @@ const DelegateBoxContainer = styled.div`
   transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
   position: relative;
 
-  &:hover {
-    border: 1px solid
-      ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
-  }
+  ${(p) =>
+    p.account
+      ? `
+      &:hover {
+        border: 1px solid
+          ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
+      }
+  `
+      : ""}
 `;
 
 const AvatarImg = styled.img`
@@ -133,19 +145,27 @@ const Gradient = styled.div`
 `;
 
 const DelegateBox = (data) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount, search } =
-    data;
-  const selected = name === getDelegateChoice(userAccount);
+  const {
+    avatar,
+    profile,
+    votes,
+    name,
+    setRenderKey,
+    userAccount,
+    search,
+    selectedDelegate,
+  } = data;
+  const selected = name === selectedDelegate;
   const imageSrc = imageUrl(avatar, name, 1);
   return (
     <DelegateBoxContainer
       key={name}
       onClick={() => {
-        setDelegateChoice(userAccount, name);
-        setRenderKey((x) => x + 1);
+        selectedDelegateReactive(name);
       }}
       search={search}
       selected={selected}
+      account={userAccount}
     >
       {selected && <Logo src={GreenTick} />}
       <LeftContainer>
@@ -209,10 +229,15 @@ const HeaderContainer = styled.div`
 const WrappedCTAButton = styled(CTAButton)`
   width: 210px;
   margin: 0 auto;
-
+  cursor: auto;
+  ${(p) =>
+    p.account &&
+    `
+    cursor: pointer;
+  `}
   ${largerThan.mobile`
       margin-left: 70px;
-  `}
+  `};
 `;
 
 const CopyContainer = styled.div`
@@ -223,14 +248,24 @@ const CopyContainer = styled.div`
   `}
 `;
 
+const SubHeader = styled.div`
+  display: grid;
+  margin: 0 30px 10px;
+  grid-template-columns: 1fr;
+  grid-row-gap: 12px;
+  grid-column-gap: 14px;
+  ${largerThan.tablet`
+    grid-template-columns: 2fr minmax(240px, 290px);
+  `}
+`;
+
 const Input = styled.input`
   font-family: inherit;
   height: 64px;
-  width: calc(100% - 60px);
   box-sizing: border-box;
   -webkit-appearance: none;
   outline: none;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background: #f6f6f6;
   border-radius: 14px;
   padding: 0px 20px;
@@ -240,28 +275,127 @@ const Input = styled.input`
   font-size: 22px;
   line-height: 28px;
 
-  margin: 0 30px 10px;
-
   &::placeholder {
     color: black;
     opacity: 0.23;
   }
 `;
 
+const Clear = styled("button")`
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin-left: auto;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 17px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: -0.01em;
+
+  color: #63666a;
+`;
+
+const CurrentDelegationContainer = styled("div")`
+  background: #f6f6f6;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  border-radius: 16px;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+
+  span {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 21px;
+    letter-spacing: -0.01em;
+    margin-right: 10px;
+    padding: 10px 0;
+
+    color: rgba(26, 26, 26, 0.75);
+    strong {
+      font-weight: bold;
+      color: black;
+    }
+  }
+`;
+
+function CurrentDelegation({
+  account,
+  tokens,
+  selection,
+  delegatedTo,
+  setRenderKey,
+}) {
+  let text = (
+    <>
+      <span>
+        You have delegated <strong>{tokens}</strong> votes to
+      </span>
+      <Profile address={delegatedTo} size="small" />
+    </>
+  );
+  if (selection) {
+    text = (
+      <>
+        <span>
+          You will delegate <strong>{tokens}</strong> votes to
+        </span>
+        <Profile address={selection} size="small" />
+      </>
+    );
+  }
+
+  if (!selection && delegatedTo === emptyAddress) {
+    text = (
+      <span>
+        You have <strong>{tokens}</strong> undelegated votes
+      </span>
+    );
+  }
+
+  return (
+    <CurrentDelegationContainer data-testid="current-delegation">
+      {text}
+      {selection !== "" && (
+        <Clear
+          onClick={() => {
+            selectedDelegateReactive("");
+          }}
+        >
+          Clear
+        </Clear>
+      )}
+    </CurrentDelegationContainer>
+  );
+}
+
 const ChooseYourDelegate = () => {
-  const { data } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
-  const { delegates, loading: delegatesLoading, tokenInfo } = data.delegates;
+  const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
+  useGetTokens(chooseData.address);
+  useGetDelegatedTo(chooseData.address);
+  const { delegates, loading: delegatesLoading } = chooseData.delegates;
+  const { balance, loading: balanceLoading } = chooseData.tokensOwned;
+  const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const { selectedDelegate } = chooseData;
+
   const history = useHistory();
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
-
   return (
     <WrappedNarrowColumn>
       <ContentBox padding={"none"}>
         <HeaderContainer>
           <CopyContainer>
-            <Header>Choose a delegate</Header>
+            <Header>Change your delegate</Header>
             <Gap height={3} />
             <Content>
               Select a community member to represent you. You can change this at
@@ -282,41 +416,64 @@ const ChooseYourDelegate = () => {
               text={"Enter ENS or address"}
               type={"deny"}
               onClick={() => {
-                history.push("/manual-delegates");
+                if (chooseData?.address) {
+                  history.push("/manual-delegates-no-claim");
+                }
               }}
+              account={chooseData?.address}
+              disabled={chooseData?.address && selectedDelegate !== ""}
             />
           </div>
         </HeaderContainer>
-        <Input
-          type="text"
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search delegates"
-        />
+        <SubHeader account={chooseData?.address}>
+          {chooseData?.address &&
+            (balanceLoading ? null : (
+              <CurrentDelegation
+                account={chooseData?.address}
+                tokens={
+                  balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
+                }
+                selection={selectedDelegate}
+                delegatedTo={delegatedTo}
+                setRenderKey={setRenderKey}
+              />
+            ))}
+          <Input
+            account={chooseData?.address}
+            type="text"
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+          />
+        </SubHeader>
         {delegatesLoading ? (
           <Loader center large />
         ) : (
           <DelegatesContainer data-testid="delegates-list-container">
-            {delegates
-              .map((x) => ({
-                ...x,
-                setRenderKey,
-                userAccount: data.address,
-                search: x.name.includes(search),
-              }))
-              .map(DelegateBox)}
+            {delegates.map((d) => (
+              <DelegateBox
+                {...d}
+                selectedDelegate={selectedDelegate}
+                key={d.name}
+                userAccount={chooseData.address}
+                search={d.name.includes(search)}
+              />
+            ))}
           </DelegatesContainer>
         )}
       </ContentBox>
+      \
       <Footer
-        rightButtonText="Next"
+        rightButtonText={
+          chooseData?.address ? "Delegate" : "Connect to delegate"
+        }
         rightButtonCallback={() => {
-          history.push("/summary");
+          if (chooseData?.address) {
+            history.push("/delegate-tokens");
+          } else {
+            initWeb3();
+          }
         }}
-        leftButtonText="Back"
-        leftButtonCallback={() => {
-          history.push("/governance");
-        }}
-        disabled={!getDelegateChoice(data?.address)}
+        disabled={chooseData?.address && !selectedDelegate}
       />
     </WrappedNarrowColumn>
   );

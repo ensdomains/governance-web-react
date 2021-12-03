@@ -59,6 +59,7 @@ const Footer = ({
         <RightContainer>
           {text && <Text>{text}</Text>}
           <CTAButton
+            data-testid="right-cta"
             text={rightButtonText}
             onClick={disabled ? () => null : rightButtonCallback}
             type={disabled ? "disabled" : ""}
