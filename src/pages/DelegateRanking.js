@@ -461,7 +461,6 @@ const ChooseYourDelegate = () => {
           </DelegatesContainer>
         )}
       </ContentBox>
-      \
       <Footer
         rightButtonText={
           chooseData?.address ? "Delegate" : "Connect to delegate"
