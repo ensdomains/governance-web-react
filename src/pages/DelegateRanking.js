@@ -18,7 +18,7 @@ import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import {
   getDelegateReferral,
-  sortByRank,
+  sortByRank
 } from "./ENSConstitution/delegateHelpers";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
@@ -41,8 +41,7 @@ const DELEGATE_RANKING_QUERY = gql`
 `;
 
 const DelegateBoxContainer = styled.div`
-  border: 1px solid
-    ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
+  border: 1px solid ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
   box-sizing: border-box;
   border-radius: 16px;
   display: ${(p) => (p.search ? "flex" : "none")};
@@ -84,19 +83,16 @@ const LeftContainer = styled.div`
 `;
 
 const SpeechBubbleImg = styled.img`
-  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%)
-    contrast(86%);
+  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%) contrast(86%);
 
   &:hover {
-    filter: invert(51%) sepia(97%) saturate(1961%) hue-rotate(196deg)
-      brightness(103%) contrast(101%);
+    filter: invert(51%) sepia(97%) saturate(1961%) hue-rotate(196deg) brightness(103%) contrast(101%);
   }
 `;
 
 const SpeechBubbleImgText = styled.img`
   margin: 0 5px;
-  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%)
-    contrast(86%);
+  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%) contrast(86%);
 `;
 
 const Logo = styled.img`
@@ -153,7 +149,7 @@ const DelegateBox = (data) => {
     setRenderKey,
     userAccount,
     search,
-    selectedDelegate,
+    selectedDelegate
   } = data;
   const selected = name === selectedDelegate;
   const imageSrc = imageUrl(avatar, name, 1);
@@ -320,6 +316,7 @@ const CurrentDelegationContainer = styled("div")`
     padding: 10px 0;
 
     color: rgba(26, 26, 26, 0.75);
+
     strong {
       font-weight: bold;
       color: black;
@@ -328,12 +325,12 @@ const CurrentDelegationContainer = styled("div")`
 `;
 
 function CurrentDelegation({
-  account,
-  tokens,
-  selection,
-  delegatedTo,
-  setRenderKey,
-}) {
+                             account,
+                             tokens,
+                             selection,
+                             delegatedTo,
+                             setRenderKey
+                           }) {
   let text = (
     <>
       <span>
@@ -412,32 +409,44 @@ const ChooseYourDelegate = () => {
           </CopyContainer>
 
           <div>
-            <WrappedCTAButton
-              text={"Enter ENS or address"}
-              type={"deny"}
-              onClick={() => {
-                if (chooseData?.address) {
-                  history.push("/manual-delegates-no-claim");
-                }
-              }}
-              account={chooseData?.address}
-              disabled={chooseData?.address && selectedDelegate !== ""}
-            />
+            {chooseData.address
+              ? (
+                <WrappedCTAButton
+                  text={"Enter ENS or address"}
+                  type={"deny"}
+                  onClick={() => {
+                    if (chooseData?.address) {
+                      history.push("/manual-delegates-no-claim");
+                    }
+                  }}
+                  account={chooseData?.address}
+                  disabled={chooseData?.address && selectedDelegate !== ""}
+                />
+              )
+              : (
+                <WrappedCTAButton
+                  text={"Connect to Enter ENS or address"}
+                  onClick={() => {
+                    initWeb3();
+                  }}
+                />
+              )
+            }
           </div>
         </HeaderContainer>
         <SubHeader account={chooseData?.address}>
           {chooseData?.address &&
-            (balanceLoading ? null : (
-              <CurrentDelegation
-                account={chooseData?.address}
-                tokens={
-                  balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
-                }
-                selection={selectedDelegate}
-                delegatedTo={delegatedTo}
-                setRenderKey={setRenderKey}
-              />
-            ))}
+          (balanceLoading ? null : (
+            <CurrentDelegation
+              account={chooseData?.address}
+              tokens={
+                balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
+              }
+              selection={selectedDelegate}
+              delegatedTo={delegatedTo}
+              setRenderKey={setRenderKey}
+            />
+          ))}
           <Input
             account={chooseData?.address}
             type="text"
