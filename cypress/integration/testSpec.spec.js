@@ -26,8 +26,6 @@ describe("Token claim site", () => {
     cy.get('[data-testid="header-connect-button"').click();
     cy.contains("MetaMask").click();
     cy.acceptMetamaskAccess();
-    // cy.contains("Next").click();
-    // cy.contains("Next").click();
     cy.contains("Get started").click();
     cy.contains("Start your claim process", { timeout: 10000 }).click();
 
@@ -67,6 +65,7 @@ describe("Token claim site", () => {
             cy.wait(5000);
             cy.get("input").clear();
             cy.get("input").type("abracadabraalakazam.eth");
+            cy.wait(5000);
             cy.contains("Next").click({ force: true });
             cy.get("input").clear();
             cy.get("input").type("0xBe8563B89d31AD287c73da42848Bd7646172E");

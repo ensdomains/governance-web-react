@@ -3,6 +3,7 @@ import styled from "styled-components/macro";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { utils } from "ethers";
 import { useQuery, gql } from "@apollo/client";
+import debounce from 'lodash.debounce';
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
@@ -92,6 +93,7 @@ const InputComponent = ({
     setValue(value);
 
     const run = async () => {
+      console.log('run')
       if (value.includes(".")) {
         try {
           const result = await getEthersProvider().resolveName(value);
@@ -151,7 +153,7 @@ const InputComponent = ({
 
   return (
     <div>
-      <Input {...props} onChange={onChange} defaultValue={defaultValue} />
+      <Input {...props} onChange={debounce(onChange, 100)} defaultValue={defaultValue} />
       {ensNameAddress && <AddressMessage>{ensNameAddress}</AddressMessage>}
       {validationMessage.message && (
         <ValidationMessage error={validationMessage.isError}>

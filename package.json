@@ -24,6 +24,7 @@
     "graphql": "15.5.3",
     "js-sha3": "0.8.0",
     "keccak256": "1.0.3",
+    "lodash.debounce": "4.0.8",
     "merkletreejs": "0.2.24",
     "react": "^17.0.2",
     "react-confetti": "6.0.1",
