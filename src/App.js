@@ -15,7 +15,6 @@ import ENSGovernance from "./pages/ENSGovernance";
 import Dashboard from "./pages/Dashboard";
 import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Why from "./pages/Why";
-import { initWeb3 } from "./web3modal";
 import ENSSummary from "./pages/ENSSummary";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSTokenClaim from "./pages/EnsTokenClaim";
