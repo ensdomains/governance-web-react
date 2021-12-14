@@ -20,4 +20,14 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   require("@ensdomains/cypress-metamask/plugins")(on);
+
+  on("task", {
+    submitRpcUrl(rpcUrl) {
+      console.log("submitRpcUrl", rpcUrl);
+
+      process.env.RPC_URL = rpcUrl
+  
+      return true
+    }
+  })
 };

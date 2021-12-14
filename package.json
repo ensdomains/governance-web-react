@@ -44,9 +44,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cypress:ci": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de",
+    "cypress:ci:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress run --headed --browser chrome --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de",
     "cypress:ci:local": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome",
+    "cypress:ci:local:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress run --headed --browser chrome",
     "cypress:version": "cypress -v",
     "cypress:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open",
+    "cypress:open:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress open",
     "prepare": "husky install"
   },
   "eslintConfig": {
