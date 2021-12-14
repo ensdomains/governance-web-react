@@ -26,7 +26,7 @@ import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
 import { hasClaimed } from "../utils/token";
-import { disconnect } from "../web3modal"
+import { disconnect } from "../web3modal";
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -209,7 +209,14 @@ const Dashboard = () => {
             </NumberWithLogoContainer>
           </StatsRow>
         </StatsSection>
-        {address && <CTAButton type="reject" text="Disconnect Wallet" data-testid="disconnect-button" onClick={disconnect} />}
+        {address && (
+          <CTAButton
+            type="deny"
+            text="Disconnect Wallet"
+            data-testid="disconnect-button"
+            onClick={disconnect}
+          />
+        )}
       </LeftContainer>
 
       <RightContainer>

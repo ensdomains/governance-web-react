@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -100,7 +100,7 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
       run();
     }
 
-    if (!data.isConnected) {
+    if (!data.address && data.isConnected) {
       history.push("/");
     }
   }, [data.address, data.isConnected, data.addressDetails.eligible]);
