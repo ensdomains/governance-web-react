@@ -41,7 +41,7 @@ describe("Token claim site", () => {
 
         // Should retain delegate choice after refresh
         cy.reload();
-        cy.contains(name, { timeout: 35000 })
+        cy.contains(name, { timeout: 25000 })
           .parent()
           .parent()
           .parent()
