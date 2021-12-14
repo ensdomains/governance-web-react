@@ -74,10 +74,9 @@ export const connect = async () => {
     const Web3Modal = (await import("@ensdomains/web3modal")).default;
     web3Modal = new Web3Modal(option);
     provider = await web3Modal.connect();
-
     return provider;
   } catch (e) {
-    if (e !== "Modal closed by user") {
+    if (e && e !== "Modal closed by user") {
       throw e;
     }
   }
@@ -85,12 +84,16 @@ export const connect = async () => {
 
 export const disconnect = async function () {
   if (web3Modal) {
-    await web3Modal.clearCachedProvider();
+    web3Modal.clearCachedProvider();
   }
 
   if (provider && provider.disconnect) {
     provider.disconnect();
   }
+  isConnected(false);
+  addressReactive(null);
+  network(null);
+  addressDetails({});
 };
 
 export const initWeb3Read = async () => {
