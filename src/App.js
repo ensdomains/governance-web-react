@@ -99,6 +99,10 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
     ) {
       run();
     }
+
+    if (!data.isConnected) {
+      history.push("/");
+    }
   }, [data.address, data.isConnected, data.addressDetails.eligible]);
 
   return <Route {...rest} render={(props) => <Component {...props} />} />;
