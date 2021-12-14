@@ -41,9 +41,7 @@ describe("Token claim site", () => {
 
         // Should retain delegate choice after refresh
         cy.reload();
-        cy.get('[data-testid="header-connect-button"').click();
-        cy.contains("MetaMask").click();
-        cy.contains(name, { timeout: 25000 })
+        cy.contains(name, { timeout: 35000 })
           .parent()
           .parent()
           .parent()
@@ -51,8 +49,6 @@ describe("Token claim site", () => {
 
         // Should prepopulate with selection from query string
         cy.visit("http://localhost:3000/delegates?delegate=leontalbert.eth");
-        cy.get('[data-testid="header-connect-button"').click();
-        cy.contains("MetaMask").click();
         cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
           .first()
           .invoke("text")
@@ -90,8 +86,6 @@ describe("Token claim site", () => {
 
             // //If already claimed should redirect to dashboard
             cy.visit("http://localhost:3000/delegates");
-            cy.get('[data-testid="header-connect-button"').click();
-            cy.contains("MetaMask").click();
             cy.contains("You were eligible for the airdrop!", {
               timeout: 20000,
             }).should("have.text", "You were eligible for the airdrop!");
