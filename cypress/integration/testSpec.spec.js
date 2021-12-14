@@ -1,7 +1,7 @@
 describe("Token claim site", () => {
   // let forkId
   before(() => {
-    cy.viewport(1920, 1080);
+    cy.viewport(1000, 2000);
     cy.request({
       method: "POST",
       url: Cypress.env("TENDERLY_PROJECT"),
@@ -9,11 +9,16 @@ describe("Token claim site", () => {
         "x-access-key": Cypress.env("TENDERLY_KEY"),
       },
       body: { network_id: "1", alias: "", description: "" },
-    }).then((result) => 
-      cy.task("submitRpcUrl", `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`)
-    ).then(() => {
-      cy.setupMetamask("");
-    });
+    })
+      .then((result) =>
+        cy.task(
+          "submitRpcUrl",
+          `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
+        )
+      )
+      .then(() => {
+        cy.setupMetamask("");
+      });
   });
   it("Should allow the user to vote, delegate and claim", () => {
     cy.visit("http://localhost:3000");
