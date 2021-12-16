@@ -10,6 +10,7 @@ module.exports = (on) => {
     createMerkleFork() {
       let forkId;
       let contract;
+      let parent;
       return fetch(baseUrl, {
         method: "POST",
         headers: {
@@ -34,6 +35,22 @@ module.exports = (on) => {
         .then((res) => res.json())
         .then((res) => (contract = res.contracts[0]))
         .then(() =>
+          fetch(
+            baseUrl +
+              "/" +
+              forkId +
+              "/transactions?page=1&perPage=20&exclude_internal=true",
+            {
+              method: "GET",
+              headers: {
+                "x-access-key": key,
+              },
+            }
+          )
+        )
+        .then((res) => res.json())
+        .then((res) => (parent = res.fork_transactions[0].id))
+        .then(() =>
           fetch(baseUrl + "/" + forkId + "/simulate", {
             method: "POST",
             headers: {
@@ -43,6 +60,7 @@ module.exports = (on) => {
               from: "0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7",
               gas: 8000000,
               gas_price: "0",
+              root: parent,
               input: `0x095ea7b3000000000000000000000000${contract.address.slice(
                 2
               )}00000000000000000000000000000000000000000014adf4b7320334b9000000`,
