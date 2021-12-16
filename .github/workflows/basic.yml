@@ -6,6 +6,7 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
     env:
+      MAINNET_SECRET_WORDS: ${{ secrets.TEST_WALLET_SEED_PHRASE }}
       SECRET_WORDS: ${{ secrets.TEST_WALLET_SEED_PHRASE }}
       PASSWORD: TestMetaMask
       NETWORK_NAME: tenderly
