@@ -84,7 +84,7 @@ export const submitClaim = async (
       message: "",
     });
     return setTimeout(() => {
-      history.push(type === "mainnet" ? "" : "/ep2" + "/success");
+      history.push((type === "mainnet" ? "" : "/ep2") + "/success");
     }, 2000);
   } catch (error) {
     console.error(error);
