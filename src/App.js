@@ -31,8 +31,9 @@ import {
 } from "./pages/ENSConstitution/delegateHelpers";
 import { useQueryString, useGetDelegates } from "./utils/hooks";
 import { initWeb3Read } from "./web3modal";
-import ENSEP2TokenClaim from "./pages/ENSEP2TokenClaim";
-import ENSEP2ClaimSuccess from "./pages/ENSEP2ClaimSuccess";
+import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
+import ENSEP2ClaimSuccess from "./pages/EP2/ENSEP2ClaimSuccess";
+import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -169,6 +170,10 @@ function App() {
               <ConnectedRoute
                 path="/delegate-tokens"
                 component={DelegateTokens}
+              />
+              <PrivateRoute
+                path="/ep2/summary"
+                component={ENSEP2ClaimSummary}
               />
               <PrivateRoute path="/ep2/claim" component={ENSEP2TokenClaim} />
               <PrivateRoute

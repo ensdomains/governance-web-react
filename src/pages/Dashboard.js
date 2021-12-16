@@ -366,7 +366,9 @@ const Dashboard = () => {
                   </Statistic>
                 </InnerContentBoxColumn>
                 <EndAlignedCTAButton
+                  onClick={() => !isClaimedEp2 && history.push("/ep2/summary")}
                   text={isClaimedEp2 ? "Claimed" : "Claim"}
+                  type={isClaimedEp2 ? "disabled" : ""}
                 />
               </InnerContentBoxRow>
             </ContentBox>

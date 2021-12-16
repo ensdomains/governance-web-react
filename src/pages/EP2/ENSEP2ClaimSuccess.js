@@ -4,14 +4,14 @@ import { Client } from "@snapshot-labs/snapshot.js";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 
-import { Content, Header } from "../components/text";
-import { ContentBox, NarrowColumn } from "../components/layout";
-import Gap from "../components/Gap";
+import { Content, Header } from "../../components/text";
+import { ContentBox, NarrowColumn } from "../../components/layout";
+import Gap from "../../components/Gap";
 import { useHistory } from "react-router-dom";
-import { CTAButton } from "../components/buttons";
-import TwitterLogo from "../assets/imgs/Twitter.svg";
-import DiscordLogo from "../assets/imgs/Discord.svg";
-import Token from "../components/Token";
+import { CTAButton } from "../../components/buttons";
+import TwitterLogo from "../../assets/imgs/Twitter.svg";
+import DiscordLogo from "../../assets/imgs/Discord.svg";
+import Token from "../../components/Token";
 
 const Confet = () => {
   const { width, height } = useWindowSize();

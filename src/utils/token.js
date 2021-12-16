@@ -11,21 +11,18 @@ import {
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
 } from "./consts";
+import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 
 export const hasClaimed = async (address, type = "mainnet") => {
   try {
-    console.log("checking has claimed...");
     const response = await fetch(generateMerkleShardUrl(address, type));
     if (!response.ok) {
-      console.low("didn't get url");
       throw new Error("error getting shard data");
     }
 
     const shardJson = await response.json({ encoding: "utf-8" });
     const { root, shardNybbles, total } =
       type === "mainnet" ? merkleRoot : ep2MerkleRoot;
-
-    console.log("shardJson", shardJson);
 
     const shardedMerkleTree = new ShardedMerkleTree(
       () => shardJson,
@@ -46,15 +43,9 @@ export const hasClaimed = async (address, type = "mainnet") => {
           );
     const [entry, proof] = shardedMerkleTree.getProof(address);
     const index = getIndex(address, entry, proof);
-    console.log("index is", index);
-    provider
-      .getCode("0xf7d9cf4de5d385b443badd000487f2fcd8983bb3")
-      .then((code) => console.log(code));
     const result = await airdropContract.isClaimed(index);
-    console.log("got result", entry, index, proof);
     return result;
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
@@ -82,7 +73,7 @@ export const submitClaim = async (
       airdropContractAddress = getMerkleAirdropContractAddress();
       abi = MerkleAirdropAbi.abi;
       claimTokensFunc = (claimTokens) =>
-        claimTokens(balance, proof, address, { gasLimit: GAS_LIMIT });
+        claimTokens(address, balance, proof, { gasLimit: GAS_LIMIT });
     }
     const airdropContract = new Contract(airdropContractAddress, abi, signer);
     airdropContract.connect(signer);
@@ -131,3 +122,65 @@ export async function delegate(address, setClaimState, history) {
     });
   }
 }
+
+export const handleClaim = async (
+  address,
+  setClaimState,
+  history,
+  type = "mainnet"
+) => {
+  try {
+    setClaimState({
+      state: "LOADING",
+      message: "",
+    });
+
+    let outputAddress;
+    let provider = getEthersProvider();
+    let displayName;
+
+    if (type === "mainnet") {
+      displayName = getDelegateChoice(address);
+      if (!displayName) {
+        throw "No chosen delegate";
+      }
+    } else {
+      displayName = address;
+    }
+
+    if (displayName.includes(".eth")) {
+      outputAddress = await provider.resolveName(displayName);
+    } else {
+      outputAddress = displayName;
+    }
+
+    const response = await fetch(generateMerkleShardUrl(address, type));
+    if (!response.ok) {
+      throw new Error("error getting shard data");
+    }
+
+    const shardJson = await response.json({ encoding: "utf-8" });
+    const { root, shardNybbles, total } = merkleRoot;
+    const shardedMerkleTree = new ShardedMerkleTree(
+      () => shardJson,
+      shardNybbles,
+      root,
+      BigNumber.from(total)
+    );
+    const [entry, proof] = shardedMerkleTree.getProof(address);
+    return await submitClaim(
+      entry.balance,
+      proof,
+      outputAddress,
+      setClaimState,
+      history,
+      type
+    );
+  } catch (error) {
+    console.error(error);
+    setClaimState({
+      state: "ERROR",
+      message: error,
+    });
+  }
+};

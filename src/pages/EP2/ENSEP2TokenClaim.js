@@ -4,23 +4,19 @@ import { useQuery } from "@apollo/client";
 import { Client } from "@snapshot-labs/snapshot.js";
 import { BigNumber, Contract } from "ethers";
 
-import Footer from "../components/Footer";
-import { Content, Header } from "../components/text";
-import { ContentBox, NarrowColumn } from "../components/layout";
-import Gap from "../components/Gap";
+import Footer from "../../components/Footer";
+import { Content, Header } from "../../components/text";
+import { ContentBox, NarrowColumn } from "../../components/layout";
+import Gap from "../../components/Gap";
 import { useHistory } from "react-router-dom";
-import { getEthersProvider } from "../web3modal";
-import TransactionState from "../components/TransactionState";
-import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree from "../merkle";
-import Pill from "../components/Pill";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
-import { submitClaim } from "../utils/token";
-import { generateMerkleShardUrl } from "../utils/consts";
-
-const handleClaim = async () => {
-  console.log("handling claim");
-};
+import { getEthersProvider } from "../../web3modal";
+import TransactionState from "../../components/TransactionState";
+import merkleRoot from "../../assets/root.json";
+import ShardedMerkleTree from "../../merkle";
+import Pill from "../../components/Pill";
+import { getDelegateChoice } from "../ENSConstitution/delegateHelpers";
+import { handleClaim, submitClaim } from "../../utils/token";
+import { generateMerkleShardUrl } from "../../utils/consts";
 
 const getRightButtonText = (state) => {
   switch (state) {
@@ -51,8 +47,9 @@ const ENSEP2TokenClaim = ({ location }) => {
   useEffect(() => {
     let timeout;
     const run = async () => {
-      if (location.state && isConnected) {
-        timeout = await handleClaim(address, setClaimState, history);
+      console.log(location.state);
+      if (location.state === "EP2CLAIM" && isConnected) {
+        timeout = await handleClaim(address, setClaimState, history, "ep2");
       }
     };
 
@@ -76,24 +73,22 @@ const ENSEP2TokenClaim = ({ location }) => {
         <Gap height={6} />
         <TransactionState
           transactionState={claimState.state}
-          title={"Delegate & claim tokens"}
-          content={
-            "This transaction happens on-chain, and will require paying gas"
-          }
+          title="Claim tokens"
+          content="This transaction happens on-chain, and will require paying gas"
         />
       </ContentBox>
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/summary");
+          history.push("/ep2/summary");
         }}
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
-            history.push("/success");
+            history.push("/ep2/success");
             return;
           }
-          handleClaim(address, setClaimState, history);
+          handleClaim(address, setClaimState, history, "ep2");
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
       />
