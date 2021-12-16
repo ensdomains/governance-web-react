@@ -23,8 +23,6 @@ module.exports = (on, config) => {
   require("@ensdomains/cypress-metamask/plugins")(on);
   require("./generateContracts.js")(on);
 
-  console.log(process.env);
-
   on("task", {
     submitRpcUrl(rpcUrl) {
       console.log("using fork:", rpcUrl);
