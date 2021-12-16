@@ -5,7 +5,7 @@ before(() => {
   cy.task("createMerkleFork").then((res) => (contract = res));
 });
 
-describe("Token claim site", () => {
+describe("EP2 Token Claims", () => {
   before(() => {
     cy.task("setMetamaskData", {
       secretWords:

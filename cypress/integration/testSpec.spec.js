@@ -16,6 +16,7 @@ describe("Token claim site", () => {
           `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
         )
       )
+      .then(() => cy.task("useRealAccount"))
       .then(() => {
         cy.setupMetamask("");
       });
