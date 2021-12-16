@@ -22,7 +22,7 @@ export const getMerkleAirdropContractAddress = () =>
 
 export const generateMerkleShardUrl = (address, type = "mainnet") =>
   `/airdrops/${
-    process.env.NODE_ENV === "development" ? "testing" : type
+    process.env.NODE_ENV === "development" && type === "ep2" ? "testing" : type
   }/${address?.slice(2, type === "mainnet" ? 4 : 3)}.json`;
 
 export const emptyAddress = "0x0000000000000000000000000000000000000000";
