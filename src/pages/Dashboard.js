@@ -5,7 +5,10 @@ import styled from "styled-components";
 
 import {
   ContentBox,
+  ContentBoxWithColumns,
   InnerContentBox,
+  InnerContentBoxColumn,
+  InnerContentBoxRow,
   NarrowColumn,
 } from "../components/layout";
 import {
@@ -13,8 +16,10 @@ import {
   DecimalBalance,
   Header,
   IntegerBalance,
+  Link,
   Statistic,
   SubsubTitle,
+  SubTitle,
 } from "../components/text";
 import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
@@ -114,13 +119,44 @@ const WrappedContent = styled(Content)`
   color: #1a1a1a;
 `;
 
+const AdditionalSubtitle = styled(SubsubTitle)`
+  margin-left: 10px;
+`;
+
+const AdditionalHeader = styled(Header)`
+  font-size: 20px;
+`;
+
+const AdditionalIntegerBalance = styled(IntegerBalance)`
+  font-size: 20px;
+  line-height: 24px;
+`;
+
+const AdditionalDecimalBalance = styled(DecimalBalance)`
+  font-size: 20px;
+  line-height: 24px;
+`;
+
+const AdditionalLink = styled(Link)`
+  font-size: 20px;
+`;
+
+const AdditionalContent = styled(Content)`
+  font-size: 14px;
+`;
+
+const EndAlignedCTAButton = styled(CTAButton)`
+  align-self: flex-end;
+`;
+
 const Dashboard = () => {
   const {
-    data: { address, addressDetails, network },
+    data: { address, addressDetails, ep2AddressDetails, network },
   } = useQuery(gql`
     query getHeaderData @client {
       address
       addressDetails
+      ep2AddressDetails
       network
     }
   `);
@@ -136,16 +172,31 @@ const Dashboard = () => {
     eligible,
   } = addressDetails;
 
+  const {
+    shortBalance: ep2Balance,
+    rawBalance: ep2RawBalance,
+    eligible: ep2Eligible,
+  } = ep2AddressDetails;
+
   const history = useHistory();
 
   const [isClaimed, setIsClaimed] = useState(false);
   const [isClaimedLoading, setIsClaimedLoading] = useState(true);
+
+  const [isClaimedEp2, setIsClaimedEp2] = useState(false);
+  const [isClaimedEp2Loading, setIsClaimedEp2Loading] = useState(true);
 
   useEffect(() => {
     hasClaimed(address)
       .then((result) => {
         setIsClaimed(result);
         setIsClaimedLoading(false);
+      })
+      .then(() => hasClaimed(address, "ep2"))
+      .then((result) => {
+        console.log(result);
+        setIsClaimedEp2(result);
+        setIsClaimedEp2Loading(false);
       })
       .catch((error) => {
         console.error("error checking hasClaimed: ", error);
@@ -276,6 +327,50 @@ const Dashboard = () => {
               </>
             )}
           </ContentBox>
+          <Gap height={6} />
+          <AdditionalSubtitle>
+            {ep2Eligible
+              ? "Additional token claims"
+              : "This Ethereum account is not eligible for any additional token claims."}
+          </AdditionalSubtitle>
+          <Gap height={ep2Eligible ? 3 : 0} />
+          {ep2Eligible && (
+            <ContentBox>
+              <InnerContentBoxRow>
+                <AdditionalHeader>EP2 Retrospective</AdditionalHeader>
+                <AdditionalLink href="https://snapshot.org/#/ens.eth/proposal/0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f">
+                  Learn More
+                </AdditionalLink>
+              </InnerContentBoxRow>
+              <Gap height={2} />
+              <AdditionalContent>
+                Based on the EP2 DAO proposal, this is a retrospective airdrop
+                for those that did not receive the 2x multiplier, despite owning
+                a name that was used as a primary ENS name.
+              </AdditionalContent>
+              <Gap height={3} />
+              <InnerContentBoxRow>
+                <InnerContentBoxColumn>
+                  <SubsubTitle>
+                    {isClaimedEp2 ? "Claimed tokens" : "Claimable tokens"}
+                  </SubsubTitle>
+                  <Gap height={1} />
+                  <Statistic>
+                    <AdditionalIntegerBalance>
+                      {ep2Balance?.split(".")[0]}
+                    </AdditionalIntegerBalance>
+                    <AdditionalDecimalBalance>
+                      .{ep2Balance?.split(".")[1]}
+                    </AdditionalDecimalBalance>
+                    <SmallENSLogo />
+                  </Statistic>
+                </InnerContentBoxColumn>
+                <EndAlignedCTAButton
+                  text={isClaimedEp2 ? "Claimed" : "Claim"}
+                />
+              </InnerContentBoxRow>
+            </ContentBox>
+          )}
         </NarrowColumn>
       </RightContainer>
     </ClaimEnsTokenContainer>

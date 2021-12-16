@@ -6,6 +6,7 @@ import {
   isConnected,
   addressDetails,
   network,
+  ep2AddressDetails,
 } from "./apollo";
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
@@ -138,6 +139,8 @@ export const initWeb3 = async () => {
     network(net.chainId);
     const claimData = await getClaimData(address);
     addressDetails(claimData);
+    const ep2ClaimData = await getClaimData(address, "ep2");
+    ep2AddressDetails(ep2ClaimData);
 
     return;
   }

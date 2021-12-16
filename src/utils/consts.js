@@ -15,8 +15,11 @@ export const getENSDelegateContractAddress = () =>
 export const getReverseRecordsAddress = () =>
   "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C";
 
-export const generateMerkleShardUrl = (address) =>
-  `/airdrops/mainnet/${address?.slice(2, 4)}.json`;
+export const getMerkleAirdropContractAddress = () =>
+  process.env.MERKLE_AIRDROP || "0xa4899d35897033b927acfcf422bc745916139776";
+
+export const generateMerkleShardUrl = (address, type = "mainnet") =>
+  `/airdrops/${type}/${address?.slice(2, type === "mainnet" ? 4 : 3)}.json`;
 
 export const emptyAddress = "0x0000000000000000000000000000000000000000";
 

@@ -3,8 +3,10 @@ import { ApolloClient, HttpLink, InMemoryCache, makeVar } from "@apollo/client";
 export const addressReactive = makeVar(null);
 export const isConnected = makeVar(false);
 export const addressDetails = makeVar({});
+export const ep2AddressDetails = makeVar({});
 export const signedVote = makeVar(null);
 export const hasClaimed = makeVar(false);
+export const ep2HasClaimed = makeVar(false);
 export const network = makeVar(null);
 export const delegates = makeVar({});
 export const delegatedTo = makeVar({});
@@ -33,6 +35,11 @@ const typePolicies = {
           return addressDetails();
         },
       },
+      ep2AddressDetails: {
+        read() {
+          return ep2AddressDetails();
+        },
+      },
       signedVote: {
         read() {
           return signedVote();
@@ -46,6 +53,11 @@ const typePolicies = {
       hasClaimed: {
         read() {
           return hasClaimed();
+        },
+      },
+      ep2HasClaimed: {
+        read() {
+          return ep2HasClaimed();
         },
       },
       delegates: {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -31,6 +31,8 @@ import {
 } from "./pages/ENSConstitution/delegateHelpers";
 import { useQueryString, useGetDelegates } from "./utils/hooks";
 import { initWeb3Read } from "./web3modal";
+import ENSEP2TokenClaim from "./pages/ENSEP2TokenClaim";
+import ENSEP2ClaimSuccess from "./pages/ENSEP2ClaimSuccess";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -167,6 +169,11 @@ function App() {
               <ConnectedRoute
                 path="/delegate-tokens"
                 component={DelegateTokens}
+              />
+              <PrivateRoute path="/ep2/claim" component={ENSEP2TokenClaim} />
+              <PrivateRoute
+                path="/ep2/success"
+                component={ENSEP2ClaimSuccess}
               />
               <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
               <PrivateRoute path="/summary" component={ENSSummary} />
