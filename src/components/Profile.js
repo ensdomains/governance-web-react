@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { utils } from "ethers";
 
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
+import { CTAButton } from "./buttons";
+import { disconnect } from "../web3modal";
 
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
   padding: 8px 16px 8px 10px;
   box-shadow: ${(p) =>
     p.large ? "initial" : "0px 1px 20px rgba(0, 0, 0, 0.05)"};
@@ -157,8 +160,36 @@ const AddressText = styled.div`
       `}
 `;
 
-const Profile = ({ address, size }) => {
+const DisconnectCTAButton = styled(CTAButton)`
+  ${({ open }) =>
+    open
+      ? `
+    visibility: visible;
+    margin-top: 140px;
+    opacity: 100%;
+  `
+      : `
+    visibility: hidden;
+    margin-top: 0px;
+    opacity: 0%;
+  `}
+  z-index: -1;
+
+  ${({ allowClick }) => allowClick && "z-index: 1;"}
+
+  transition: all 0.3s cubic-bezier(1, 0, 0.22, 1.6), z-index 0s linear;
+
+  position: absolute;
+  margin-left: -8px;
+  ${({ size }) => `
+    width: ${size + "px" || "auto"};
+  `}
+`;
+
+const Profile = ({ address, size, navOpen }) => {
   const [profileDetails, setProfileDetails] = useState({});
+  const [allowClick, setAllowClick] = useState(false);
+  const navSizeRef = useRef(null);
   let isAddress;
   try {
     isAddress = utils.getAddress(address);
@@ -198,6 +229,14 @@ const Profile = ({ address, size }) => {
       console.error(e);
     });
   }, [address]);
+
+  useEffect(() => {
+    let timeout;
+    navOpen
+      ? (timeout = setTimeout(() => setAllowClick(true), 300))
+      : setAllowClick(false);
+    return () => clearTimeout(timeout);
+  }, [navOpen]);
 
   if (size === "small") {
     return (
@@ -246,7 +285,7 @@ const Profile = ({ address, size }) => {
   }
 
   return (
-    <ProfileContainer size={size}>
+    <ProfileContainer ref={navSizeRef} size={size}>
       {profileDetails.avatar ? (
         <AvatarImg
           size={size}
@@ -276,6 +315,14 @@ const Profile = ({ address, size }) => {
             )}
         </AddressText>
       </RightContainer>
+      <DisconnectCTAButton
+        type="deny"
+        text="Disconnect"
+        open={navOpen}
+        size={navSizeRef.current && navSizeRef.current.offsetWidth}
+        allowClick={allowClick}
+        onClick={disconnect}
+      />
     </ProfileContainer>
   );
 };

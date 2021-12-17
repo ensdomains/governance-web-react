@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
@@ -10,6 +10,7 @@ import { largerThan } from "../utils/styledComponents";
 
 import { ReactComponent as HeaderENSLogo } from "../assets/imgs/HeaderENSLogo.svg";
 import { ReactComponent as DefaultYellowWarning } from "../assets/imgs/YellowWarning.svg";
+import { ReactComponent as Chevron } from "../assets/imgs/Chevron.svg";
 import { Link } from "react-router-dom";
 
 import { Button } from "@ensdomains/thorin";
@@ -50,6 +51,32 @@ const WrappedLogo = styled(HeaderENSLogo)`
   margin-left: -20px;
 `;
 
+const NavButtonContainer = styled.div`
+  margin-left: 10px;
+`;
+
+const NavButton = styled.button`
+  background: none;
+  border: none;
+  opacity: ${({ active }) => (active ? 0.8 : 0.3)};
+  transition: opacity 0.2s ease-in-out;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+
+  &:hover {
+    border: none;
+    opacity: 1;
+  }
+`;
+
+const NavButtonInner = styled(Chevron)`
+  margin-top: 8px;
+  width: 36px;
+  transform: ${({ active }) => (active ? "rotate(180deg)" : "rotate(0deg)")};
+  transition: transform 0.2s ease-in-out;
+`;
+
 const NetworkWarningContainer = styled("div")`
   padding: 2px 15px;
   border: 1px solid rgb(239, 239, 239);
@@ -85,7 +112,7 @@ const DelegateLink = styled(Link)`
   line-height: 23px;
   /* identical to box height */
   letter-spacing: -0.01em;
-  margin-right: 10px;
+  margin-right: 15px;
   color: #989898;
 
   &:hover {
@@ -109,8 +136,22 @@ const Header = () => {
       network
     }
   `);
+  const [navOpen, setNavOpen] = useState(false);
+
+  const handleNavClick = () => {
+    if (navOpen) {
+      setNavOpen(false);
+    } else {
+      setNavOpen(true);
+    }
+  };
 
   let match = useRouteMatch("/delegate-ranking");
+
+  useEffect(() => {
+    if (!address) setNavOpen(false);
+    return setNavOpen(false);
+  }, [address]);
 
   return (
     <HeaderContainer>
@@ -125,11 +166,20 @@ const Header = () => {
             Delegates
           </DelegateLink>
           {isConnected && address ? (
-            <Profile
-              data-testid="header-profile"
-              {...{ address }}
-              size="medium"
-            />
+            <Fragment>
+              <Profile
+                data-testid="header-profile"
+                {...{ address }}
+                size="medium"
+                navOpen={navOpen}
+              />
+
+              <NavButtonContainer>
+                <NavButton onClick={() => handleNavClick()} active={navOpen}>
+                  <NavButtonInner active={navOpen} />
+                </NavButton>
+              </NavButtonContainer>
+            </Fragment>
           ) : (
             <Button
               data-testid="header-connect-button"
