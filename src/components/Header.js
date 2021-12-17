@@ -51,9 +51,7 @@ const WrappedLogo = styled(HeaderENSLogo)`
   margin-left: -20px;
 `;
 
-const NavButtonContainer = styled.div`
-  margin-left: 10px;
-`;
+const NavButtonContainer = styled.div``;
 
 const NavButton = styled.button`
   background: none;
@@ -72,7 +70,7 @@ const NavButton = styled.button`
 
 const NavButtonInner = styled(Chevron)`
   margin-top: 8px;
-  width: 36px;
+  width: 25px;
   transform: ${({ active }) => (active ? "rotate(180deg)" : "rotate(0deg)")};
   transition: transform 0.2s ease-in-out;
 `;
