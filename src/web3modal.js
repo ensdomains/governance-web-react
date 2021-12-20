@@ -74,9 +74,11 @@ export const connect = async (showPrompt) => {
     const Web3Modal = (await import("@ensdomains/web3modal")).default;
     web3Modal = new Web3Modal(option);
     const cachedProvider = web3Modal.cachedProvider;
-    provider = cachedProvider
-      ? await web3Modal.connectTo(cachedProvider)
-      : showPrompt && (await web3Modal.connect());
+    provider =
+      cachedProvider && cachedProvider.length > 0
+        ? await web3Modal.connectTo(cachedProvider)
+        : showPrompt && (await web3Modal.connect());
+    if (!provider) throw new Error("No provider found");
     return provider;
   } catch (e) {
     if (e && e !== "Modal closed by user") {
@@ -105,8 +107,9 @@ export const disconnect = async function () {
 
 export const initWeb3Read = async () => {
   // if cache exists, try to connect. else use infura
-  if (localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER"))
+  if (localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER")) {
     await initWeb3(false);
+  }
   if (!ethersProvider) {
     ethersProvider = new ethers.providers.JsonRpcProvider(
       `https://mainnet.infura.io/v3/${INFURA_ID}`
@@ -118,6 +121,18 @@ export const initWeb3Read = async () => {
 };
 
 export const initWeb3 = async (showPrompt = true) => {
+  // fix for web3 modal only showing walletconnect prompt if cached
+  if (showPrompt) {
+    const cached = localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER");
+    const walletconnect = localStorage.getItem("walletconnect");
+    if (
+      cached &&
+      cached === `"walletconnect"` &&
+      (!walletconnect || !walletconnect.connected)
+    ) {
+      localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
+    }
+  }
   const web3Provider = await connect(showPrompt);
 
   web3Provider?.on("chainChanged", async (_chainId) => {
