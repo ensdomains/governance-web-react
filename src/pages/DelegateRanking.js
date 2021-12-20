@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { utils } from "ethers";
@@ -8,7 +8,7 @@ import Gap from "../components/Gap";
 import Loader from "../components/Loader";
 import LazyImage from "../components/LazyImage";
 import Profile from "../components/Profile";
-import { Header, Content } from "../components/text";
+import { Header, Content, SubTitle, Title } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
 import { gql } from "graphql-tag";
@@ -18,13 +18,17 @@ import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import {
   getDelegateReferral,
-  sortByRank
+  sortByRank,
 } from "./ENSConstitution/delegateHelpers";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import { emptyAddress } from "../utils/consts";
 import GreenTick from "../assets/imgs/GreenTick.svg";
-import { useGetTokens, useGetDelegatedTo } from "../utils/hooks";
+import {
+  useGetTokens,
+  useGetDelegatedTo,
+  useGetDelegateBySigStatus,
+} from "../utils/hooks";
 import { selectedDelegateReactive } from "../apollo";
 import { initWeb3 } from "../web3modal";
 
@@ -36,12 +40,14 @@ const DELEGATE_RANKING_QUERY = gql`
     delegates
     tokensOwned
     delegatedTo
+    delegateSigDetails
     selectedDelegate
   }
 `;
 
 const DelegateBoxContainer = styled.div`
-  border: 1px solid ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
+  border: 1px solid
+    ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
   box-sizing: border-box;
   border-radius: 16px;
   display: ${(p) => (p.search ? "flex" : "none")};
@@ -83,16 +89,19 @@ const LeftContainer = styled.div`
 `;
 
 const SpeechBubbleImg = styled.img`
-  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%) contrast(86%);
+  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%)
+    contrast(86%);
 
   &:hover {
-    filter: invert(51%) sepia(97%) saturate(1961%) hue-rotate(196deg) brightness(103%) contrast(101%);
+    filter: invert(51%) sepia(97%) saturate(1961%) hue-rotate(196deg)
+      brightness(103%) contrast(101%);
   }
 `;
 
 const SpeechBubbleImgText = styled.img`
   margin: 0 5px;
-  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%) contrast(86%);
+  filter: invert(77%) sepia(33%) saturate(10%) hue-rotate(33deg) brightness(90%)
+    contrast(86%);
 `;
 
 const Logo = styled.img`
@@ -149,7 +158,7 @@ const DelegateBox = (data) => {
     setRenderKey,
     userAccount,
     search,
-    selectedDelegate
+    selectedDelegate,
   } = data;
   const selected = name === selectedDelegate;
   const imageSrc = imageUrl(avatar, name, 1);
@@ -324,13 +333,29 @@ const CurrentDelegationContainer = styled("div")`
   }
 `;
 
+const FreeDelegationHeader = styled(Header)`
+  font-size: 22px;
+  display: inline-block;
+`;
+
+const FreeDelegationSubTitle = styled(SubTitle)`
+  display: inline-block;
+`;
+
+const FreeDelegationContentBox = styled(ContentBox)`
+  display: flex;
+  padding: 15px 30px;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
 function CurrentDelegation({
-                             account,
-                             tokens,
-                             selection,
-                             delegatedTo,
-                             setRenderKey
-                           }) {
+  account,
+  tokens,
+  selection,
+  delegatedTo,
+  setRenderKey,
+}) {
   let text = (
     <>
       <span>
@@ -378,9 +403,12 @@ const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
   useGetTokens(chooseData.address);
   useGetDelegatedTo(chooseData.address);
+  useGetDelegateBySigStatus(chooseData.address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
   const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const { delegateSigDetails, loading: delegateSigDetailsLoading } =
+    chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
 
   const history = useHistory();
@@ -389,6 +417,29 @@ const ChooseYourDelegate = () => {
   const [search, setSearch] = useState("");
   return (
     <WrappedNarrowColumn>
+      {chooseData?.address && (
+        <FreeDelegationContentBox>
+          {delegateSigDetails?.next ? (
+            <Fragment>
+              <FreeDelegationHeader>
+                You're eligible for gas-free delegation
+              </FreeDelegationHeader>
+              <FreeDelegationSubTitle>
+                {chooseData?.address &&
+                  (delegateSigDetails?.canSign
+                    ? "once every 7 days"
+                    : delegateSigDetails?.formattedDate)}
+              </FreeDelegationSubTitle>
+            </Fragment>
+          ) : (
+            <FreeDelegationHeader>
+              You're not eligible to delegate gas-free
+            </FreeDelegationHeader>
+          )}
+        </FreeDelegationContentBox>
+      )}
+
+      <Gap height={3} />
       <ContentBox padding={"none"}>
         <HeaderContainer>
           <CopyContainer>
@@ -409,44 +460,41 @@ const ChooseYourDelegate = () => {
           </CopyContainer>
 
           <div>
-            {chooseData.address
-              ? (
-                <WrappedCTAButton
-                  text={"Enter ENS or address"}
-                  type={"deny"}
-                  onClick={() => {
-                    if (chooseData?.address) {
-                      history.push("/manual-delegates-no-claim");
-                    }
-                  }}
-                  account={chooseData?.address}
-                  disabled={chooseData?.address && selectedDelegate !== ""}
-                />
-              )
-              : (
-                <WrappedCTAButton
-                  text={"Connect to Enter ENS or address"}
-                  onClick={() => {
-                    initWeb3();
-                  }}
-                />
-              )
-            }
+            {chooseData.address ? (
+              <WrappedCTAButton
+                text={"Enter ENS or address"}
+                type={"deny"}
+                onClick={() => {
+                  if (chooseData?.address) {
+                    history.push("/manual-delegates-no-claim");
+                  }
+                }}
+                account={chooseData?.address}
+                disabled={chooseData?.address && selectedDelegate !== ""}
+              />
+            ) : (
+              <WrappedCTAButton
+                text={"Connect to Enter ENS or address"}
+                onClick={() => {
+                  initWeb3();
+                }}
+              />
+            )}
           </div>
         </HeaderContainer>
         <SubHeader account={chooseData?.address}>
           {chooseData?.address &&
-          (balanceLoading ? null : (
-            <CurrentDelegation
-              account={chooseData?.address}
-              tokens={
-                balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
-              }
-              selection={selectedDelegate}
-              delegatedTo={delegatedTo}
-              setRenderKey={setRenderKey}
-            />
-          ))}
+            (balanceLoading ? null : (
+              <CurrentDelegation
+                account={chooseData?.address}
+                tokens={
+                  balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
+                }
+                selection={selectedDelegate}
+                delegatedTo={delegatedTo}
+                setRenderKey={setRenderKey}
+              />
+            ))}
           <Input
             account={chooseData?.address}
             type="text"
@@ -472,7 +520,11 @@ const ChooseYourDelegate = () => {
       </ContentBox>
       <Footer
         rightButtonText={
-          chooseData?.address ? "Delegate" : "Connect to delegate"
+          chooseData?.address
+            ? delegateSigDetails?.canSign
+              ? "Delegate"
+              : "Delegate Anyway"
+            : "Connect to delegate"
         }
         rightButtonCallback={() => {
           if (chooseData?.address) {
@@ -481,6 +533,18 @@ const ChooseYourDelegate = () => {
             initWeb3();
           }
         }}
+        text={
+          chooseData?.address &&
+          (delegateSigDetails?.canSign
+            ? "Your delegation will be gas-free"
+            : delegateSigDetails?.next
+            ? "You're not currently eligible to delegate gas-free"
+            : "You're not eligible to delegate gas-free")
+        }
+        subText={
+          delegateSigDetails?.next &&
+          "You can delegate gas-free once every 2 months"
+        }
         disabled={chooseData?.address && !selectedDelegate}
       />
     </WrappedNarrowColumn>

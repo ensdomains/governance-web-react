@@ -35,6 +35,18 @@ const Text = styled.span`
   opacity: 0.3;
 `;
 
+const SubText = styled(Text)`
+  opacity: 0.5;
+  font-size: 14px;
+`;
+
+const TextAndSubText = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+`;
+
 const Footer = ({
   rightButtonText,
   rightButtonCallback,
@@ -43,6 +55,7 @@ const Footer = ({
   disabled,
   grid,
   text,
+  subText,
 }) => {
   return (
     <FooterContainer {...{ grid }}>
@@ -57,7 +70,12 @@ const Footer = ({
       )}
       {rightButtonText ? (
         <RightContainer>
-          {text && <Text>{text}</Text>}
+          {text && (
+            <TextAndSubText>
+              <Text>{text}</Text>
+              {subText && <SubText>{subText}</SubText>}
+            </TextAndSubText>
+          )}
           <CTAButton
             data-testid="right-cta"
             text={rightButtonText}

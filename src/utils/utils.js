@@ -1,10 +1,12 @@
 import {
   generateMerkleShardUrl,
+  getDelegateRpcURL,
   networkIdToName,
   supportedAvatarProtocols,
 } from "./consts";
 import { apolloClientInstance } from "../apollo";
 import { gql } from "graphql-tag";
+import { providers } from "ethers";
 
 export const formatTokenAmount = (tokenAmount, length = 6) =>
   new Intl.NumberFormat("en-US", {
@@ -97,4 +99,41 @@ export const getClaimData = async (address) => {
   return {
     eligible: false,
   };
+};
+
+export const getCanDelegateBySig = async (address) => {
+  console.log("GETTING DELEGATE SIG STATUS");
+  const ensDelegatorProvider = new providers.StaticJsonRpcProvider(
+    getDelegateRpcURL(),
+    "rinkeby"
+  );
+  const delegateSigData = await ensDelegatorProvider.send("query", {
+    address,
+  });
+  const currentDate = Date.now();
+
+  console.log(Date.now());
+
+  if (delegateSigData && delegateSigData.next) {
+    if (delegateSigData.next * 1000 < currentDate) {
+      delegateSigData.canSign = true;
+    } else {
+      delegateSigData.canSign = false;
+      const dateFromNext = new Date(delegateSigData.next * 1000);
+      const distance = dateFromNext - currentDate;
+      if (distance < 7200000) {
+        delegateSigData.formattedDate =
+          "in " + (distance / 1000 / 60).toFixed() + " minutes";
+      } else if (distance < 259200000) {
+        delegateSigData.formattedDate =
+          "in " + (distance / 1000 / 3600).toFixed() + " hours";
+      } else {
+        delegateSigData.formattedDate =
+          "on " + dateFromNext.toLocaleDateString();
+      }
+    }
+  }
+
+  console.log(delegateSigData);
+  return delegateSigData;
 };

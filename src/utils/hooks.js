@@ -14,6 +14,7 @@ import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
 import {
   delegates as delegatesReactive,
   delegatedTo,
+  delegateSigDetails,
   tokensOwned,
 } from "../apollo";
 import {
@@ -22,6 +23,7 @@ import {
   getReverseRecordsAddress,
   ALLOCATION_ENDPOINT,
 } from "./consts";
+import { getCanDelegateBySig } from "./utils";
 
 export function useQueryString() {
   return new URLSearchParams(useLocation().search);
@@ -295,4 +297,22 @@ export const useGetDelegatedTo = (address) => {
   }, [address]);
 
   delegatedTo({ delegatedTo: delegatedToAddress, loading });
+};
+
+export const useGetDelegateBySigStatus = (address) => {
+  const [_delegateSigDetails, setDelegateSigDetails] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function run() {
+      const delegateSigDetails = await getCanDelegateBySig(address);
+      setDelegateSigDetails(delegateSigDetails);
+      setLoading(false);
+    }
+    if (address) {
+      run();
+    }
+  }, [address]);
+
+  delegateSigDetails({ delegateSigDetails: _delegateSigDetails, loading });
 };
