@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { utils } from "ethers";
 
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
-import { CTAButton } from "./buttons";
+import { ReactComponent as ProfileArrow } from "../assets/imgs/ProfileArrow.svg";
 import { disconnect } from "../web3modal";
+import DropdownWrapper from "./Dropdown";
 
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
   padding: 8px 16px 8px 10px;
+  z-index: 10;
   box-shadow: ${(p) =>
     p.large ? "initial" : "0px 1px 20px rgba(0, 0, 0, 0.05)"};
   ${(p) => {
@@ -25,7 +27,7 @@ const ProfileContainer = styled.div`
       case "medium":
         return `
         background: white;
-        max-width: 200px;
+        max-width: 220px;
       `;
       case "small":
         return `
@@ -36,6 +38,20 @@ const ProfileContainer = styled.div`
       `;
     }
   }}
+
+  ${(p) =>
+    p.hasDropdown &&
+    `
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+  `}
+
+  ${(p) =>
+    p.dropdownOpen &&
+    `
+    box-shadow: none;
+    background: #E8E8E8; 
+  `}
 
   border-radius: 64px;
 `;
@@ -160,35 +176,18 @@ const AddressText = styled.div`
       `}
 `;
 
-const DisconnectCTAButton = styled(CTAButton)`
-  ${({ open }) =>
-    open
-      ? `
-    visibility: visible;
-    margin-top: 140px;
-    opacity: 100%;
-  `
-      : `
-    visibility: hidden;
-    margin-top: 0px;
-    opacity: 0%;
-  `}
-  z-index: -1;
+// function prop needed to stop hasOpened being passed to SVG
+const StyledProfileArrow = styled(ProfileArrow)(({ hasOpened }) => ({
+  transform: hasOpened ? "rotate(0deg)" : "rotate(180deg)",
+  opacity: hasOpened ? 1 : 0.3,
+  width: "12px",
+  marginLeft: "12px",
+  transition: "all 0.2s ease-out",
+}));
 
-  ${({ allowClick }) => allowClick && "z-index: 1;"}
-
-  transition: all 0.3s cubic-bezier(1, 0, 0.22, 1.6), z-index 0s linear;
-
-  position: absolute;
-  margin-left: -8px;
-  ${({ size }) => `
-    width: ${size + "px" || "auto"};
-  `}
-`;
-
-const Profile = ({ address, size, navOpen }) => {
+const Profile = ({ address, size, hasDropdown }) => {
   const [profileDetails, setProfileDetails] = useState({});
-  const [allowClick, setAllowClick] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const navSizeRef = useRef(null);
   let isAddress;
   try {
@@ -229,14 +228,6 @@ const Profile = ({ address, size, navOpen }) => {
       console.error(e);
     });
   }, [address]);
-
-  useEffect(() => {
-    let timeout;
-    navOpen
-      ? (timeout = setTimeout(() => setAllowClick(true), 300))
-      : setAllowClick(false);
-    return () => clearTimeout(timeout);
-  }, [navOpen]);
 
   if (size === "small") {
     return (
@@ -285,45 +276,52 @@ const Profile = ({ address, size, navOpen }) => {
   }
 
   return (
-    <ProfileContainer ref={navSizeRef} size={size}>
-      {profileDetails.avatar ? (
-        <AvatarImg
-          size={size}
-          src={imageUrl(
-            profileDetails.avatar,
-            profileDetails.ensName,
-            profileDetails.networkId
-          )}
-        />
-      ) : (
-        <EmptyAvatar size={size} />
-      )}
-      <RightContainer>
-        {profileDetails.ensName ? (
-          <EnsNameText size={size}>{profileDetails.ensName}</EnsNameText>
-        ) : (
-          <NoNameText>No name set</NoNameText>
-        )}
-        <AddressText size={size} ensName={profileDetails.ensName}>
-          {isAddress &&
-            address &&
-            shortenAddress(
-              address,
-              size === "large" ? 30 : 10,
-              size === "large" ? 10 : 5,
-              size === "large" ? 10 : 5
+    <DropdownWrapper
+      dropdownItems={[
+        { name: "Dashboard", link: "/dashboard" },
+        { name: "Disconnect", type: "deny", action: disconnect },
+      ]}
+      isOpen={navOpen}
+      setIsOpen={setNavOpen}
+    >
+      <ProfileContainer
+        size={size}
+        hasDropdown={hasDropdown}
+        dropdownOpen={navOpen}
+        onClick={() => setNavOpen(!navOpen)}
+      >
+        {profileDetails.avatar ? (
+          <AvatarImg
+            size={size}
+            src={imageUrl(
+              profileDetails.avatar,
+              profileDetails.ensName,
+              profileDetails.networkId
             )}
-        </AddressText>
-      </RightContainer>
-      <DisconnectCTAButton
-        type="deny"
-        text="Disconnect"
-        open={navOpen}
-        size={navSizeRef.current && navSizeRef.current.offsetWidth}
-        allowClick={allowClick}
-        onClick={disconnect}
-      />
-    </ProfileContainer>
+          />
+        ) : (
+          <EmptyAvatar size={size} />
+        )}
+        <RightContainer>
+          {profileDetails.ensName ? (
+            <EnsNameText size={size}>{profileDetails.ensName}</EnsNameText>
+          ) : (
+            <NoNameText>No name set</NoNameText>
+          )}
+          <AddressText size={size} ensName={profileDetails.ensName}>
+            {isAddress &&
+              address &&
+              shortenAddress(
+                address,
+                size === "large" ? 30 : 10,
+                size === "large" ? 10 : 5,
+                size === "large" ? 10 : 5
+              )}
+          </AddressText>
+        </RightContainer>
+        {hasDropdown && <StyledProfileArrow hasOpened={navOpen} />}
+      </ProfileContainer>
+    </DropdownWrapper>
   );
 };
 
