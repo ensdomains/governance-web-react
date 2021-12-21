@@ -537,7 +537,7 @@ const ChooseYourDelegate = () => {
             disabled={!selectedDelegate}
           />
         ) : (
-          <Footer rightButtonText={"Loading"} disabled />
+          <Footer rightButtonText={"Loading..."} disabled />
         ))}
     </WrappedNarrowColumn>
   );
