@@ -431,9 +431,13 @@ const ChooseYourDelegate = () => {
                     : delegateSigDetails?.formattedDate)}
               </FreeDelegationSubTitle>
             </Fragment>
-          ) : (
+          ) : !delegateSigDetailsLoading ? (
             <FreeDelegationHeader>
               You're not eligible to delegate gas-free
+            </FreeDelegationHeader>
+          ) : (
+            <FreeDelegationHeader>
+              Checking gas-free delegation eligibility...
             </FreeDelegationHeader>
           )}
         </FreeDelegationContentBox>
@@ -518,20 +522,23 @@ const ChooseYourDelegate = () => {
           </DelegatesContainer>
         )}
       </ContentBox>
-      {chooseData?.address && (
-        <Footer
-          rightButtonText={"Delegate"}
-          rightButtonCallback={() => {
-            history.push("/delegate-tokens");
-          }}
-          text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
-          subText={
-            delegateSigDetails?.next !== undefined &&
-            "You can delegate gas-free once every 3 months"
-          }
-          disabled={!selectedDelegate}
-        />
-      )}
+      {chooseData?.address &&
+        (!delegateSigDetailsLoading ? (
+          <Footer
+            rightButtonText={"Delegate"}
+            rightButtonCallback={() => {
+              history.push("/delegate-tokens");
+            }}
+            text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
+            subText={
+              delegateSigDetails?.next !== undefined &&
+              "You can delegate gas-free once every 3 months"
+            }
+            disabled={!selectedDelegate}
+          />
+        ) : (
+          <Footer rightButtonText={"Loading"} disabled />
+        ))}
     </WrappedNarrowColumn>
   );
 };
