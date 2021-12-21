@@ -104,7 +104,9 @@ async function handleDelegate(params) {
     expires: now + DELEGATION_INTERVAL,
   };
   Cypress.env("db", db);
-  const tx = await contract.delegateBySig(delegatee, nonce, expiry, v, r, s);
+  const tx = await contract.delegateBySig(delegatee, nonce, expiry, v, r, s, {
+    gasPrice: "0",
+  });
   return tx.hash;
 }
 
