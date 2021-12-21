@@ -6,10 +6,8 @@ export const ALLOCATION_ENDPOINT =
 export const GAS_LIMIT = 200000;
 export const SNAPSHOT_TIMEOUT = 90000;
 
-export const getENSTokenContractAddress = (chainId) => {
-  if (chainId === 5) return "0x2dc6C646173fFEB34031465578B21D9406A8E42a";
-  return "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72";
-};
+export const getENSTokenContractAddress = () =>
+  "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72";
 
 export const getENSDelegateContractAddress = () =>
   "0x9c9Be865067d9acC5da6b73Fd48EAa3B6c382858";
