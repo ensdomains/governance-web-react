@@ -314,5 +314,5 @@ export const useGetDelegateBySigStatus = (address) => {
     }
   }, [address]);
 
-  delegateSigDetails({ delegateSigDetails: _delegateSigDetails, loading });
+  delegateSigDetails({ details: _delegateSigDetails, loading });
 };

@@ -1,25 +1,34 @@
-describe("Token claim site", () => {
-  // let forkId
-  before(() => {
-    cy.viewport(1000, 2000);
-    cy.request({
-      method: "POST",
-      url: Cypress.env("TENDERLY_PROJECT"),
-      headers: {
-        "x-access-key": Cypress.env("TENDERLY_KEY"),
-      },
-      body: { network_id: "1", alias: "", description: "" },
-    })
-      .then((result) =>
+before(() => {
+  if (Cypress.env("DELEGATE_WALLET")) return;
+  cy.viewport(1000, 2000);
+  cy.request({
+    method: "POST",
+    url: Cypress.env("TENDERLY_PROJECT"),
+    headers: {
+      "x-access-key": Cypress.env("TENDERLY_KEY"),
+    },
+    body: { network_id: "1", alias: "", description: "" },
+  })
+    .then((result) =>
+      Promise.all([
         cy.task(
           "submitRpcUrl",
           `https://rpc.tenderly.co/fork/${result.body.simulation_fork.id}`
-        )
-      )
-      .then(() => {
-        cy.setupMetamask("");
-      });
+        ),
+        cy.task("setupDelegateWallet", result.body.simulation_fork.id),
+      ])
+    )
+    .then((res) => Cypress.env("DELEGATE_WALLET", res))
+    .then(() => {
+      cy.setupMetamask("");
+    });
+});
+
+describe("Token claim site", () => {
+  beforeEach(() => {
+    cy.interceptDelegateBySig();
   });
+
   it("Should allow the user to vote, delegate and claim", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
@@ -99,7 +108,7 @@ describe("Token claim site", () => {
       });
   });
 
-  it("Should allow the user navigate to delegate and delegate tokens", () => {
+  it("Should allow the user navigate to delegate and delegate tokens gas-free", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
     cy.contains("MetaMask").click();
@@ -120,8 +129,14 @@ describe("Token claim site", () => {
           .first()
           .click();
         cy.wait(5000);
-        cy.get('[data-testid="right-cta"]').click({ timeout: 10000 });
-        cy.confirmMetamaskTransaction();
+        cy.contains("Gas Free", { timeout: 20000 }).should(
+          "have.text",
+          "Gas Free"
+        );
+        cy.get('[data-testid="right-cta"]')
+          .should("have.text", "Delegate")
+          .click({ timeout: 10000 });
+        cy.signMetamaskMessage();
 
         cy.get('[data-testid="current-delegation"]', {
           timeout: 25000,
@@ -131,9 +146,14 @@ describe("Token claim site", () => {
             exact: false,
           });
       });
+
+    cy.contains("Requires Gas", { timeout: 20000 }).should(
+      "have.text",
+      "Requires Gas"
+    );
   });
 
-  it("Should allow manual delegation", () => {
+  it("Should allow manual delegation with gas", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
     cy.contains("MetaMask").click();
@@ -148,10 +168,16 @@ describe("Token claim site", () => {
 
     cy.contains("Enter ENS or address").click();
     cy.wait(5000);
+    cy.contains("Requires Gas", { timeout: 20000 }).should(
+      "have.text",
+      "Requires Gas"
+    );
     cy.get("input").clear();
     cy.get("input").type("nick.eth");
     cy.wait(5000);
-    cy.get('[data-testid="right-cta"]').click({ timeout: 10000 });
+    cy.get('[data-testid="right-cta"]', { timeout: 25000 })
+      .should("have.text", "Delegate")
+      .click({ timeout: 10000 });
     cy.confirmMetamaskTransaction();
 
     cy.get('[data-testid="current-delegation"]', {

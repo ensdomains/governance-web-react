@@ -407,7 +407,7 @@ const ChooseYourDelegate = () => {
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
   const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
-  const { delegateSigDetails, loading: delegateSigDetailsLoading } =
+  const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
 
@@ -419,7 +419,7 @@ const ChooseYourDelegate = () => {
     <WrappedNarrowColumn>
       {chooseData?.address && (
         <FreeDelegationContentBox>
-          {delegateSigDetails?.next ? (
+          {delegateSigDetails?.next !== undefined ? (
             <Fragment>
               <FreeDelegationHeader>
                 You're eligible for gas-free delegation
@@ -427,7 +427,7 @@ const ChooseYourDelegate = () => {
               <FreeDelegationSubTitle>
                 {chooseData?.address &&
                   (delegateSigDetails?.canSign
-                    ? "once every 7 days"
+                    ? "once every 3 months"
                     : delegateSigDetails?.formattedDate)}
               </FreeDelegationSubTitle>
             </Fragment>
@@ -518,35 +518,20 @@ const ChooseYourDelegate = () => {
           </DelegatesContainer>
         )}
       </ContentBox>
-      <Footer
-        rightButtonText={
-          chooseData?.address
-            ? delegateSigDetails?.canSign
-              ? "Delegate"
-              : "Delegate Anyway"
-            : "Connect to delegate"
-        }
-        rightButtonCallback={() => {
-          if (chooseData?.address) {
+      {chooseData?.address && (
+        <Footer
+          rightButtonText={"Delegate"}
+          rightButtonCallback={() => {
             history.push("/delegate-tokens");
-          } else {
-            initWeb3();
+          }}
+          text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
+          subText={
+            delegateSigDetails?.next !== undefined &&
+            "You can delegate gas-free once every 3 months"
           }
-        }}
-        text={
-          chooseData?.address &&
-          (delegateSigDetails?.canSign
-            ? "Your delegation will be gas-free"
-            : delegateSigDetails?.next
-            ? "You're not currently eligible to delegate gas-free"
-            : "You're not eligible to delegate gas-free")
-        }
-        subText={
-          delegateSigDetails?.next &&
-          "You can delegate gas-free once every 2 months"
-        }
-        disabled={chooseData?.address && !selectedDelegate}
-      />
+          disabled={!selectedDelegate}
+        />
+      )}
     </WrappedNarrowColumn>
   );
 };

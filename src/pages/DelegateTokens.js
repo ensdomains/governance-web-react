@@ -14,11 +14,16 @@ import TransactionState from "../components/TransactionState";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
-import { delegate } from "../utils/token";
+import { delegate, delegateBySig } from "../utils/token";
 import { generateMerkleShardUrl } from "../utils/consts";
-import { selectedDelegateReactive } from "../apollo";
+import { delegateSigDetails, selectedDelegateReactive } from "../apollo";
 
-const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
+const delegateToAddress = async (
+  setClaimState,
+  history,
+  selectedDelegate,
+  sigDetails
+) => {
   try {
     setClaimState({
       state: "LOADING",
@@ -38,7 +43,15 @@ const delegateToAddress = async (setClaimState, history, selectedDelegate) => {
     } else {
       delegateAddress = displayName;
     }
-    const tx = await delegate(delegateAddress, setClaimState, history);
+    const tx =
+      sigDetails && sigDetails.canSign
+        ? await delegateBySig(
+            delegateAddress,
+            setClaimState,
+            history,
+            sigDetails.nonce
+          )
+        : await delegate(delegateAddress, setClaimState, history);
     selectedDelegateReactive("");
     return tx;
   } catch (error) {
@@ -63,14 +76,21 @@ const getRightButtonText = (state) => {
 
 const ENSTokenClaim = ({ location }) => {
   const {
-    data: { isConnected, address, selectedDelegate },
+    data: {
+      isConnected,
+      address,
+      selectedDelegate,
+      delegateSigDetails: _delegateSigDetails,
+    },
   } = useQuery(gql`
     query privateRouteQuery @client {
       isConnected
       address
       selectedDelegate
+      delegateSigDetails
     }
   `);
+  const delegateSigDetails = _delegateSigDetails && _delegateSigDetails.details;
   const history = useHistory();
   const [claimState, setClaimState] = useState({
     state: "LOADING",
@@ -84,7 +104,8 @@ const ENSTokenClaim = ({ location }) => {
         timeout = await delegateToAddress(
           setClaimState,
           history,
-          selectedDelegate
+          selectedDelegate,
+          delegateSigDetails
         );
       }
     };
@@ -106,14 +127,18 @@ const ENSTokenClaim = ({ location }) => {
         <Header>Confirm with wallet</Header>
         <Gap height={3} />
         <Content>
-          Please approve the transaction to delegate your tokens
+          {delegateSigDetails?.canSign
+            ? "Please sign the message to delegate your tokens"
+            : "Please approve the transaction to delegate your tokens"}
         </Content>
         <Gap height={6} />
         <TransactionState
           transactionState={claimState.state}
           title={"Delegate"}
           content={
-            "This transaction happens on-chain, and will require paying gas"
+            delegateSigDetails?.canSign
+              ? "This transaction happens on-chain but is subsidised by the ENS DAO and does not require paying gas"
+              : "This transaction happens on-chain, and will require paying gas"
           }
         />
       </ContentBox>
@@ -128,7 +153,12 @@ const ENSTokenClaim = ({ location }) => {
             history.push("/delegate-ranking");
             return;
           }
-          delegateToAddress(address, setClaimState, history);
+          delegateToAddress(
+            setClaimState,
+            history,
+            selectedDelegate,
+            delegateSigDetails
+          );
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
       />

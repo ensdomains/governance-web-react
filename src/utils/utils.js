@@ -105,7 +105,7 @@ export const getCanDelegateBySig = async (address) => {
   console.log("GETTING DELEGATE SIG STATUS");
   const ensDelegatorProvider = new providers.StaticJsonRpcProvider(
     getDelegateRpcURL(),
-    "rinkeby"
+    "ropsten"
   );
   const delegateSigData = await ensDelegatorProvider.send("query", {
     address,
@@ -114,7 +114,7 @@ export const getCanDelegateBySig = async (address) => {
 
   console.log(Date.now());
 
-  if (delegateSigData && delegateSigData.next) {
+  if (delegateSigData && delegateSigData.next !== undefined) {
     if (delegateSigData.next * 1000 < currentDate) {
       delegateSigData.canSign = true;
     } else {

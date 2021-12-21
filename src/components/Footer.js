@@ -30,7 +30,7 @@ const Text = styled.span`
   font-weight: bold;
   font-size: 18px;
   line-height: 23px;
-  text-align: center;
+  text-align: right;
   color: #000000;
   opacity: 0.3;
 `;
