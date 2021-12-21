@@ -136,7 +136,7 @@ describe("Token claim site", () => {
         cy.get('[data-testid="right-cta"]')
           .should("have.text", "Delegate")
           .click({ timeout: 10000 });
-        cy.signMetamaskMessage();
+        cy.signMetamaskTypedData();
 
         cy.get('[data-testid="current-delegation"]', {
           timeout: 25000,

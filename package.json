@@ -72,7 +72,7 @@
     ]
   },
   "devDependencies": {
-    "@ensdomains/cypress-metamask": "1.2.0-development",
+    "@ensdomains/cypress-metamask": "ensdomains/cypress-metamask#fix-sign-buttons",
     "babel-plugin-styled-components": "1.13.2",
     "concurrently": "6.3.0",
     "cypress": "8.7.0",
