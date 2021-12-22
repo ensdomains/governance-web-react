@@ -48,7 +48,7 @@
     "cypress:ci:ep2TestSpec": "yarn run cypress:ci:all --spec ./cypress/integration/ep2TestSpec.spec.js",
     "cypress:ci": "yarn run cypress:ci:testSpec --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de",
     "cypress:ci:local": "yarn run cypress:ci:testSpec && yarn run cypress:ci:ep2TestSpec",
-    "cypress:ci:local:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress run --headed --browser chrome --spec ./cypress/integration/testSpec.spec.js && cypress run --headed --browser chrome --spec ./cypress/integration/ep2TestSpec.spec.js",
+    "cypress:ci:local:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress run --headed --browser chrome --spec ./cypress/integration/testSpec.spec.js",
     "cypress:version": "cypress -v",
     "cypress:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open",
     "cypress:open:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress open",

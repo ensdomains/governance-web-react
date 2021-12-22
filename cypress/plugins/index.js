@@ -37,10 +37,5 @@ module.exports = (on, config) => {
 
       return true;
     },
-    useRealAccount() {
-      process.env.SECRET_WORDS = process.env.MAINNET_SECRET_WORDS;
-
-      return true;
-    },
   });
 };
