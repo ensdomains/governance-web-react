@@ -21,7 +21,7 @@ export const getMerkleAirdropContractAddress = () =>
     : "0xa4899d35897033b927acfcf422bc745916139776"; // CHANGE THIS ON MAINNET LAUNCH
 
 export const generateMerkleShardUrl = (address, type = "mainnet") =>
-  `/airdrops/${type === "mainnet" ? "mainnet" : "testing"}/${address?.slice(
+  `/airdrops/${type === "mainnet" ? "mainnet" : type}/${address?.slice(
     2,
     type === "mainnet" ? 4 : 3
   )}.json`;
