@@ -75,7 +75,7 @@ const ENSEP2ClaimSummary = () => {
         <InnerContentBox>
           <SubsubTitle>You are claiming</SubsubTitle>
           <Gap height={2} />
-          <ClaimType>EP2 Retrospective</ClaimType>
+          <ClaimType>EP2/EP3</ClaimType>
         </InnerContentBox>
       </ContentBox>
       <Footer

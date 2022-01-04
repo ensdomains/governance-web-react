@@ -338,16 +338,16 @@ const Dashboard = () => {
           {ep2Eligible && (
             <ContentBox>
               <InnerContentBoxRow>
-                <AdditionalHeader>EP2 Retrospective</AdditionalHeader>
-                <AdditionalLink href="https://snapshot.org/#/ens.eth/proposal/0xcf77c74696cab1d939936ae8684c0007297bed641f60896ad186354f036d725f">
+                <AdditionalHeader>EP2/EP3</AdditionalHeader>
+                <AdditionalLink href="INSERT_LINK_HERE">
                   Learn More
                 </AdditionalLink>
               </InnerContentBoxRow>
               <Gap height={2} />
               <AdditionalContent>
-                Based on the EP2 DAO proposal, this is a retrospective airdrop
-                for those that did not receive the 2x multiplier, despite owning
-                a name that was used as a primary ENS name.
+                Based on the EP2 and EP3 DAO proposals, this is an airdrop
+                related to the 2x multiplier, as well as returning tokens
+                accidentally sent to the token contract.
               </AdditionalContent>
               <Gap height={3} />
               <InnerContentBoxRow>
