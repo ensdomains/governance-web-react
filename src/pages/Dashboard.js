@@ -183,8 +183,8 @@ const Dashboard = () => {
   const [isClaimed, setIsClaimed] = useState(false);
   const [isClaimedLoading, setIsClaimedLoading] = useState(true);
 
-  //const [isClaimedEp2, setIsClaimedEp2] = useState(false);
-  //const [isClaimedEp2Loading, setIsClaimedEp2Loading] = useState(true);
+  const [isClaimedEp2, setIsClaimedEp2] = useState(false);
+  const [isClaimedEp2Loading, setIsClaimedEp2Loading] = useState(true);
 
   useEffect(() => {
     hasClaimed(address)
@@ -192,12 +192,12 @@ const Dashboard = () => {
         setIsClaimed(result);
         setIsClaimedLoading(false);
       })
-      /*.then(() => hasClaimed(address, "ep2"))
+      .then(() => hasClaimed(address, "ep2"))
       .then((result) => {
         console.log(result);
         setIsClaimedEp2(result);
         setIsClaimedEp2Loading(false);
-      })*/
+      })
       .catch((error) => {
         console.error("error checking hasClaimed: ", error);
       });
@@ -327,7 +327,6 @@ const Dashboard = () => {
               </>
             )}
           </ContentBox>
-          {/*
           <Gap height={6} />
           <AdditionalSubtitle>
             {ep2Eligible
@@ -338,8 +337,8 @@ const Dashboard = () => {
           {ep2Eligible && (
             <ContentBox>
               <InnerContentBoxRow>
-                <AdditionalHeader>EP2/EP3</AdditionalHeader>
-                <AdditionalLink href="INSERT_LINK_HERE">
+                <AdditionalHeader>EP2</AdditionalHeader>
+                <AdditionalLink href="https://github.com/ensdomains/governance-docs/blob/main/governance-proposals/ep2-executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-1.md">
                   Learn More
                 </AdditionalLink>
               </InnerContentBoxRow>
@@ -375,7 +374,6 @@ const Dashboard = () => {
               </InnerContentBoxRow>
             </ContentBox>
           )}
-          */}
         </NarrowColumn>
       </RightContainer>
     </ClaimEnsTokenContainer>

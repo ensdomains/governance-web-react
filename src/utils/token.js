@@ -3,7 +3,7 @@ import { BigNumber, Contract } from "ethers";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import merkleRoot from "../assets/root.json";
-import ep2MerkleRoot from "../assets/ep2root.json";
+import ep2MerkleRoot from "../assets/root-ep2.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
 import {
   GAS_LIMIT,
@@ -13,6 +13,12 @@ import {
 } from "./consts";
 import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 
+const testingMerkleRoot = {
+  root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
+  shardNybbles: 1,
+  total: "25000000000000000000000000",
+};
+
 export const hasClaimed = async (address, type = "mainnet") => {
   try {
     const response = await fetch(generateMerkleShardUrl(address, type));
@@ -21,8 +27,12 @@ export const hasClaimed = async (address, type = "mainnet") => {
     }
 
     const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } =
-      type === "mainnet" ? merkleRoot : ep2MerkleRoot;
+    let root, shardNybbles, total;
+
+    if (process.env.REACT_APP_STAGE === "testing" && type === "ep2")
+      ({ root, shardNybbles, total } = testingMerkleRoot);
+    else if (type === "ep2") ({ root, shardNybbles, total } = ep2MerkleRoot);
+    else ({ root, shardNybbles, total } = merkleRoot);
 
     const shardedMerkleTree = new ShardedMerkleTree(
       () => shardJson,

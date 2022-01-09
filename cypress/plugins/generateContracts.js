@@ -16,7 +16,12 @@ module.exports = (on) => {
         headers: {
           "x-access-key": key,
         },
-        body: JSON.stringify({ network_id: "1", alias: "", description: "" }),
+        body: JSON.stringify({
+          network_id: "1",
+          alias: "",
+          description: "",
+          block_number: 13942010,
+        }),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -57,7 +62,7 @@ module.exports = (on) => {
               "x-access-key": key,
             },
             body: JSON.stringify({
-              from: "0xfe89cc7abb2c4183683ab71653c4cdc9b02d44b7",
+              from: "0xFe89cc7aBB2C4183683ab71653C4cdc9B02D44b7",
               gas: 8000000,
               gas_price: "0",
               root: parent,
@@ -73,6 +78,26 @@ module.exports = (on) => {
           })
         )
         .then((res) => res.json())
+        .then((res) =>
+          fetch(baseUrl + "/" + forkId + "/simulate", {
+            method: "POST",
+            headers: {
+              "x-access-key": key,
+            },
+            body: JSON.stringify({
+              from: "0x0000000000000000000000000000000000000000",
+              gas: 8000000,
+              gas_price: "0",
+              root: res.simulation.id,
+              input: "0x",
+              network_id: "1",
+              save: true,
+              to: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              transaction_index: null,
+              value: "1000000000000000000",
+            }),
+          })
+        )
         .then(() => (process.env.MERKLE_AIRDROP = contract.address))
         .then(() => (console.log(contract.address), console.log(forkId)))
         .then(() => contract.address);

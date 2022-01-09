@@ -16,21 +16,14 @@ export const getReverseRecordsAddress = () =>
   "0x3671aE578E63FdF66ad4F3E12CC0c0d71Ac7510C";
 
 export const getMerkleAirdropContractAddress = () =>
-  process.env.NODE_ENV === "development"
-    ? "0xa4899d35897033b927acfcf422bc745916139776"
-    : "0xa4899d35897033b927acfcf422bc745916139776"; // CHANGE THIS ON MAINNET LAUNCH
+  "0x4A1241C2Cf2fD4a39918BCd738f90Bd7094eC2DC";
 
-export const generateMerkleShardUrl = (address, type = "mainnet") =>
-  `/airdrops/${type === "mainnet" ? "mainnet" : type}/${address?.slice(
-    2,
-    type === "mainnet" ? 4 : 3
-  )}.json`;
-
-/* !!!! RE-ADD THIS ON MAINNET LAUNCH !!!!
 export const generateMerkleShardUrl = (address, type = "mainnet") =>
   `/airdrops/${
-    process.env.NODE_ENV === "development" && type === "ep2" ? "testing" : type 
-  }/${address?.slice(2, type === "mainnet" ? 4 : 3)}.json`; */
+    type !== "mainnet" && process.env.REACT_APP_STAGE === "testing"
+      ? "testing"
+      : type
+  }/${address?.slice(2, type === "mainnet" ? 4 : 3)}.json`;
 
 export const emptyAddress = "0x0000000000000000000000000000000000000000";
 
