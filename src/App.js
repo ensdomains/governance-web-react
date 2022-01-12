@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -31,6 +31,9 @@ import {
 } from "./pages/ENSConstitution/delegateHelpers";
 import { useQueryString, useGetDelegates } from "./utils/hooks";
 import { initWeb3Read } from "./web3modal";
+import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
+import ENSEP2ClaimSuccess from "./pages/EP2/ENSEP2ClaimSuccess";
+import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -63,26 +66,29 @@ const useInit = () => {
 const PRIVATE_ROUTE_QUERY = gql`
   query privateRouteQuery @client {
     addressDetails
+    ep2AddressDetails
     address
     isConnected
   }
 `;
 
-function PrivateRoute({ component: Component, addressDetails, ...rest }) {
+function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
   const { data } = useQuery(PRIVATE_ROUTE_QUERY);
   const history = useHistory();
 
   useEffect(() => {
+    let finalAddressDetails =
+      type === "mainnet" ? data.addressDetails : data.ep2AddressDetails;
     const run = async () => {
       try {
         if (
-          data.addressDetails.eligible !== undefined &&
-          !data.addressDetails.eligible
+          finalAddressDetails.eligible !== undefined &&
+          !finalAddressDetails.eligible
         ) {
           history.push("/dashboard");
           return;
         }
-        const isClaimed = await hasClaimed(data.address);
+        const isClaimed = await hasClaimed(data.address, type);
         if (isClaimed) {
           history.push("/dashboard");
         }
@@ -99,7 +105,12 @@ function PrivateRoute({ component: Component, addressDetails, ...rest }) {
     ) {
       run();
     }
-  }, [data.address, data.isConnected, data.addressDetails.eligible]);
+  }, [
+    data.address,
+    data.isConnected,
+    data.addressDetails.eligible,
+    data.ep2AddressDetails.eligible,
+  ]);
 
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
@@ -167,6 +178,21 @@ function App() {
               <ConnectedRoute
                 path="/delegate-tokens"
                 component={DelegateTokens}
+              />
+              <PrivateRoute
+                path="/ep2/summary"
+                type="ep2"
+                component={ENSEP2ClaimSummary}
+              />
+              <PrivateRoute
+                path="/ep2/claim"
+                type="ep2"
+                component={ENSEP2TokenClaim}
+              />
+              <PrivateRoute
+                path="/ep2/success"
+                type="ep2"
+                component={ENSEP2ClaimSuccess}
               />
               <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
               <PrivateRoute path="/summary" component={ENSSummary} />

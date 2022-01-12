@@ -6,6 +6,7 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
     env:
+      MAINNET_SECRET_WORDS: ${{ secrets.TEST_WALLET_SEED_PHRASE }}
       SECRET_WORDS: ${{ secrets.TEST_WALLET_SEED_PHRASE }}
       PASSWORD: TestMetaMask
       NETWORK_NAME: tenderly
@@ -22,6 +23,6 @@ jobs:
         uses: browser-actions/setup-chrome@latest
       - run: chrome --version
       - run: yarn install
-      - run: yarn build
+      - run: yarn build:testing
       - run: yarn serve -l 3000 &
       - run: yarn cypress:ci
