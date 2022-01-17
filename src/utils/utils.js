@@ -48,13 +48,25 @@ const LABELHASH_QUERY = gql`
   }
 `;
 
-export const getClaimData = async (address) => {
-  const response = await fetch(generateMerkleShardUrl(address));
+export const getClaimData = async (address, type = "mainnet") => {
+  const response = await fetch(generateMerkleShardUrl(address, type));
   if (!response.ok) {
     throw new Error("error getting shard data");
   }
   const shardData = await response.json({ encoding: "utf-8" });
   const addressDetails = shardData?.entries[address];
+
+  if (addressDetails && type !== "mainnet") {
+    const balance = formatTokenAmount(addressDetails?.balance);
+    const shortBalance = formatTokenAmount(addressDetails?.balance, 2);
+
+    return {
+      balance,
+      shortBalance,
+      rawBalance: addressDetails?.balance,
+      eligible: true,
+    };
+  }
 
   if (addressDetails) {
     const { data } = await apolloClientInstance.query({
