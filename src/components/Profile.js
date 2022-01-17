@@ -283,6 +283,7 @@ const Profile = ({ address, size, hasDropdown }) => {
       ]}
       isOpen={navOpen}
       setIsOpen={setNavOpen}
+      testId="profile-dropdown"
     >
       <ProfileContainer
         size={size}

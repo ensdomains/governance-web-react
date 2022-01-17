@@ -38,8 +38,6 @@ describe("EP2 Token Claims", () => {
 
     // //If already claimed should redirect to dashboard
     cy.visit("http://localhost:3000/ep2/summary");
-    cy.get('[data-testid="header-connect-button"]').click();
-    cy.contains("MetaMask").click();
     cy.get("[data-testid='claim-ep2-button']", { timeout: 20000 }).should(
       "have.text",
       "Claimed"

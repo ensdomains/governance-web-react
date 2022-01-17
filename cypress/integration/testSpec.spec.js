@@ -156,4 +156,20 @@ describe("Token claim site", () => {
         exact: false,
       });
   });
+
+  it("Should allow disconnection and reconnection", () => {
+    cy.visit("http://localhost:3000");
+    // User connects
+    cy.get('[data-testid="header-connect-button"').click();
+    cy.contains("MetaMask").click();
+    cy.wait(1000);
+    // User disconnects
+    cy.get('[data-testid="profile-dropdown"]').click();
+    cy.contains("Disconnect").click();
+    // User reconnects
+    cy.get('[data-testid="header-connect-button"').click();
+    cy.contains("MetaMask").click();
+    // Check user is connected
+    cy.get('[data-testid="profile-dropdown"]');
+  });
 });

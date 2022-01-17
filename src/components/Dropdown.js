@@ -92,7 +92,13 @@ const DropdownMenu = ({ dropdownItems, isOpen, setIsOpen, width }) => {
   );
 };
 
-const DropdownWrapper = ({ dropdownItems, isOpen, setIsOpen, children }) => {
+const DropdownWrapper = ({
+  dropdownItems,
+  isOpen,
+  setIsOpen,
+  children,
+  testId,
+}) => {
   const dropdownRef = useRef();
 
   const handleClickOutside = (e) => {
@@ -113,7 +119,7 @@ const DropdownWrapper = ({ dropdownItems, isOpen, setIsOpen, children }) => {
   }, [dropdownRef, isOpen]);
 
   return (
-    <DropdownWrapperContainer ref={dropdownRef}>
+    <DropdownWrapperContainer data-testId={testId} ref={dropdownRef}>
       {children}
       <DropdownMenu
         dropdownItems={dropdownItems}

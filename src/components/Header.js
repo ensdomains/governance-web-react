@@ -125,12 +125,7 @@ const Header = () => {
             Delegates
           </DelegateLink>
           {isConnected && address ? (
-            <Profile
-              data-testid="header-profile"
-              {...{ address }}
-              size="medium"
-              hasDropdown={true}
-            />
+            <Profile {...{ address }} size="medium" hasDropdown={true} />
           ) : (
             <Button
               data-testid="header-connect-button"
