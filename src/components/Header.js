@@ -85,7 +85,7 @@ const DelegateLink = styled(Link)`
   line-height: 23px;
   /* identical to box height */
   letter-spacing: -0.01em;
-  margin-right: 10px;
+  margin-right: 15px;
   color: #989898;
 
   &:hover {
@@ -125,11 +125,7 @@ const Header = () => {
             Delegates
           </DelegateLink>
           {isConnected && address ? (
-            <Profile
-              data-testid="header-profile"
-              {...{ address }}
-              size="medium"
-            />
+            <Profile {...{ address }} size="medium" hasDropdown={true} />
           ) : (
             <Button
               data-testid="header-connect-button"
