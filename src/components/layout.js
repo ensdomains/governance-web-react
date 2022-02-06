@@ -28,6 +28,26 @@ export const InnerContentBox = styled.div`
   flex: 1;
 `;
 
+export const ContentBoxWithColumns = styled(ContentBox)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const InnerContentBoxColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 50%;
+`;
+
+export const InnerContentBoxRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const ContentBoxWithHeaderContainer = styled.div``;
 
 const ContentBoxHeader = styled.div`

@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
 //
@@ -21,12 +22,19 @@ module.exports = (on, config) => {
   // `config` is the resolved Cypress config
   require("@ensdomains/cypress-metamask/plugins")(on);
   require("./delegateBySig")(on, config);
+  require("./generateContracts.js")(on);
 
   on("task", {
     submitRpcUrl(rpcUrl) {
-      console.log("submitRpcUrl", rpcUrl);
-
+      console.log("using fork:", rpcUrl);
       process.env.RPC_URL = rpcUrl;
+
+      return true;
+    },
+    setMetamaskData({ secretWords, network, password }) {
+      process.env.SECRET_WORDS = secretWords;
+      process.env.NETWORK = network;
+      process.env.PASSWORD = password;
 
       return true;
     },
