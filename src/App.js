@@ -103,11 +103,15 @@ function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
     ) {
       run();
     }
+
+    if (!data.address && data.isConnected) {
+      history.push("/");
+    }
   }, [
     data.address,
     data.isConnected,
-    data.addressDetails.eligible,
-    data.ep2AddressDetails.eligible,
+    data.addressDetails,
+    data.ep2AddressDetails,
   ]);
 
   return <Route {...rest} render={(props) => <Component {...props} />} />;
