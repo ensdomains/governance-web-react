@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
-import { Client } from "@snapshot-labs/snapshot.js";
-import { BigNumber, Contract } from "ethers";
-
-import Footer from "../components/Footer";
-import { Content, Header } from "../components/text";
-import { ContentBox, NarrowColumn } from "../components/layout";
-import Gap from "../components/Gap";
+import { gql } from "graphql-tag";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { getEthersProvider } from "../web3modal";
-import TransactionState from "../components/TransactionState";
-import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree from "../merkle";
+import { selectedDelegateReactive } from "../apollo";
+import Footer from "../components/Footer";
+import Gap from "../components/Gap";
+import { ContentBox, NarrowColumn } from "../components/layout";
 import Pill from "../components/Pill";
+import { Content, Header } from "../components/text";
+import TransactionState from "../components/TransactionState";
 import { delegate, delegateBySig } from "../utils/token";
-import { generateMerkleShardUrl } from "../utils/consts";
-import { delegateSigDetails, selectedDelegateReactive } from "../apollo";
+import { getEthersProvider } from "../web3modal";
 
 const delegateToAddress = async (
   setClaimState,
@@ -137,7 +131,7 @@ const ENSTokenClaim = ({ location }) => {
           title={"Delegate"}
           content={
             delegateSigDetails?.canSign
-              ? "This transaction happens on-chain but is subsidised by the ENS DAO and does not require paying gas"
+              ? "This transaction happens on-chain but is subsidised and does not require paying gas"
               : "This transaction happens on-chain, and will require paying gas"
           }
         />
