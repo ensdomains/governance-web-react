@@ -1,39 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { gql } from "graphql-tag";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
+  Switch,
   useHistory,
 } from "react-router-dom";
 import styled from "styled-components/macro";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
-
 import Header from "./components/Header";
-import Home from "./pages/Home";
-import ENSGovernance from "./pages/ENSGovernance";
-import Dashboard from "./pages/Dashboard";
-import ChooseYourDelegate from "./pages/ChooseYourDelegate";
-import Why from "./pages/Why";
-import ENSSummary from "./pages/ENSSummary";
-import EnteryourDelegate from "./pages/EnteryourDelegate";
-import ENSTokenClaim from "./pages/EnsTokenClaim";
-import ENSClaimSuccess from "./pages/ENSClaimSuccess";
-import DelegateRanking from "./pages/DelegateRanking";
-import Delegation from "./pages/Delegation";
-import DelegateTokens from "./pages/DelegateTokens";
 import SharedFooter from "./components/SharedFooter";
-import { hasClaimed } from "./utils/token";
-
+import ChooseYourDelegate from "./pages/ChooseYourDelegate";
+import Dashboard from "./pages/Dashboard";
+import DelegateRanking from "./pages/DelegateRanking";
+import DelegateTokens from "./pages/DelegateTokens";
+import Delegation from "./pages/Delegation";
+import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import {
   setDelegateChoice,
   setDelegateReferral,
 } from "./pages/ENSConstitution/delegateHelpers";
-import { useQueryString, useGetDelegates } from "./utils/hooks";
-import { initWeb3Read } from "./web3modal";
-import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
+import ENSGovernance from "./pages/ENSGovernance";
+import ENSSummary from "./pages/ENSSummary";
+import ENSTokenClaim from "./pages/EnsTokenClaim";
+import EnteryourDelegate from "./pages/EnteryourDelegate";
 import ENSEP2ClaimSuccess from "./pages/EP2/ENSEP2ClaimSuccess";
 import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
+import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
+import Home from "./pages/Home";
+import Why from "./pages/Why";
+import { useGetDelegates, useQueryString } from "./utils/hooks";
+import { hasClaimed } from "./utils/token";
+import { initWeb3Read } from "./web3modal";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -171,7 +169,7 @@ function App() {
                 path="/manual-delegates"
                 component={EnteryourDelegate}
               />
-              <ConnectedRoute
+              <PrivateRoute
                 path="/manual-delegates-no-claim"
                 component={EnteryourDelegate}
               />

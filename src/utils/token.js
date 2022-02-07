@@ -1,4 +1,5 @@
 import { BigNumber, Contract, providers, utils } from "ethers";
+import { network } from "../apollo";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
@@ -144,13 +145,13 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
   try {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
-    const network = await provider.getNetwork();
+    const chainId = network();
     const sig = await signer._signTypedData(
       {
         name: "Ethereum Name Service",
         version: "1",
-        chainId: network.chainId,
-        verifyingContract: getENSTokenContractAddress(network.chainId),
+        chainId: chainId,
+        verifyingContract: getENSTokenContractAddress(chainId),
       },
       {
         Delegation: [
@@ -168,7 +169,7 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
 
     const ensDelegatorProvider = new providers.StaticJsonRpcProvider(
       getDelegateRpcURL(),
-      "ropsten"
+      chainId
     );
 
     const delegateSigResponseData = await ensDelegatorProvider.send(
@@ -182,7 +183,6 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
         v,
       }
     );
-    console.log(delegateSigResponseData);
     if (!delegateSigResponseData)
       throw new Error("Didn't get response from server");
 

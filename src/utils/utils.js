@@ -1,12 +1,12 @@
+import { providers } from "ethers";
+import { gql } from "graphql-tag";
+import { apolloClientInstance, network } from "../apollo";
 import {
   generateMerkleShardUrl,
   getDelegateRpcURL,
   networkIdToName,
   supportedAvatarProtocols,
 } from "./consts";
-import { apolloClientInstance } from "../apollo";
-import { gql } from "graphql-tag";
-import { providers } from "ethers";
 
 export const formatTokenAmount = (tokenAmount, length = 6) =>
   new Intl.NumberFormat("en-US", {
@@ -114,17 +114,15 @@ export const getClaimData = async (address, type = "mainnet") => {
 };
 
 export const getCanDelegateBySig = async (address) => {
-  console.log("GETTING DELEGATE SIG STATUS");
+  const chainId = network();
   const ensDelegatorProvider = new providers.StaticJsonRpcProvider(
     getDelegateRpcURL(),
-    "ropsten"
+    chainId
   );
   const delegateSigData = await ensDelegatorProvider.send("query", {
     address,
   });
   const currentDate = Date.now();
-
-  console.log(Date.now());
 
   if (delegateSigData && delegateSigData.next !== undefined) {
     if (delegateSigData.next * 1000 < currentDate) {
@@ -146,6 +144,5 @@ export const getCanDelegateBySig = async (address) => {
     }
   }
 
-  console.log(delegateSigData);
   return delegateSigData;
 };

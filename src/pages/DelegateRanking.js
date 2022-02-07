@@ -1,35 +1,29 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { utils } from "ethers";
+import { gql } from "graphql-tag";
+import React, { Fragment, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { utils } from "ethers";
-
+import { selectedDelegateReactive } from "../apollo";
+import GradientAvatar from "../assets/imgs/Gradient.svg";
+import GreenTick from "../assets/imgs/GreenTick.svg";
+import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
+import { CTAButton } from "../components/buttons";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
-import Loader from "../components/Loader";
+import { ContentBox, NarrowColumn } from "../components/layout";
 import LazyImage from "../components/LazyImage";
+import Loader from "../components/Loader";
 import Profile from "../components/Profile";
-import { Header, Content, SubTitle, Title } from "../components/text";
-import { NarrowColumn } from "../components/layout";
-import { ContentBox } from "../components/layout";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
-import { imageUrl, shortenAddress } from "../utils/utils";
-import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
-import GradientAvatar from "../assets/imgs/Gradient.svg";
-import {
-  getDelegateReferral,
-  sortByRank,
-} from "./ENSConstitution/delegateHelpers";
-import { CTAButton } from "../components/buttons";
-import { largerThan } from "../utils/styledComponents";
+import { Content, Header, SubTitle } from "../components/text";
 import { emptyAddress } from "../utils/consts";
-import GreenTick from "../assets/imgs/GreenTick.svg";
 import {
-  useGetTokens,
-  useGetDelegatedTo,
   useGetDelegateBySigStatus,
+  useGetDelegatedTo,
+  useGetTokens,
 } from "../utils/hooks";
-import { selectedDelegateReactive } from "../apollo";
+import { largerThan } from "../utils/styledComponents";
+import { imageUrl } from "../utils/utils";
 import { initWeb3 } from "../web3modal";
 
 const DELEGATE_RANKING_QUERY = gql`
@@ -427,7 +421,7 @@ const ChooseYourDelegate = () => {
               <FreeDelegationSubTitle>
                 {chooseData?.address &&
                   (delegateSigDetails?.canSign
-                    ? "once every 3 months"
+                    ? "once every 90 days"
                     : delegateSigDetails?.formattedDate)}
               </FreeDelegationSubTitle>
             </Fragment>
@@ -532,7 +526,7 @@ const ChooseYourDelegate = () => {
             text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
             subText={
               delegateSigDetails?.next !== undefined &&
-              "You can delegate gas-free once every 3 months"
+              "You can delegate gas-free once every 90 days"
             }
             disabled={!selectedDelegate}
           />

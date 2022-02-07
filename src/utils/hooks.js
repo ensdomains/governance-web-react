@@ -1,27 +1,26 @@
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { normalize } from "@ensdomains/eth-ens-namehash";
-import { keccak_256 as sha3 } from "js-sha3";
 import { Contract, ethers } from "ethers";
 import { gql } from "graphql-tag";
-import { getEthersProvider } from "../web3modal";
-import { apolloClientInstance } from "../apollo";
-import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
-
-import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
+import { keccak_256 as sha3 } from "js-sha3";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
-  delegates as delegatesReactive,
+  apolloClientInstance,
   delegatedTo,
-  delegateSigDetails,
+  delegates as delegatesReactive,
+  delegateSigDetails as delegateSigDetailsReactive,
   tokensOwned,
 } from "../apollo";
+import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
+import ENSTokenAbi from "../assets/abis/ENSToken.json";
+import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
+import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
+import { getEthersProvider } from "../web3modal";
 import {
-  getENSTokenContractAddress,
-  getENSDelegateContractAddress,
-  getReverseRecordsAddress,
   ALLOCATION_ENDPOINT,
+  getENSDelegateContractAddress,
+  getENSTokenContractAddress,
+  getReverseRecordsAddress,
 } from "./consts";
 import { getCanDelegateBySig } from "./utils";
 
@@ -300,13 +299,13 @@ export const useGetDelegatedTo = (address) => {
 };
 
 export const useGetDelegateBySigStatus = (address) => {
-  const [_delegateSigDetails, setDelegateSigDetails] = useState();
+  const [delegateSigDetails, setDelegateSigDetails] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function run() {
-      const delegateSigDetails = await getCanDelegateBySig(address);
-      setDelegateSigDetails(delegateSigDetails);
+      const fetchedDelegateSigDetails = await getCanDelegateBySig(address);
+      setDelegateSigDetails(fetchedDelegateSigDetails);
       setLoading(false);
     }
     if (address) {
@@ -314,5 +313,5 @@ export const useGetDelegateBySigStatus = (address) => {
     }
   }, [address]);
 
-  delegateSigDetails({ details: _delegateSigDetails, loading });
+  delegateSigDetailsReactive({ details: delegateSigDetails, loading });
 };
