@@ -1,17 +1,18 @@
-import { getEthersProvider } from "../web3modal";
 import { BigNumber, Contract } from "ethers";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
-import merkleRoot from "../assets/root.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
+import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
+import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
+import { getEthersProvider } from "../web3modal";
 import {
+  DELEGATE_GAS_LIMIT,
   GAS_LIMIT,
   generateMerkleShardUrl,
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
 } from "./consts";
-import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 
 const testingMerkleRoot = {
   root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
@@ -115,7 +116,9 @@ export async function delegate(address, setClaimState, history) {
       signer
     );
     ENSTokenContract.connect(signer);
-    const result = await ENSTokenContract.delegate(address);
+    const result = await ENSTokenContract.delegate(address, {
+      gasLimit: DELEGATE_GAS_LIMIT,
+    });
     await result.wait(1);
     setClaimState({
       state: "SUCCESS",
