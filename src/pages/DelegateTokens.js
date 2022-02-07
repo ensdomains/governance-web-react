@@ -131,7 +131,7 @@ const ENSTokenClaim = ({ location }) => {
           title={"Delegate"}
           content={
             delegateSigDetails?.canSign
-              ? "This transaction happens on-chain but is subsidised and does not require paying gas"
+              ? "This transaction happens on-chain, but is subsidised and does not require paying gas"
               : "This transaction happens on-chain, and will require paying gas"
           }
         />
