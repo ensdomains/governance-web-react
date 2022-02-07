@@ -173,7 +173,7 @@ function App() {
                 path="/manual-delegates"
                 component={EnteryourDelegate}
               />
-              <PrivateRoute
+              <ConnectedRoute
                 path="/manual-delegates-no-claim"
                 component={EnteryourDelegate}
               />

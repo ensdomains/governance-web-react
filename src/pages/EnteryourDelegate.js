@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components/macro";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
 import { utils } from "ethers";
-import { useQuery, gql } from "@apollo/client";
 import debounce from "lodash.debounce";
-
+import React, { useEffect, useState } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import styled from "styled-components/macro";
+import { selectedDelegateReactive } from "../apollo";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
-import { Header, Content } from "../components/text";
-import { NarrowColumn } from "../components/layout";
-import { ContentBox } from "../components/layout";
+import { ContentBox, NarrowColumn } from "../components/layout";
+import { Content, Header } from "../components/text";
 import { getEthersProvider } from "../web3modal";
 import {
   getDelegateChoice,
   setDelegateChoice,
 } from "./ENSConstitution/delegateHelpers";
-import { selectedDelegateReactive } from "../apollo";
 
 const Input = styled.input`
   height: 64px;
@@ -238,7 +236,7 @@ const EnteryourDelegate = () => {
         }
         subText={
           noClaim &&
-          delegateSigDetails?.next === undefined &&
+          delegateSigDetails?.next !== undefined &&
           "Next free delegation " + delegateSigDetails?.formattedDate
         }
       />
