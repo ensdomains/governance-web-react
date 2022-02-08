@@ -186,17 +186,11 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
     if (!delegateSigResponseData)
       throw new Error("Didn't get response from server");
 
-    const delegateSigTransaction = await provider.getTransaction(
-      delegateSigResponseData
-    );
-    await delegateSigTransaction.wait(1);
     setClaimState({
-      state: "SUCCESS",
-      message: "",
+      state: "QUEUED",
+      message: delegateSigResponseData,
     });
-    return setTimeout(() => {
-      history.push("/delegate-ranking");
-    }, 2000);
+    return delegateSigResponseData;
   } catch (error) {
     console.error(error);
     setClaimState({

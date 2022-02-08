@@ -315,3 +315,23 @@ export const useGetDelegateBySigStatus = (address) => {
 
   delegateSigDetailsReactive({ details: delegateSigDetails, loading });
 };
+
+export const useGetTransactionDone = (txHash) => {
+  const [transactionDone, setTransactionDone] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const provider = getEthersProvider();
+
+  useEffect(() => {
+    async function run() {
+      if (!provider) return;
+      const tx = await provider.getTransaction(txHash);
+      setTransactionDone(tx.blockNumber !== null);
+      setLoading(false);
+    }
+    if (txHash) {
+      run();
+    }
+  }, [txHash, provider]);
+
+  return transactionDone;
+};

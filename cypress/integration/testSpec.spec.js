@@ -132,6 +132,18 @@ describe("Token claim site", () => {
           .click({ timeout: 10000 });
         cy.signMetamaskTypedData();
 
+        cy.get("[data-testid='etherscan-box']", { timeout: 10000 }).should(
+          "have.text",
+          "Your transaction is queuedView on Etherscan"
+        );
+
+        cy.get('[data-testid="right-cta"]')
+          .should("have.text", "Return to delegates")
+          .click();
+
+        cy.wait(5000);
+        cy.reload();
+
         cy.get('[data-testid="current-delegation"]', {
           timeout: 25000,
         })

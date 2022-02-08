@@ -3,6 +3,7 @@ import { gql } from "graphql-tag";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { selectedDelegateReactive } from "../apollo";
+import EtherscanBox from "../components/EtherscanBox";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import { ContentBox, NarrowColumn } from "../components/layout";
@@ -63,6 +64,8 @@ const getRightButtonText = (state) => {
       return "Delegating...";
     case "SUCCESS":
       return "Continuing...";
+    case "QUEUED":
+      return "Return to delegates";
     case "ERROR":
       return "Try again";
   }
@@ -127,7 +130,9 @@ const ENSTokenClaim = ({ location }) => {
         </Content>
         <Gap height={6} />
         <TransactionState
-          transactionState={claimState.state}
+          transactionState={
+            claimState.state === "QUEUED" ? "SUCCESS" : claimState.state
+          }
           title={"Delegate"}
           content={
             delegateSigDetails?.canSign
@@ -136,6 +141,15 @@ const ENSTokenClaim = ({ location }) => {
           }
         />
       </ContentBox>
+      {claimState.state === "QUEUED" && (
+        <>
+          <Gap height={3} />
+          <EtherscanBox
+            message="Your transaction is queued"
+            transactionHash={claimState.message}
+          />
+        </>
+      )}
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
@@ -146,6 +160,10 @@ const ENSTokenClaim = ({ location }) => {
           if (claimState.state === "SUCCESS") {
             history.push("/delegate-ranking");
             return;
+          } else if (claimState.state === "QUEUED") {
+            history.push("/delegate-ranking", {
+              hash: claimState.message,
+            });
           }
           delegateToAddress(
             setClaimState,

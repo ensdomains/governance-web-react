@@ -2,13 +2,14 @@ import { useQuery } from "@apollo/client";
 import { utils } from "ethers";
 import { gql } from "graphql-tag";
 import React, { Fragment, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { selectedDelegateReactive } from "../apollo";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import { CTAButton } from "../components/buttons";
+import EtherscanBox from "../components/EtherscanBox";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import { ContentBox, NarrowColumn } from "../components/layout";
@@ -21,6 +22,7 @@ import {
   useGetDelegateBySigStatus,
   useGetDelegatedTo,
   useGetTokens,
+  useGetTransactionDone,
 } from "../utils/hooks";
 import { largerThan } from "../utils/styledComponents";
 import { imageUrl } from "../utils/utils";
@@ -406,11 +408,25 @@ const ChooseYourDelegate = () => {
   const { selectedDelegate } = chooseData;
 
   const history = useHistory();
+  const location = useLocation();
+
+  const transactionDone = useGetTransactionDone(
+    location.state && location.state.hash
+  );
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
   return (
     <WrappedNarrowColumn>
+      {!transactionDone && (
+        <>
+          <EtherscanBox
+            message="Your transaction is pending"
+            transactionHash={location.state.hash}
+          />
+          <Gap height={3} />
+        </>
+      )}
       {chooseData?.address && (
         <FreeDelegationContentBox>
           {delegateSigDetails?.next !== undefined ? (
