@@ -432,18 +432,21 @@ const ChooseYourDelegate = () => {
           {delegateSigDetails?.next !== undefined ? (
             <Fragment>
               <FreeDelegationHeader>
-                You're eligible for gas-free delegation
+                {!delegateSigDetails?.canSign
+                  ? `You will be eligible for gas free-delegation ${
+                      delegateSigDetails?.formattedDate.split(" ")[0]
+                    }`
+                  : "You are eligible for gas free-delegation"}
               </FreeDelegationHeader>
               <FreeDelegationSubTitle>
-                {chooseData?.address &&
-                  (delegateSigDetails?.canSign
-                    ? "once every 90 days"
-                    : delegateSigDetails?.formattedDate)}
+                {!delegateSigDetails?.canSign
+                  ? delegateSigDetails?.formattedDate.split(" ")[1]
+                  : ""}
               </FreeDelegationSubTitle>
             </Fragment>
           ) : !delegateSigDetailsLoading ? (
             <FreeDelegationHeader>
-              You're not eligible to delegate gas-free
+              You're not eligible for gas-free delegation
             </FreeDelegationHeader>
           ) : (
             <FreeDelegationHeader>
@@ -542,7 +545,7 @@ const ChooseYourDelegate = () => {
             text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
             subText={
               delegateSigDetails?.next !== undefined &&
-              "You can delegate gas-free once every 90 days"
+              "You can delegate gas-free " + delegateSigDetails?.formattedDate
             }
             disabled={!selectedDelegate}
           />

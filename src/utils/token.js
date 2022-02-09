@@ -14,6 +14,7 @@ import {
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
 } from "./consts";
+import { sendToDelegateJsonRpc } from "./utils";
 
 const testingMerkleRoot = {
   root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
@@ -167,22 +168,14 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
     message.s = s;
     message.v = v;
 
-    const ensDelegatorProvider = new providers.StaticJsonRpcProvider(
-      getDelegateRpcURL(),
-      chainId
-    );
-
-    const delegateSigResponseData = await ensDelegatorProvider.send(
-      "delegate",
-      {
-        delegatee: address,
-        nonce,
-        expiry,
-        r,
-        s,
-        v,
-      }
-    );
+    const delegateSigResponseData = await sendToDelegateJsonRpc("delegate", {
+      delegatee: address,
+      nonce,
+      expiry,
+      r,
+      s,
+      v,
+    });
     if (!delegateSigResponseData)
       throw new Error("Didn't get response from server");
 

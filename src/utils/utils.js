@@ -1,6 +1,5 @@
-import { providers } from "ethers";
 import { gql } from "graphql-tag";
-import { apolloClientInstance, network } from "../apollo";
+import { apolloClientInstance } from "../apollo";
 import {
   generateMerkleShardUrl,
   getDelegateRpcURL,
@@ -113,13 +112,30 @@ export const getClaimData = async (address, type = "mainnet") => {
   };
 };
 
+export const sendToDelegateJsonRpc = async (method, params) => {
+  return fetch(getDelegateRpcURL(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method,
+      params,
+      id: 1,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.error) {
+        throw new Error(res.error.message);
+      }
+      return res.result;
+    });
+};
+
 export const getCanDelegateBySig = async (address) => {
-  const chainId = network();
-  const ensDelegatorProvider = new providers.StaticJsonRpcProvider(
-    getDelegateRpcURL(),
-    chainId
-  );
-  const delegateSigData = await ensDelegatorProvider.send("query", {
+  const delegateSigData = await sendToDelegateJsonRpc("query", {
     address,
   });
   const currentDate = Date.now();
