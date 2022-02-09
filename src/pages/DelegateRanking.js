@@ -51,9 +51,16 @@ const DelegateBoxContainer = styled.div`
   align-items: center;
   padding: 15px;
   justify-content: space-between;
-  cursor: pointer;
+  cursor: ${({ alreadyDelegated }) =>
+    alreadyDelegated ? "default" : "pointer"};
   transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
   position: relative;
+
+  ${({ alreadyDelegated }) =>
+    alreadyDelegated &&
+    `
+      background-color: rgba(0, 0, 0, 0.08);
+    `}
 
   ${(p) =>
     p.account
@@ -168,6 +175,7 @@ const DelegateBox = (data) => {
           selectedDelegateReactive({ name, address });
         }
       }}
+      alreadyDelegated={delegatedTo === address}
       search={search}
       selected={selected}
       account={userAccount}
