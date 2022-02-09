@@ -151,18 +151,22 @@ const DelegateBox = (data) => {
     profile,
     votes,
     name,
+    address,
     setRenderKey,
     userAccount,
+    delegatedTo,
     search,
     selectedDelegate,
   } = data;
-  const selected = name === selectedDelegate;
+  const selected = name === selectedDelegate.name;
   const imageSrc = imageUrl(avatar, name, 1);
   return (
     <DelegateBoxContainer
       key={name}
       onClick={() => {
-        selectedDelegateReactive(name);
+        if (delegatedTo !== address) {
+          selectedDelegateReactive({ name, address });
+        }
       }}
       search={search}
       selected={selected}
@@ -382,10 +386,10 @@ function CurrentDelegation({
   return (
     <CurrentDelegationContainer data-testid="current-delegation">
       {text}
-      {selection !== "" && (
+      {selection !== null && (
         <Clear
           onClick={() => {
-            selectedDelegateReactive("");
+            selectedDelegateReactive({ name: null, address: null });
           }}
         >
           Clear
@@ -402,7 +406,8 @@ const ChooseYourDelegate = () => {
   useGetDelegateBySigStatus(chooseData.address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
-  const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const { _delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const delegatedTo = "0x4e88f436422075c1417357bf957764c127b2cc93";
   const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
@@ -416,6 +421,11 @@ const ChooseYourDelegate = () => {
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
+
+  React.useEffect(() => {
+    console.log(selectedDelegate, delegatedTo);
+  }, [selectedDelegate]);
+
   return (
     <WrappedNarrowColumn>
       {!transactionDone && (
@@ -489,7 +499,7 @@ const ChooseYourDelegate = () => {
                   }
                 }}
                 account={chooseData?.address}
-                disabled={chooseData?.address && selectedDelegate !== ""}
+                disabled={chooseData?.address && selectedDelegate.name}
               />
             ) : (
               <WrappedCTAButton
@@ -509,7 +519,7 @@ const ChooseYourDelegate = () => {
                 tokens={
                   balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
                 }
-                selection={selectedDelegate}
+                selection={selectedDelegate.name}
                 delegatedTo={delegatedTo}
                 setRenderKey={setRenderKey}
               />
@@ -530,7 +540,9 @@ const ChooseYourDelegate = () => {
                 {...d}
                 selectedDelegate={selectedDelegate}
                 key={d.name}
+                address={d.address}
                 userAccount={chooseData.address}
+                delegatedTo={delegatedTo}
                 search={d.name.includes(search)}
               />
             ))}
@@ -549,7 +561,10 @@ const ChooseYourDelegate = () => {
               delegateSigDetails?.formattedDate !== undefined &&
               "You can delegate gas-free " + delegateSigDetails?.formattedDate
             }
-            disabled={!selectedDelegate}
+            disabled={
+              !selectedDelegate.address ||
+              selectedDelegate.address === delegatedTo
+            }
           />
         ) : (
           <Footer rightButtonText={"Loading..."} disabled />

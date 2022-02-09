@@ -12,7 +12,7 @@ export const delegates = makeVar({});
 export const delegatedTo = makeVar({});
 export const delegateSigDetails = makeVar({});
 export const tokensOwned = makeVar({});
-export const selectedDelegateReactive = makeVar(null);
+export const selectedDelegateReactive = makeVar({ address: null, name: null });
 
 export let apolloClientInstance;
 
