@@ -1,4 +1,4 @@
-import { BigNumber, Contract, providers, utils } from "ethers";
+import { BigNumber, Contract, utils } from "ethers";
 import { network } from "../apollo";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
@@ -8,9 +8,9 @@ import ShardedMerkleTree, { getIndex } from "../merkle";
 import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
 import {
+  DELEGATE_GAS_LIMIT,
   GAS_LIMIT,
   generateMerkleShardUrl,
-  getDelegateRpcURL,
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
 } from "./consts";
@@ -118,7 +118,9 @@ export async function delegate(address, setClaimState, history) {
       signer
     );
     ENSTokenContract.connect(signer);
-    const result = await ENSTokenContract.delegate(address);
+    const result = await ENSTokenContract.delegate(address, {
+      gasLimit: DELEGATE_GAS_LIMIT,
+    });
     await result.wait(1);
     setClaimState({
       state: "SUCCESS",
