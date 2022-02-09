@@ -432,14 +432,16 @@ const ChooseYourDelegate = () => {
           {delegateSigDetails?.next !== undefined ? (
             <Fragment>
               <FreeDelegationHeader>
-                {!delegateSigDetails?.canSign
+                {!delegateSigDetails?.canSign &&
+                delegateSigDetails?.formattedDate
                   ? `You will be eligible for gas free-delegation ${
                       delegateSigDetails?.formattedDate.split(" ")[0]
                     }`
                   : "You are eligible for gas free-delegation"}
               </FreeDelegationHeader>
               <FreeDelegationSubTitle>
-                {!delegateSigDetails?.canSign
+                {!delegateSigDetails?.canSign &&
+                delegateSigDetails?.formattedDate
                   ? delegateSigDetails?.formattedDate.split(" ")[1]
                   : ""}
               </FreeDelegationSubTitle>
@@ -544,7 +546,7 @@ const ChooseYourDelegate = () => {
             }}
             text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
             subText={
-              delegateSigDetails?.next !== undefined &&
+              delegateSigDetails?.formattedDate !== undefined &&
               "You can delegate gas-free " + delegateSigDetails?.formattedDate
             }
             disabled={!selectedDelegate}
