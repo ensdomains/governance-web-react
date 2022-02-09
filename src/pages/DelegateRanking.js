@@ -406,8 +406,7 @@ const ChooseYourDelegate = () => {
   useGetDelegateBySigStatus(chooseData.address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
-  const { _delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
-  const delegatedTo = "0x4e88f436422075c1417357bf957764c127b2cc93";
+  const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
   const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
@@ -421,10 +420,6 @@ const ChooseYourDelegate = () => {
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
-
-  React.useEffect(() => {
-    console.log(selectedDelegate, delegatedTo);
-  }, [selectedDelegate]);
 
   return (
     <WrappedNarrowColumn>

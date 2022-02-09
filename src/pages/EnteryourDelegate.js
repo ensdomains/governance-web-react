@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import { ContentBox, NarrowColumn } from "../components/layout";
 import { Content, Header } from "../components/text";
+import { useGetDelegateBySigStatus, useGetDelegatedTo } from "../utils/hooks";
 import { getEthersProvider } from "../web3modal";
 import {
   getDelegateChoice,
@@ -83,6 +84,7 @@ const InputComponent = ({
   ensNameAddress,
   setEnsNameAddress,
   setValue,
+  delegatedTo,
   defaultValue,
   ...props
 }) => {
@@ -97,6 +99,13 @@ const InputComponent = ({
           const result = await getEthersProvider().resolveName(value);
           if (result) {
             setEnsNameAddress(result);
+            if (result === delegatedTo) {
+              setValidationMessage({
+                message: "Your tokens are already delegated to this address",
+                isError: true,
+              });
+              return;
+            }
             setValidationMessage({
               message: "Valid ENS name",
               isError: false,
@@ -116,6 +125,13 @@ const InputComponent = ({
 
       try {
         utils.getAddress(value);
+        if (value === delegatedTo) {
+          setValidationMessage({
+            message: "Your tokens are already delegated to this address",
+            isError: true,
+          });
+          return;
+        }
         setValidationMessage({
           message: "Valid Ethereum address",
           isError: false,
@@ -130,6 +146,7 @@ const InputComponent = ({
     };
 
     if (value) {
+      setEnsNameAddress("");
       run();
     } else {
       setValidationMessage({
@@ -173,15 +190,22 @@ const EnteryourDelegate = () => {
     isError: false,
   });
   let noClaim = useRouteMatch("/manual-delegates-no-claim");
-
   const {
-    data: { address, delegateSigDetails: _delegateSigDetails },
+    data: {
+      address,
+      delegateSigDetails: _delegateSigDetails,
+      delegatedTo: { delegatedTo, loading: delegatedToLoading },
+    },
   } = useQuery(gql`
     query customDelegateQuery @client {
       address
       delegateSigDetails
+      delegatedTo
     }
   `);
+  useGetDelegatedTo(address);
+  useGetDelegateBySigStatus(address);
+
   const delegateSigDetails = _delegateSigDetails.details;
 
   const [ensNameAddress, setEnsNameAddress] = useState("");
@@ -211,16 +235,31 @@ const EnteryourDelegate = () => {
             ensNameAddress,
             setEnsNameAddress,
             setValue,
+            delegatedTo,
             defaultValue: value,
           }}
         />
       </ContentBox>
       <Footer
-        disabled={validationMessage.isError || !value}
-        rightButtonText={noClaim ? "Delegate" : "Next"}
+        disabled={
+          validationMessage.isError ||
+          !value ||
+          delegatedToLoading ||
+          _delegateSigDetails.loading
+        }
+        rightButtonText={
+          noClaim
+            ? delegatedToLoading || _delegateSigDetails.loading
+              ? "Loading..."
+              : "Delegate"
+            : "Next"
+        }
         rightButtonCallback={() => {
           if (noClaim) {
-            selectedDelegateReactive(value);
+            selectedDelegateReactive({
+              address: ensNameAddress === "" ? value : ensNameAddress,
+              name: null,
+            });
             history.push("/delegate-tokens");
           } else {
             setDelegateChoice(address, value);
@@ -232,11 +271,13 @@ const EnteryourDelegate = () => {
           history.push(noClaim ? "/delegate-ranking" : "/delegates");
         }}
         text={
-          noClaim && (delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas")
+          noClaim &&
+          !_delegateSigDetails.loading &&
+          (delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas")
         }
         subText={
           noClaim &&
-          delegateSigDetails?.next !== undefined &&
+          delegateSigDetails?.formattedDate &&
           "Next free delegation " + delegateSigDetails?.formattedDate
         }
       />
