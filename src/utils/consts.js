@@ -28,6 +28,9 @@ export const generateMerkleShardUrl = (address, type = "mainnet") =>
 
 export const emptyAddress = "0x0000000000000000000000000000000000000000";
 
+export const getDelegateRpcURL = () =>
+  "https://us-central1-ens-delegator.cloudfunctions.net/delegate";
+
 export const networkName = {
   main: "mainnet",
   goerli: "goerli",

@@ -1336,10 +1336,9 @@
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.5.tgz#77211291c1900a700b8a78cfafda3160d76949ed"
   integrity sha512-OWORNpfjMsSSUBVrRBVGECkhWcULOAJz9ZW8uK9qgxD+87M7jHRcvh/A96XXNhXTLmKcoYSQtBEX7lHMO7YRwg==
 
-"@ensdomains/cypress-metamask@1.2.0-development":
-  version "1.2.0-development"
-  resolved "https://registry.yarnpkg.com/@ensdomains/cypress-metamask/-/cypress-metamask-1.2.0-development.tgz#535f86358ddd45f01fa314c1412eb051e923d60e"
-  integrity sha512-mU5q7d9s0e6WTWrj9fQWOncPsQVWS08dBLkpCyfT1jDk2rI1I0i1GeKAa3mSuxYsjrrWX8R4u03yOeiC+BVg4w==
+"@ensdomains/cypress-metamask@ensdomains/cypress-metamask#fix-sign-buttons":
+  version "1.1.0-development"
+  resolved "https://codeload.github.com/ensdomains/cypress-metamask/tar.gz/666c1ead30e771eeff2e1d789240bf9aa716bfb7"
   dependencies:
     cross-zip "^4.0.0"
     cypress "^7.3.0"

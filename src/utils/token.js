@@ -1,4 +1,5 @@
-import { BigNumber, Contract } from "ethers";
+import { BigNumber, Contract, utils } from "ethers";
+import { network } from "../apollo";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
@@ -13,6 +14,7 @@ import {
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
 } from "./consts";
+import { sendToDelegateJsonRpc } from "./utils";
 
 const testingMerkleRoot = {
   root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
@@ -127,6 +129,63 @@ export async function delegate(address, setClaimState, history) {
     return setTimeout(() => {
       history.push("/delegate-ranking");
     }, 2000);
+  } catch (error) {
+    console.error(error);
+    setClaimState({
+      state: "ERROR",
+      message: error,
+    });
+  }
+}
+
+export async function delegateBySig(address, setClaimState, history, nonce) {
+  const expiry = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7; // set expiry of signature to 7 days from now
+  const message = {
+    delegatee: address,
+    nonce,
+    expiry,
+  };
+  try {
+    const provider = getEthersProvider();
+    const signer = provider.getSigner();
+    const chainId = network();
+    const sig = await signer._signTypedData(
+      {
+        name: "Ethereum Name Service",
+        version: "1",
+        chainId: chainId,
+        verifyingContract: getENSTokenContractAddress(chainId),
+      },
+      {
+        Delegation: [
+          { name: "delegatee", type: "address" },
+          { name: "nonce", type: "uint256" },
+          { name: "expiry", type: "uint256" },
+        ],
+      },
+      message
+    );
+    const { r, s, v } = utils.splitSignature(sig);
+    message.r = r;
+    message.s = s;
+    message.v = v;
+
+    const delegateSigResponseData = await sendToDelegateJsonRpc("delegate", {
+      delegatee: address,
+      nonce,
+      expiry,
+      r,
+      s,
+      v,
+    });
+    if (!delegateSigResponseData)
+      throw new Error("Didn't get response from server");
+
+    setClaimState({
+      state: "QUEUED",
+      message: delegateSigResponseData,
+    });
+    return delegateSigResponseData;
   } catch (error) {
     console.error(error);
     setClaimState({

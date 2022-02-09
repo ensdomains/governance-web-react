@@ -10,6 +10,7 @@ export const ep2HasClaimed = makeVar(false);
 export const network = makeVar(null);
 export const delegates = makeVar({});
 export const delegatedTo = makeVar({});
+export const delegateSigDetails = makeVar({});
 export const tokensOwned = makeVar({});
 export const selectedDelegateReactive = makeVar(null);
 
@@ -73,6 +74,11 @@ const typePolicies = {
       delegatedTo: {
         read() {
           return delegatedTo();
+        },
+      },
+      delegateSigDetails: {
+        read() {
+          return delegateSigDetails();
         },
       },
       selectedDelegate: {

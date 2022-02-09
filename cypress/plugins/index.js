@@ -21,6 +21,7 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   require("@ensdomains/cypress-metamask/plugins")(on);
+  require("./delegateBySig")(on, config);
   require("./generateContracts.js")(on);
 
   on("task", {

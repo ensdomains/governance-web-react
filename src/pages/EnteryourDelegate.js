@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components/macro";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
 import { utils } from "ethers";
-import { useQuery, gql } from "@apollo/client";
-import debounce from 'lodash.debounce';
-
+import debounce from "lodash.debounce";
+import React, { useEffect, useState } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import styled from "styled-components/macro";
+import { selectedDelegateReactive } from "../apollo";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
-import { Header, Content } from "../components/text";
-import { NarrowColumn } from "../components/layout";
-import { ContentBox } from "../components/layout";
+import { ContentBox, NarrowColumn } from "../components/layout";
+import { Content, Header } from "../components/text";
 import { getEthersProvider } from "../web3modal";
 import {
   getDelegateChoice,
   setDelegateChoice,
 } from "./ENSConstitution/delegateHelpers";
-import { selectedDelegateReactive } from "../apollo";
 
 const Input = styled.input`
   height: 64px;
@@ -93,7 +91,7 @@ const InputComponent = ({
     setValue(value);
 
     const run = async () => {
-      console.log('run')
+      console.log("run");
       if (value.includes(".")) {
         try {
           const result = await getEthersProvider().resolveName(value);
@@ -153,7 +151,11 @@ const InputComponent = ({
 
   return (
     <div>
-      <Input {...props} onChange={debounce(onChange, 100)} defaultValue={defaultValue} />
+      <Input
+        {...props}
+        onChange={debounce(onChange, 100)}
+        defaultValue={defaultValue}
+      />
       {ensNameAddress && <AddressMessage>{ensNameAddress}</AddressMessage>}
       {validationMessage.message && (
         <ValidationMessage error={validationMessage.isError}>
@@ -173,12 +175,14 @@ const EnteryourDelegate = () => {
   let noClaim = useRouteMatch("/manual-delegates-no-claim");
 
   const {
-    data: { address },
+    data: { address, delegateSigDetails: _delegateSigDetails },
   } = useQuery(gql`
-    query getAddress @client {
+    query customDelegateQuery @client {
       address
+      delegateSigDetails
     }
   `);
+  const delegateSigDetails = _delegateSigDetails.details;
 
   const [ensNameAddress, setEnsNameAddress] = useState("");
   const [value, setValue] = useState(null);
@@ -227,6 +231,14 @@ const EnteryourDelegate = () => {
         leftButtonCallback={() => {
           history.push(noClaim ? "/delegate-ranking" : "/delegates");
         }}
+        text={
+          noClaim && (delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas")
+        }
+        subText={
+          noClaim &&
+          delegateSigDetails?.next !== undefined &&
+          "Next free delegation " + delegateSigDetails?.formattedDate
+        }
       />
     </NarrowColumn>
   );

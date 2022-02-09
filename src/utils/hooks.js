@@ -1,27 +1,28 @@
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { normalize } from "@ensdomains/eth-ens-namehash";
-import { keccak_256 as sha3 } from "js-sha3";
 import { Contract, ethers } from "ethers";
 import { gql } from "graphql-tag";
-import { getEthersProvider } from "../web3modal";
-import { apolloClientInstance } from "../apollo";
-import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
-import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
-
-import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
+import { keccak_256 as sha3 } from "js-sha3";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
-  delegates as delegatesReactive,
+  apolloClientInstance,
   delegatedTo,
+  delegates as delegatesReactive,
+  delegateSigDetails as delegateSigDetailsReactive,
   tokensOwned,
 } from "../apollo";
+import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
+import ENSTokenAbi from "../assets/abis/ENSToken.json";
+import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
+import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
+import { getEthersProvider } from "../web3modal";
 import {
-  getENSTokenContractAddress,
-  getENSDelegateContractAddress,
-  getReverseRecordsAddress,
   ALLOCATION_ENDPOINT,
+  getENSDelegateContractAddress,
+  getENSTokenContractAddress,
+  getReverseRecordsAddress,
 } from "./consts";
+import { getCanDelegateBySig } from "./utils";
 
 export function useQueryString() {
   return new URLSearchParams(useLocation().search);
@@ -295,4 +296,42 @@ export const useGetDelegatedTo = (address) => {
   }, [address]);
 
   delegatedTo({ delegatedTo: delegatedToAddress, loading });
+};
+
+export const useGetDelegateBySigStatus = (address) => {
+  const [delegateSigDetails, setDelegateSigDetails] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function run() {
+      const fetchedDelegateSigDetails = await getCanDelegateBySig(address);
+      setDelegateSigDetails(fetchedDelegateSigDetails);
+      setLoading(false);
+    }
+    if (address) {
+      run();
+    }
+  }, [address]);
+
+  delegateSigDetailsReactive({ details: delegateSigDetails, loading });
+};
+
+export const useGetTransactionDone = (txHash) => {
+  const [transactionDone, setTransactionDone] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const provider = getEthersProvider();
+
+  useEffect(() => {
+    async function run() {
+      if (!provider) return;
+      const tx = await provider.getTransaction(txHash);
+      setTransactionDone(tx.blockNumber !== null);
+      setLoading(false);
+    }
+    if (txHash) {
+      run();
+    }
+  }, [txHash, provider]);
+
+  return transactionDone;
 };
