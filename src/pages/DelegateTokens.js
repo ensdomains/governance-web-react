@@ -16,7 +16,7 @@ import { getEthersProvider } from "../web3modal";
 const delegateToAddress = async (
   setClaimState,
   history,
-  selectedDelegate,
+  delegateAddress,
   sigDetails
 ) => {
   try {
@@ -25,19 +25,12 @@ const delegateToAddress = async (
       message: "",
     });
 
-    let delegateAddress;
     let provider = getEthersProvider();
 
-    const displayName = selectedDelegate;
-    if (!displayName) {
+    if (!delegateAddress || delegateAddress === "") {
       throw "No chosen delegate";
     }
 
-    if (displayName.includes(".eth")) {
-      delegateAddress = await provider.resolveName(displayName);
-    } else {
-      delegateAddress = displayName;
-    }
     const tx =
       sigDetails && sigDetails.canSign
         ? await delegateBySig(
@@ -101,7 +94,7 @@ const ENSTokenClaim = ({ location }) => {
         timeout = await delegateToAddress(
           setClaimState,
           history,
-          selectedDelegate,
+          selectedDelegate.address,
           delegateSigDetails
         );
       }
@@ -168,7 +161,7 @@ const ENSTokenClaim = ({ location }) => {
           delegateToAddress(
             setClaimState,
             history,
-            selectedDelegate,
+            selectedDelegate.address,
             delegateSigDetails
           );
         }}
