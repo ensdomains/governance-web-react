@@ -2,6 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
 ### Testing
 
 To test with cypress, you shouldn't use `yarn cypress:open` as it breaks the metamask plugin implementation.\
