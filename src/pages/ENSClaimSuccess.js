@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Client } from "@snapshot-labs/snapshot.js";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 

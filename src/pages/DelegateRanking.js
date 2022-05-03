@@ -159,7 +159,6 @@ const DelegateBox = (data) => {
     votes,
     name,
     address,
-    setRenderKey,
     userAccount,
     delegatedTo,
     search,
@@ -362,7 +361,6 @@ function CurrentDelegation({
   tokens,
   selection,
   delegatedTo,
-  setRenderKey,
 }) {
   let text = (
     <>
@@ -414,7 +412,7 @@ const ChooseYourDelegate = () => {
   useGetDelegateBySigStatus(chooseData.address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
-  const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const { delegatedTo } = chooseData.delegatedTo;
   const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
@@ -426,7 +424,6 @@ const ChooseYourDelegate = () => {
     location.state && location.state.hash
   );
 
-  const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
 
   return (
@@ -524,7 +521,6 @@ const ChooseYourDelegate = () => {
                 }
                 selection={selectedDelegate.name}
                 delegatedTo={delegatedTo}
-                setRenderKey={setRenderKey}
               />
             ))}
           <Input

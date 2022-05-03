@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
@@ -11,15 +11,13 @@ import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
-import { imageUrl, shortenAddress } from "../utils/utils";
+import { imageUrl } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import {
   getDelegateChoice,
   setDelegateChoice,
-  getDelegateReferral,
 } from "./ENSConstitution/delegateHelpers";
-import { getENSTokenContractAddress } from "../utils/consts";
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
@@ -250,10 +248,10 @@ const Input = styled.input`
 
 const ChooseYourDelegate = () => {
   const { data } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
-  const { delegates, loading: delegatesLoading, tokenInfo } = data.delegates;
+  const { delegates, loading: delegatesLoading } = data.delegates;
   const history = useHistory();
 
-  const [renderKey, setRenderKey] = useState(0);
+  const [setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
 
   return (

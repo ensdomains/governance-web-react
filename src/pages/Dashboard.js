@@ -5,7 +5,6 @@ import styled from "styled-components";
 
 import {
   ContentBox,
-  ContentBoxWithColumns,
   InnerContentBox,
   InnerContentBoxColumn,
   InnerContentBoxRow,
@@ -19,7 +18,6 @@ import {
   Link,
   Statistic,
   SubsubTitle,
-  SubTitle,
 } from "../components/text";
 import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
@@ -151,7 +149,7 @@ const EndAlignedCTAButton = styled(CTAButton)`
 
 const Dashboard = () => {
   const {
-    data: { address, addressDetails, ep2AddressDetails, network },
+    data: { address, addressDetails, ep2AddressDetails },
   } = useQuery(gql`
     query getHeaderData @client {
       address
@@ -163,7 +161,6 @@ const Dashboard = () => {
 
   const {
     lastExpiringName,
-    longestOwnedName,
     pastTokens,
     futureTokens,
     balance,
@@ -174,7 +171,6 @@ const Dashboard = () => {
 
   const {
     shortBalance: ep2Balance,
-    rawBalance: ep2RawBalance,
     eligible: ep2Eligible,
   } = ep2AddressDetails;
 

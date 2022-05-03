@@ -7,11 +7,7 @@ import Gap from "../components/Gap";
 import {
   Header,
   Content,
-  TokenText,
-  SubsubTitle,
-  Statistic,
 } from "../components/text";
-import { InnerContentBox, NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
 import { largerThan } from "../utils/styledComponents";
 import Divider from "../components/Divider";

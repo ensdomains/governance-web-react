@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
-import { Client } from "@snapshot-labs/snapshot.js";
-import { BigNumber, Contract } from "ethers";
 
 import Footer from "../components/Footer";
 import { Content, Header } from "../components/text";
 import { ContentBox, NarrowColumn } from "../components/layout";
 import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
-import { getEthersProvider } from "../web3modal";
 import TransactionState from "../components/TransactionState";
-import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree from "../merkle";
 import Pill from "../components/Pill";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
-import { handleClaim, submitClaim } from "../utils/token";
-import { generateMerkleShardUrl } from "../utils/consts";
+import { handleClaim } from "../utils/token";
 
 const getRightButtonText = (state) => {
   switch (state) {

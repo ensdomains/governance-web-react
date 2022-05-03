@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Client } from "@snapshot-labs/snapshot.js";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";

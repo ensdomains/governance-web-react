@@ -17,7 +17,6 @@ import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
 import {
-  ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
   getENSTokenContractAddress,
   getReverseRecordsAddress,
@@ -96,9 +95,6 @@ const filterDelegateData = (results) => {
 const bigNumberToDecimal = (bigNumber) =>
   Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)));
 
-const stringToInt = (numberString) =>
-  Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)));
-
 const cleanDelegatesList = (delegatesList) =>
   delegatesList.map((delegateItem) => ({
     avatar: delegateItem.avatar,
@@ -108,21 +104,6 @@ const cleanDelegatesList = (delegatesList) =>
     votes: bigNumberToDecimal(delegateItem.votes),
     ranking: bigNumberToDecimal(delegateItem.votes),
   }));
-
-const fetchTokenAllocations = async (addressArray) => {
-  try {
-    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
-    const allocations = await fetch(url);
-    const json = await allocations.json();
-    const integerScores = json.score.map((x) => ({
-      address: x.address?.toLowerCase(),
-      score: stringToInt(x.score),
-    }));
-    return integerScores;
-  } catch (error) {
-    console.error("fetchTokenAllocations error: ", error);
-  }
-};
 
 const createItemBatches = (items, perBatch = 2) => {
   var result = items.reduce((resultArray, item, index) => {
@@ -181,7 +162,6 @@ export const rankDelegates = (
 
 export const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState({});
-  const [tokenInfo, setTokenInfo] = useState({});
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const provider = getEthersProvider();
