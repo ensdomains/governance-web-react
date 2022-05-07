@@ -33,12 +33,13 @@ describe("Token claim site", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
     cy.contains("MetaMask").click();
+    cy.acceptMetamaskAccess();
     cy.contains("Delegates").click();
 
-    cy.contains("You have delegated 47.24 votes to", {
+    cy.contains("You have delegated 11.18 votes to", {
       timeout: 20000,
       exact: false,
-    }).should("have.text", "You have delegated 47.24 votes to", {
+    }).should("have.text", "You have delegated 11.18 votes to", {
       exact: false,
     });
 
@@ -92,10 +93,10 @@ describe("Token claim site", () => {
     cy.contains("MetaMask").click();
     cy.contains("Delegates").click();
 
-    cy.contains("You have delegated 47.24 votes to", {
+    cy.contains("You have delegated 11.18 votes to", {
       timeout: 20000,
       exact: false,
-    }).should("have.text", "You have delegated 47.24 votes to", {
+    }).should("have.text", "You have delegated 11.18 votes to", {
       exact: false,
     });
 
