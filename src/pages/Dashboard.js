@@ -5,10 +5,7 @@ import styled from "styled-components";
 
 import {
   ContentBox,
-  ContentBoxWithColumns,
   InnerContentBox,
-  InnerContentBoxColumn,
-  InnerContentBoxRow,
   NarrowColumn,
 } from "../components/layout";
 import {
@@ -19,7 +16,6 @@ import {
   Link,
   Statistic,
   SubsubTitle,
-  SubTitle,
 } from "../components/text";
 import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
@@ -30,7 +26,6 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
-import { hasClaimed } from "../utils/token";
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -180,29 +175,6 @@ const Dashboard = () => {
 
   const history = useHistory();
 
-  const [isClaimed, setIsClaimed] = useState(false);
-  const [isClaimedLoading, setIsClaimedLoading] = useState(true);
-
-  const [isClaimedEp2, setIsClaimedEp2] = useState(false);
-  const [isClaimedEp2Loading, setIsClaimedEp2Loading] = useState(true);
-
-  useEffect(() => {
-    hasClaimed(address)
-      .then((result) => {
-        setIsClaimed(result);
-        setIsClaimedLoading(false);
-      })
-      .then(() => hasClaimed(address, "ep2"))
-      .then((result) => {
-        console.log(result);
-        setIsClaimedEp2(result);
-        setIsClaimedEp2Loading(false);
-      })
-      .catch((error) => {
-        console.error("error checking hasClaimed: ", error);
-      });
-  }, [address]);
-
   return (
     <ClaimEnsTokenContainer>
       <LeftContainer>
@@ -263,40 +235,29 @@ const Dashboard = () => {
 
       <RightContainer>
         <NarrowColumn>
-          {isClaimedLoading === false && eligible !== undefined ? (
+          {
             eligible ? (
               <Pill
-                text={
-                  isClaimed
-                    ? "You were eligible for the airdrop!"
-                    : "You are eligible for the airdrop!"
-                }
+                text="You were eligible for the airdrop!"
               />
             ) : (
-              <Pill error text={"You are not eligible for the airdrop"} />
+              <Pill error text={"You were not eligible for the airdrop"} />
             )
-          ) : null}
-
+          }
           <ContentBox>
             <Header>
-              {isClaimed && rawBalance
-                ? "Your tokens are claimed!"
-                : "Claim your tokens"}
+              Past Airdrop
             </Header>
             <Gap height={3} />
             <WrappedContent>
               {rawBalance
-                ? isClaimed
-                  ? "You were eligible for the retroactive airdrop, and you successfully claimed your tokens."
-                  : "You are eligible for the airdrop! View your tokens below, and start the claim process."
-                : "This Ethereum account is not eligible for the airdrop. Please make sure you are connected with the right account."}
+                ? "You were eligible for the retroactive airdrop."
+                : "This Ethereum account was not eligible for the airdrop."}
             </WrappedContent>
             <Gap height={5} />
             <InnerContentBox>
               <SubsubTitle>
-                {rawBalance && isClaimed
-                  ? "You received..."
-                  : "You will receive..."}
+                {rawBalance && "You were eligible for..."}
               </SubsubTitle>
               <Gap height={2} />
               <Statistic>
@@ -309,71 +270,24 @@ const Dashboard = () => {
             {eligible && (
               <>
                 <WrappedContent>
-                  You have received these tokens for being an early participant
+                  You qualified to receive these tokens for being an early participant
                   of the ENS community. Use this power wisely!
                 </WrappedContent>
                 <Gap height={5} />
                 <CTAButton
-                  text={
-                    isClaimedLoading
-                      ? "Checking claim status..."
-                      : isClaimed
-                      ? "Tokens claimed successfully"
-                      : "Start your claim process"
-                  }
-                  onClick={() => !isClaimed && history.push("/why")}
-                  type={isClaimed || isClaimedLoading ? "disabled" : ""}
+                  text="Airdrop finished"
+                  type="disabled"
                 />
               </>
             )}
           </ContentBox>
           <Gap height={6} />
-          <AdditionalSubtitle>
+          {<AdditionalSubtitle>
             {ep2Eligible
-              ? "Additional token claims"
-              : "This Ethereum account is not eligible for any additional token claims."}
-          </AdditionalSubtitle>
+              ? "This Ethereum account was eligible for additional token claims."
+              : "This Ethereum account was not eligible for additional token claims."}
+          </AdditionalSubtitle> }
           <Gap height={ep2Eligible ? 3 : 0} />
-          {ep2Eligible && (
-            <ContentBox>
-              <InnerContentBoxRow>
-                <AdditionalHeader>EP2</AdditionalHeader>
-                <AdditionalLink href="https://github.com/ensdomains/governance-docs/blob/main/governance-proposals/ep2-executable-retrospective-airdrop-for-accounts-that-owned-another-accounts-primary-ens-1.md">
-                  Learn More
-                </AdditionalLink>
-              </InnerContentBoxRow>
-              <Gap height={2} />
-              <AdditionalContent>
-                Based on the EP2 and EP3 DAO proposals, this is an airdrop
-                related to the 2x multiplier, as well as returning tokens
-                accidentally sent to the token contract.
-              </AdditionalContent>
-              <Gap height={3} />
-              <InnerContentBoxRow>
-                <InnerContentBoxColumn>
-                  <SubsubTitle>
-                    {isClaimedEp2 ? "Claimed tokens" : "Claimable tokens"}
-                  </SubsubTitle>
-                  <Gap height={1} />
-                  <Statistic>
-                    <AdditionalIntegerBalance>
-                      {ep2Balance?.split(".")[0]}
-                    </AdditionalIntegerBalance>
-                    <AdditionalDecimalBalance>
-                      .{ep2Balance?.split(".")[1]}
-                    </AdditionalDecimalBalance>
-                    <SmallENSLogo />
-                  </Statistic>
-                </InnerContentBoxColumn>
-                <EndAlignedCTAButton
-                  onClick={() => !isClaimedEp2 && history.push("/ep2/summary")}
-                  text={isClaimedEp2 ? "Claimed" : "Claim"}
-                  type={isClaimedEp2 || isClaimedEp2Loading ? "disabled" : ""}
-                  data-testid="claim-ep2-button"
-                />
-              </InnerContentBoxRow>
-            </ContentBox>
-          )}
         </NarrowColumn>
       </RightContainer>
     </ClaimEnsTokenContainer>

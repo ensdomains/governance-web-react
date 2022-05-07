@@ -14,21 +14,12 @@ import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Dashboard from "./pages/Dashboard";
 import DelegateRanking from "./pages/DelegateRanking";
 import DelegateTokens from "./pages/DelegateTokens";
-import Delegation from "./pages/Delegation";
-import ENSClaimSuccess from "./pages/ENSClaimSuccess";
 import {
   setDelegateChoice,
   setDelegateReferral,
 } from "./pages/ENSConstitution/delegateHelpers";
-import ENSGovernance from "./pages/ENSGovernance";
-import ENSSummary from "./pages/ENSSummary";
-import ENSTokenClaim from "./pages/EnsTokenClaim";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
-import ENSEP2ClaimSuccess from "./pages/EP2/ENSEP2ClaimSuccess";
-import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
-import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
 import Home from "./pages/Home";
-import Why from "./pages/Why";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
 import { hasClaimed } from "./utils/token";
 import { initWeb3Read } from "./web3modal";
@@ -166,8 +157,6 @@ function App() {
         <AppContainerMid>
           <AppContainer>
             <Switch>
-              <PrivateRoute path="/why" component={Why} />
-              <PrivateRoute path="/governance" component={ENSGovernance} />
               <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
               <PrivateRoute
                 path="/manual-delegates"
@@ -181,29 +170,10 @@ function App() {
                 path="/delegate-tokens"
                 component={DelegateTokens}
               />
-              <PrivateRoute
-                path="/ep2/summary"
-                type="ep2"
-                component={ENSEP2ClaimSummary}
-              />
-              <PrivateRoute
-                path="/ep2/claim"
-                type="ep2"
-                component={ENSEP2TokenClaim}
-              />
-              <PrivateRoute
-                path="/ep2/success"
-                type="ep2"
-                component={ENSEP2ClaimSuccess}
-              />
-              <PrivateRoute path="/summary/claim" component={ENSTokenClaim} />
-              <PrivateRoute path="/summary" component={ENSSummary} />
-              <PrivateRoute path="/success" component={ENSClaimSuccess} />
               <PrivateRoute path="/dashboard" component={Dashboard} />
               <Route path="/delegate-ranking">
                 <DelegateRanking />
               </Route>
-              <PrivateRoute path="/delegation" component={Delegation} />
               <Route path="/">
                 <Home />
               </Route>

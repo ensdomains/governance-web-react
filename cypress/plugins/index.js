@@ -1,3 +1,6 @@
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
 /// <reference types="cypress" />
 
 // ***********************************************************
@@ -37,6 +40,6 @@ module.exports = (on, config) => {
       process.env.PASSWORD = password;
 
       return true;
-    },
+    }
   });
 };
