@@ -11,7 +11,7 @@ import {
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
-const INFURA_ID = "58a380d3ecd545b2b5b3dad5d2b18bf0";
+export const rpcUrl = 'https://web3.ens.domains/v1/mainnet'
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
@@ -30,7 +30,9 @@ const option = {
       package: () => import("@walletconnect/web3-provider"),
       packageFactory: true,
       options: {
-        infuraId: INFURA_ID,
+        rpc: {
+          1: rpcUrl
+        }
       },
     },
     walletlink: {
@@ -38,14 +40,14 @@ const option = {
       packageFactory: true,
       options: {
         appName: "Ethereum name service",
-        jsonRpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
+        jsonRpcUrl: rpcUrl,
       },
     },
     mewconnect: {
       package: () => import("@myetherwallet/mewconnect-web-client"),
       packageFactory: true,
       options: {
-        rpc: `https://mainnet.infura.io/v3/${INFURA_ID}`,
+        rpc: rpcUrl,
         description: " ",
       },
     },
@@ -113,7 +115,7 @@ export const initWeb3Read = async () => {
   }
   if (!ethersProvider) {
     ethersProvider = new ethers.providers.JsonRpcProvider(
-      `https://mainnet.infura.io/v3/${INFURA_ID}`
+      rpcUrl
     );
     isConnected(true);
     const net = await ethersProvider.getNetwork();
