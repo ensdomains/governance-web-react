@@ -1,15 +1,12 @@
 import React from "react";
 import styled from "styled-components/macro";
 
-import { Link } from "../components/text";
-import Gap from "../components/Gap";
 import { Button } from "@ensdomains/thorin";
+import Gap from "../components/Gap";
 
-import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { useHistory } from "react-router-dom";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
-import { initWeb3 } from "../web3modal";
+import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
+import { largerThan } from "../utils/styledComponents";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -19,7 +16,7 @@ const HomeContainer = styled.div`
 
 const WrappedTitle = styled.div`
   font-weight: bold;
-  font-size: 44px;
+  font-size: 36px;
   line-height: 118%;
 
   text-align: center;
@@ -32,10 +29,14 @@ const WrappedTitle = styled.div`
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  ${largerThan.mobile`
+    font-size: 44px;
+  `}
 `;
 
 const WrappedSubTitle = styled.div`
-  max-width: 560px;
+  max-width: 440px;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -47,49 +48,47 @@ const WrappedSubTitle = styled.div`
   color: #717171;
 `;
 
-const HOME_QUERY = gql`
-  query privateRouteQuery @client {
-    addressDetails
-    address
-  }
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+`;
+
+const ButtonCaption = styled.div`
+  padding: 0 12px;
+  font-weight: bold;
+  color: #717171;
+`;
+
+const DelegateButton = styled(Button)`
+  width: 100%;
 `;
 
 const Home = () => {
-  const {
-    data: { address },
-  } = useQuery(HOME_QUERY);
   const history = useHistory();
 
   const handleClick = () => {
-    if (address) {
-      history.push("/dashboard");
-    } else {
-      initWeb3();
-    }
+    history.push("/delegate-ranking");
   };
 
   return (
     <HomeContainer>
       <SplashENSLogo />
-      <Link
-        href="https://ens.mirror.xyz/-eaqMv7XPikvXhvjbjzzPNLS4wzcQ8vdOgi9eNXeUuY"
-        target="_blank"
-      >
-        Introducing $ENS →
-      </Link>
-      <Gap height={3} />
+      <Gap height={1} />
       <WrappedTitle>Help decide</WrappedTitle>
       <WrappedTitle>the future of ENS</WrappedTitle>
       <Gap height={3} />
       <WrappedSubTitle>
-        With the launch of <b>$ENS</b> and the <b>DAO</b>, the community will be
-        empowered to govern the ENS protocol.
+        Delegate your <b>$ENS</b> to participate in the <b>ENS DAO</b>, and
+        govern the ENS protocol.
       </WrappedSubTitle>
-      <Gap height={8} />
-      <Button
-        text={address ? "Get started" : "Connect wallet"}
-        onClick={handleClick}
-      />
+      <Gap height={10} />
+      <ButtonContainer>
+        <DelegateButton text={"Choose a Delegate"} onClick={handleClick} />
+        <ButtonCaption>Delegate for free until December 8th</ButtonCaption>
+      </ButtonContainer>
     </HomeContainer>
   );
 };
