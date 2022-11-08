@@ -8,6 +8,8 @@ import { useHistory } from "react-router-dom";
 import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { largerThan } from "../utils/styledComponents";
 
+const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
+
 const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -57,13 +59,12 @@ const ButtonContainer = styled.div`
 `;
 
 const ButtonCaption = styled.div`
-  padding: 0 12px;
   font-weight: bold;
   color: #717171;
 `;
 
 const DelegateButton = styled(Button)`
-  width: 100%;
+  width: 290px;
 `;
 
 const Home = () => {
@@ -87,7 +88,15 @@ const Home = () => {
       <Gap height={10} />
       <ButtonContainer>
         <DelegateButton text={"Choose a Delegate"} onClick={handleClick} />
-        <ButtonCaption>Delegate for free until December 8th</ButtonCaption>
+        {new Date() <= END_FREE_DELEGATION_DATE && (
+          <ButtonCaption>
+            Delegate for free until{" "}
+            {END_FREE_DELEGATION_DATE.toLocaleDateString(undefined, {
+              month: "long",
+              day: "numeric",
+            })}
+          </ButtonCaption>
+        )}
       </ButtonContainer>
     </HomeContainer>
   );
