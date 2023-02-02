@@ -28,11 +28,12 @@ export function useQueryString() {
   return new URLSearchParams(useLocation().search);
 }
 
-const DELEGATE_TEXT_QUERY = gql`
+const generateDelegateQuery = (skip = 0) => gql`
   query delegateTextQuery {
     resolvers(
       where: { texts_contains: ["eth.ens.delegate", "avatar"] }
       first: 1000
+      skip: ${skip}
     ) {
       address
       texts
@@ -70,21 +71,25 @@ export function namehash(inputName) {
   return "0x" + node;
 }
 
-const processENSDelegateContractResults = (results, delegateData) =>
-  results
-    ?.filter((result) => result.profile.length > 0)
-    .map((result) => {
-      const data = delegateData.find((data) => {
-        return data.addr.id.toLowerCase() === result.addr.toLowerCase();
-      });
-      return {
-        avatar: result.avatar,
-        profile: result.profile,
-        address: result.addr,
-        votes: result.votes,
-        name: data?.domain?.name,
-      };
+const processENSDelegateContractResults = (
+  flatGetDelegatesResults,
+  reverseRecordOnly
+) =>
+  reverseRecordOnly.map((reverseRecordOnlyResult) => {
+    const data = flatGetDelegatesResults.find((getDelegateResult) => {
+      return (
+        reverseRecordOnlyResult.addr.id.toLowerCase() ===
+        getDelegateResult.addr.toLowerCase()
+      );
     });
+    return {
+      avatar: data.avatar,
+      profile: data.profile,
+      address: data.addr,
+      votes: data.votes,
+      name: reverseRecordOnlyResult?.domain?.name,
+    };
+  });
 
 const filterDelegateData = (results) => {
   return results
@@ -166,11 +171,7 @@ export const rankDelegates = (
   prepopDelegate
 ) => {
   const cleanList = cleanDelegatesList(delegateList);
-  const withTokenBalance = addBalance(
-    cleanList,
-    tokensDelegated,
-    prepopDelegate
-  );
+  const withTokenBalance = addBalance(cleanList, tokensDelegated);
   const sortedList = withTokenBalance.sort((x, y) => {
     if (x.name == prepopDelegate) return -1;
     if (y.name == prepopDelegate) return 1;
@@ -181,15 +182,25 @@ export const rankDelegates = (
 
 export const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState({});
-  const [tokenInfo, setTokenInfo] = useState({});
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const provider = getEthersProvider();
     const run = async () => {
-      const { data: delegateData } = await apolloClientInstance.query({
-        query: DELEGATE_TEXT_QUERY,
-      });
-      const filteredDelegateData = filterDelegateData(delegateData.resolvers);
+      const delegateDataRaw = await Promise.all([
+        apolloClientInstance.query({
+          query: generateDelegateQuery(),
+        }),
+        apolloClientInstance.query({
+          query: generateDelegateQuery(1000),
+        }),
+        apolloClientInstance.query({
+          query: generateDelegateQuery(2000),
+        }),
+      ]);
+
+      const filteredDelegateData = filterDelegateData(
+        delegateDataRaw.map((x) => x.data.resolvers).flat()
+      );
       const delegateNamehashes = filteredDelegateData.map(
         (result) => result.domain.id
       );
@@ -207,28 +218,30 @@ export const useGetDelegates = (isConnected) => {
       );
 
       const batches = createItemBatches(delegateNamehashes, 50);
-      let results = await Promise.all(
+      let getDelegatesResults = await Promise.all(
         batches.map((batch) => ENSDelegateContract.getDelegates(batch))
       );
-      const flatResults = results?.flat();
-      const processedDelegateData = processENSDelegateContractResults(
-        flatResults,
-        filteredDelegateData
-      );
+      const flatGetDelegateResults = getDelegatesResults?.flat();
 
-      const addresses = processedDelegateData.map((data) => data.address);
+      const addresses = flatGetDelegateResults.map((data) => data[0]);
       const names = await ReverseRecordsContract.getNames(addresses);
-      const processedDelegateDataWithReverse = processedDelegateData.filter(
-        (d, i) => d.name == names[i]
+
+      const reverseRecordOnly = filteredDelegateData.filter((x) => {
+        return names.find((name) => name === x.domain.name);
+      });
+
+      const processedDelegateData = processENSDelegateContractResults(
+        flatGetDelegateResults,
+        reverseRecordOnly
       );
 
-      const tokensDelegated = processedDelegateDataWithReverse
+      const tokensDelegated = processedDelegateData
         .map((delegate) => delegate.votes)
         .reduce((a, b) => a.add(b))
         .div(ethers.utils.parseEther("1"))
         .toNumber();
       const rankedDelegates = await rankDelegates(
-        processedDelegateDataWithReverse,
+        processedDelegateData,
         tokensDelegated,
         getDelegateReferral()
       );
