@@ -1,8 +1,8 @@
 {
-  "name": "governance-web",
+  "name": "airdrop-governance-react",
   "version": "0.1.0",
   "private": true,
-  "author": "ENS Team (@ensdomains)",
+  "author": "Seamless Protocol",
   "dependencies": {
     "@apollo/client": "3.4.11",
     "@ensdomains/eth-ens-namehash": "2.0.15",
