@@ -11,7 +11,6 @@ import Pill from "../components/Pill";
 import { Content, Header } from "../components/text";
 import TransactionState from "../components/TransactionState";
 import { delegate, delegateBySig } from "../utils/token";
-import { getEthersProvider } from "../web3modal";
 
 const delegateToAddress = async (
   setClaimState,
@@ -25,10 +24,8 @@ const delegateToAddress = async (
       message: "",
     });
 
-    let provider = getEthersProvider();
-
     if (!delegateAddress || delegateAddress === "") {
-      throw "No chosen delegate";
+      throw new Error("No chosen delegate");
     }
 
     const tx =
@@ -61,13 +58,14 @@ const getRightButtonText = (state) => {
       return "Return to delegates";
     case "ERROR":
       return "Try again";
+    default:
+      return "Try again";
   }
 };
 
 const ENSTokenClaim = ({ location }) => {
   const {
     data: {
-      isConnected,
       address,
       selectedDelegate,
       delegateSigDetails: _delegateSigDetails,

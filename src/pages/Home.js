@@ -5,7 +5,7 @@ import { Button } from "@ensdomains/thorin";
 import Gap from "../components/Gap";
 
 import { useHistory } from "react-router-dom";
-import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import { largerThan } from "../utils/styledComponents";
 
 const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
@@ -23,14 +23,15 @@ const WrappedTitle = styled.div`
 
   text-align: center;
   letter-spacing: -0.01em;
-  background: linear-gradient(
+  color: black;
+  /* background: linear-gradient(
     330.4deg,
     #44bcf0 4.54%,
     #7298f8 59.2%,
     #a099ff 148.85%
   );
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent; */
 
   ${largerThan.mobile`
     font-size: 44px;
@@ -76,14 +77,14 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <SplashENSLogo />
+      <SeamlessLogo />
       <Gap height={1} />
       <WrappedTitle>Help decide</WrappedTitle>
-      <WrappedTitle>the future of ENS</WrappedTitle>
+      <WrappedTitle>the future of Seamless</WrappedTitle>
       <Gap height={3} />
       <WrappedSubTitle>
-        Delegate your <b>$ENS</b> to participate in the <b>ENS DAO</b>, and
-        govern the ENS protocol.
+        Delegate your <b>$SEAM</b> to participate and govern the Seamless
+        protocol.
       </WrappedSubTitle>
       <Gap height={10} />
       <ButtonContainer>

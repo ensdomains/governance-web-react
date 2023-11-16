@@ -19,9 +19,9 @@ import {
 import Gap from "../../components/Gap";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { ReactComponent as SplashENSLogo } from "../../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../../assets/imgs/SeamlessLogo.svg";
 
-const ENSLogo = styled(SplashENSLogo)`
+const ENSLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Client } from "@snapshot-labs/snapshot.js";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";
@@ -23,11 +22,11 @@ import Gap from "../components/Gap";
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import { CTAButton } from "../components/buttons";
-import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
 import Pill from "../components/Pill";
 
-const ENSLogo = styled(SplashENSLogo)`
+const ENSLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 10px;

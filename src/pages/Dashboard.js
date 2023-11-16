@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";
@@ -21,7 +21,7 @@ import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
 import { largerThan } from "../utils/styledComponents";
 
-import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
@@ -50,7 +50,7 @@ const RightContainer = styled.div`
     `}
 `;
 
-const ENSLogo = styled(SplashENSLogo)`
+const ENSLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;
@@ -235,19 +235,13 @@ const Dashboard = () => {
 
       <RightContainer>
         <NarrowColumn>
-          {
-            eligible ? (
-              <Pill
-                text="You were eligible for the airdrop!"
-              />
-            ) : (
-              <Pill error text={"You were not eligible for the airdrop"} />
-            )
-          }
+          {eligible ? (
+            <Pill text="You were eligible for the airdrop!" />
+          ) : (
+            <Pill error text={"You were not eligible for the airdrop"} />
+          )}
           <ContentBox>
-            <Header>
-              Past Airdrop
-            </Header>
+            <Header>Past Airdrop</Header>
             <Gap height={3} />
             <WrappedContent>
               {rawBalance
@@ -270,23 +264,22 @@ const Dashboard = () => {
             {eligible && (
               <>
                 <WrappedContent>
-                  You qualified to receive these tokens for being an early participant
-                  of the ENS community. Use this power wisely!
+                  You qualified to receive these tokens for being an early
+                  participant of the ENS community. Use this power wisely!
                 </WrappedContent>
                 <Gap height={5} />
-                <CTAButton
-                  text="Airdrop finished"
-                  type="disabled"
-                />
+                <CTAButton text="Airdrop finished" type="disabled" />
               </>
             )}
           </ContentBox>
           <Gap height={6} />
-          {<AdditionalSubtitle>
-            {ep2Eligible
-              ? "This Ethereum account was eligible for additional token claims."
-              : "This Ethereum account was not eligible for additional token claims."}
-          </AdditionalSubtitle> }
+          {
+            <AdditionalSubtitle>
+              {ep2Eligible
+                ? "This Ethereum account was eligible for additional token claims."
+                : "This Ethereum account was not eligible for additional token claims."}
+            </AdditionalSubtitle>
+          }
           <Gap height={ep2Eligible ? 3 : 0} />
         </NarrowColumn>
       </RightContainer>

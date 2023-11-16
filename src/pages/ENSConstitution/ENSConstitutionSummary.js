@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { ContentBoxWithHeader } from "../../components/layout";
@@ -7,7 +7,6 @@ import theme from "../../components/theme";
 import Footer from "../../components/Footer";
 import { useHistory } from "react-router-dom";
 import { useQuery, gql } from "@apollo/client";
-import { Client } from "@snapshot-labs/snapshot.js";
 
 const SummaryArticleContainer = styled.div`
   display: flex;

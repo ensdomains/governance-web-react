@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Client } from "@snapshot-labs/snapshot.js";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 
@@ -36,7 +35,8 @@ const SocialButtonContainer = styled.div`
   cursor: pointer;
 `;
 
-const TWITTER_INTENT = 'ENS%20is%20decentralizing%20governance%20with%20the%20%23ENSDAO!%20%40ensdomains%20is%20an%20open%20public%20identity%20protocol%20owned%20by%20the%20community.%0A%0AI%E2%80%99m%20an%20ENS%20.eth%20name%20holder%20and%20just%20claimed%20my%20%24ENS%20governance%20tokens.%20Claim%20yours%20%F0%9F%91%87%0A%0Aclaim.ens.domains'
+const TWITTER_INTENT =
+  "ENS%20is%20decentralizing%20governance%20with%20the%20%23ENSDAO!%20%40ensdomains%20is%20an%20open%20public%20identity%20protocol%20owned%20by%20the%20community.%0A%0AI%E2%80%99m%20an%20ENS%20.eth%20name%20holder%20and%20just%20claimed%20my%20%24ENS%20governance%20tokens.%20Claim%20yours%20%F0%9F%91%87%0A%0Aclaim.ens.domains";
 
 const SocialButton = ({ type, text }) => {
   return (
@@ -47,10 +47,14 @@ const SocialButton = ({ type, text }) => {
           : "https://chat.ens.domains/"
       }
       target={"_blank"}
+      rel="noreferrer"
     >
       <SocialButtonContainer type={type}>
         <div>{text}</div>
-        <img src={type === "Twitter" ? TwitterLogo : DiscordLogo} />
+        <img
+          alt="social media logo"
+          src={type === "Twitter" ? TwitterLogo : DiscordLogo}
+        />
       </SocialButtonContainer>
     </a>
   );

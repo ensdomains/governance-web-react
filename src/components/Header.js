@@ -8,7 +8,7 @@ import { initWeb3 } from "../web3modal";
 import Profile from "./Profile";
 import { largerThan } from "../utils/styledComponents";
 
-import { ReactComponent as HeaderENSLogo } from "../assets/imgs/HeaderENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo64.svg";
 import { ReactComponent as DefaultYellowWarning } from "../assets/imgs/YellowWarning.svg";
 import { Link } from "react-router-dom";
 
@@ -45,7 +45,7 @@ const RightContainer = styled.div`
   align-items: center;
 `;
 
-const WrappedLogo = styled(HeaderENSLogo)`
+const WrappedLogo = styled(SeamlessLogo)`
   margin-bottom: -10px;
   margin-left: -20px;
 `;

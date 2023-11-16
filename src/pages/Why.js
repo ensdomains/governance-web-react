@@ -4,14 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
-import {
-  Header,
-  Content,
-  TokenText,
-  SubsubTitle,
-  Statistic,
-} from "../components/text";
-import { InnerContentBox, NarrowColumn } from "../components/layout";
+import { Header, Content } from "../components/text";
 import { ContentBox } from "../components/layout";
 import { largerThan } from "../utils/styledComponents";
 import Divider from "../components/Divider";
@@ -86,21 +79,21 @@ const Why = () => {
           <StatsRow>
             <RowLabel>Names</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>>400k</StatsNumber>
+              <StatsNumber>&gt;400k</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
           <StatsRow>
             <RowLabel>Years registered</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>>1,775,000</StatsNumber>
+              <StatsNumber>&gt;1,775,000</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
           <StatsRow>
             <RowLabel>Integrations</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>>310</StatsNumber>
+              <StatsNumber>&gt;310</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
         </StatsSection>

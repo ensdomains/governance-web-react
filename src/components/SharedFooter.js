@@ -38,13 +38,21 @@ const SharedFooter = () => {
       <InnerContainer>
         <LeftContainer></LeftContainer>
         <RightContainer>
-          <a target={"_blank"} href={"https://twitter.com/ensdomains"}>
+          <a
+            target="_blank"
+            href="https://twitter.com/ensdomains"
+            rel="noreferrer"
+          >
             <TwitterGrey />
           </a>
-          <a target={"_blank"} href={"https://discuss.ens.domains/"}>
+          <a
+            target="_blank"
+            href="https://discuss.ens.domains/"
+            rel="noreferrer"
+          >
             <ForumGrey />
           </a>
-          <a target={"_blank"} href={"https://chat.ens.domains/"}>
+          <a target="_blank" href="https://chat.ens.domains/" rel="noreferrer">
             <DiscordGrey />
           </a>
         </RightContainer>

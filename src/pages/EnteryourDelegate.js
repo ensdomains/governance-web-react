@@ -20,6 +20,7 @@ const Input = styled.input`
   height: 64px;
   width: 100%;
   -webkit-appearance: none;
+  appearance: none;
   outline: none;
   border: none;
   background: #f6f6f6;
@@ -112,7 +113,7 @@ const InputComponent = ({
             });
             return;
           }
-          throw "error";
+          throw new Error("error");
         } catch (error) {
           setValidationMessage({
             message: "ENS name does not resolve to an ETH address",
