@@ -134,7 +134,7 @@ const StyledLink = styled.a`
   margin-left: 8px;
   font-style: normal;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 23px;
   letter-spacing: -0.01em;
   margin-right: 15px;
