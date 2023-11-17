@@ -90,12 +90,13 @@ const DelegateLink = styled(Link)`
   font-weight: bold;
   font-size: 18px;
   line-height: 23px;
-  /* identical to box height */
   letter-spacing: -0.01em;
   margin-right: 15px;
   color: white;
+  position: relative;
 
-  transition: color 0.3s ease, background 0.3s ease;
+  transition: color 0.3s ease, background 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     color: black;
@@ -103,6 +104,8 @@ const DelegateLink = styled(Link)`
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   ${(p) =>
@@ -113,6 +116,16 @@ const DelegateLink = styled(Link)`
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -5px; /* Adjust as needed */
+        height: 2px; /* Adjust as needed */
+        background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); /* Gradient color stops */
+      }
   `}
 `;
 
@@ -123,12 +136,13 @@ const StyledLink = styled.a`
   font-weight: bold;
   font-size: 18px;
   line-height: 23px;
-  /* identical to box height */
   letter-spacing: -0.01em;
   margin-right: 15px;
   color: white;
+  position: relative;
 
-  transition: color 0.3s ease, background 0.3s ease;
+  transition: color 0.3s ease, background 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     color: black;
@@ -136,16 +150,28 @@ const StyledLink = styled.a`
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   ${(p) =>
     p.current &&
     `
-    color: black;
-    background: ${theme.colors.gradients.seamless};
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+      color: black;
+      background: ${theme.colors.gradients.seamless};
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -5px; /* Adjust as needed */
+        height: 2px; /* Adjust as needed */
+        background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); /* Gradient color stops */
+      }
   `}
 `;
 
@@ -180,6 +206,7 @@ const Header = () => {
   ];
 
   let match = useRouteMatch("/delegate-ranking");
+
   return (
     <HeaderContainer>
       <HeaderContainerInner>
@@ -191,7 +218,7 @@ const Header = () => {
             <StyledLink
               key={index}
               href={item.link}
-              current={item.title === "Claim"}
+              current={item.title === "Claim" && !match}
             >
               {item.title}
             </StyledLink>
