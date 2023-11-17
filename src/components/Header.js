@@ -38,6 +38,10 @@ const LeftContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  width: 50%;
+
+  justify-content: space-around;
+
   ${largerThan.tablet`
     flex-direction: row;
   `}
@@ -91,14 +95,57 @@ const DelegateLink = styled(Link)`
   margin-right: 15px;
   color: white;
 
+  transition: color 0.3s ease, background 0.3s ease;
+
   &:hover {
-    color: grey;
+    color: black;
+    background: ${theme.colors.gradients.seamless};
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   ${(p) =>
     p.current &&
     `
-    color: grey;
+      color: black;
+      background: ${theme.colors.gradients.seamless};
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+  `}
+`;
+
+const StyledLink = styled.a`
+  margin-top: 8px;
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  /* identical to box height */
+  letter-spacing: -0.01em;
+  margin-right: 15px;
+  color: white;
+
+  transition: color 0.3s ease, background 0.3s ease;
+
+  &:hover {
+    color: black;
+    background: ${theme.colors.gradients.seamless};
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  ${(p) =>
+    p.current &&
+    `
+    color: black;
+    background: ${theme.colors.gradients.seamless};
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   `}
 `;
 
@@ -113,8 +160,26 @@ const Header = () => {
     }
   `);
 
-  let match = useRouteMatch("/delegate-ranking");
+  const navigation = [
+    {
+      link: "https://app.seamlessprotocol.com",
+      title: "Dashboard",
+    },
+    {
+      link: "https://app.seamlessprotocol.com",
+      title: "Markets",
+    },
+    {
+      link: "https://farms.seamlessprotocol.com",
+      title: "Staking Farms",
+    },
+    {
+      link: "/",
+      title: "Claim",
+    },
+  ];
 
+  let match = useRouteMatch("/delegate-ranking");
   return (
     <HeaderContainer>
       <HeaderContainerInner>
@@ -122,6 +187,15 @@ const Header = () => {
           <Link to={"/"}>
             <WrappedLogo />
           </Link>
+          {navigation.map((item, index) => (
+            <StyledLink
+              key={index}
+              href={item.link}
+              current={item.title === "Claim"}
+            >
+              {item.title}
+            </StyledLink>
+          ))}
         </LeftContainer>
         <RightContainer>
           <DelegateLink to="delegate-ranking" current={match}>
