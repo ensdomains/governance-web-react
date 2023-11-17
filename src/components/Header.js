@@ -55,6 +55,11 @@ const RightContainer = styled.div`
 const WrappedLogo = styled(SeamlessLogo)`
   margin-bottom: -10px;
   margin-left: -20px;
+
+  @media screen and (max-width: 491px) {
+    margin-left: -44px;
+    scale: 0.8;
+  }
 `;
 
 const NetworkWarningContainer = styled("div")`
@@ -97,6 +102,10 @@ const DelegateLink = styled(Link)`
 
   transition: color 0.3s ease, background 0.3s ease, transform 0.3s ease,
     box-shadow 0.3s ease;
+
+  @media screen and (max-width: 591px) {
+    display: none;
+  }
 
   &:hover {
     color: black;
@@ -143,6 +152,77 @@ const StyledLink = styled.a`
 
   transition: color 0.3s ease, background 0.3s ease, transform 0.3s ease,
     box-shadow 0.3s ease;
+
+  @media screen and (max-width: 981px) {
+    display: none;
+  }
+
+  &:hover {
+    color: black;
+    background: ${theme.colors.gradients.seamless};
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  ${(p) =>
+    p.current &&
+    `
+      color: black;
+      background: ${theme.colors.gradients.seamless};
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -5px; /* Adjust as needed */
+        height: 2px; /* Adjust as needed */
+        background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); /* Gradient color stops */
+      }
+  `}
+
+  @media screen and (max-width: 450px) {
+    display: none;
+  }
+`;
+
+const MobileLinkContainer = styled.div`
+  margin-top: -16px;
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.colors.bg.headerFooter};
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  @media screen and (min-width: 981px) {
+    display: none;
+  }
+`;
+
+const MobileLink = styled.a`
+  margin-top: 8px;
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 23px;
+  letter-spacing: -0.01em;
+  margin-right: 15px;
+  color: white;
+  position: relative;
+  transition: color 0.3s ease, background 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  @media screen and (min-width: 981px) {
+    display: none;
+  }
 
   &:hover {
     color: black;
@@ -239,6 +319,17 @@ const Header = () => {
           )}
         </RightContainer>
       </HeaderContainerInner>
+      <MobileLinkContainer>
+        {navigation.map((item, index) => (
+          <MobileLink
+            key={index}
+            href={item.link}
+            current={item.title === "Claim" && !match}
+          >
+            {item.title}
+          </MobileLink>
+        ))}
+      </MobileLinkContainer>
       {network !== null && network !== 1 && <NetworkWarning />}
     </HeaderContainer>
   );
