@@ -214,7 +214,7 @@ export const handleClaim = async (
     if (type === "mainnet") {
       displayName = getDelegateChoice(address);
       if (!displayName) {
-        throw "No chosen delegate";
+        throw new Error("No chosen delegate");
       }
     } else {
       displayName = address;

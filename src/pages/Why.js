@@ -68,11 +68,10 @@ const Why = () => {
   return (
     <Container>
       <WhatIsENSContentBox>
-        <Header>What is ENS?</Header>
+        <Header>What is SEAM?</Header>
         <Gap height={3} />
         <Content>
-          Your ENS name is your web3 username and profile, one name for all of
-          your crypto addresses, and your decentralized website.
+          Your SEAM Tokens name is for governance of the Seamless Protocol.
         </Content>
         <Gap height={5} />
         <StatsSection>
@@ -104,7 +103,7 @@ const Why = () => {
         <Gap height={3} />
         <Content>
           <Token /> is an important step in further decentralizing governance of
-          the ENS protocol.
+          the Seamless protocol.
         </Content>
         <Gap height={5} />
         <Content>
@@ -116,8 +115,8 @@ const Why = () => {
         <Header>Why launch it now?</Header>
         <Gap height={3} />
         <Content>
-          Both ENS and the DAO space have matured in the last year. We believe
-          now is the time for ENS to further decentralize protocol governance.
+          Both SEAM and the DAO space have matured in the last year. We believe
+          now is the time for SEAM to further decentralize protocol governance.
         </Content>
       </ContentBox>
       <Footer

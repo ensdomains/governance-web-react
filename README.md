@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-# ENS Token claim front-end
-=======
 # Seamless Token claim front-end
->>>>>>> Stashed changes
 
 This is the code for the front-end app that allowed people to claim their $SEAM airdrop. It does not include any of the 'backend' infrastructure (smart contracts etc.), this can be found [here](https://github.com/seamless-protocol/governance).
 

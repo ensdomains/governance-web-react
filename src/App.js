@@ -180,8 +180,8 @@ function App() {
             </Switch>
           </AppContainer>
         </AppContainerMid>
-        <SharedFooter />
       </AppContainerOuter>
+      <SharedFooter />
     </>
   );
 }

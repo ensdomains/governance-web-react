@@ -36,7 +36,7 @@ const SocialButtonContainer = styled.div`
 `;
 
 const TWITTER_INTENT =
-  "ENS%20is%20decentralizing%20governance%20with%20the%20%23ENSDAO!%20%40ensdomains%20is%20an%20open%20public%20identity%20protocol%20owned%20by%20the%20community.%0A%0AI%E2%80%99m%20an%20ENS%20.eth%20name%20holder%20and%20just%20claimed%20my%20%24ENS%20governance%20tokens.%20Claim%20yours%20%F0%9F%91%87%0A%0Aclaim.ens.domains";
+  "SEAM%20is%20decentralizing%20governance%21%20Seamless%20is%20an%20open%20public%20borrowing%20and%20protocol%20owned%20by%20the%20community.%0A%0AI%E2%80%99m%20a%20SEAM%20holder%20and%20just%20claimed%20my%20%24SEAM%20governance%20tokens.%20Claim%20yours%20%F0%9F%91%87%0A%0Aclaim.seamlessprotocol.com";
 
 const SocialButton = ({ type, text }) => {
   return (
@@ -72,8 +72,8 @@ const ENSClaimSuccess = () => {
           <Gap height={3} />
           <Content>
             Congratulations on claiming your <Token />! We encourage you to
-            share on Twitter and join the ENS Discord to get involved in
-            governance.
+            share on Twitter and join the Seamless Protocol Discord to get
+            involved in governance.
           </Content>
           <Gap height={10} />
           <SocialButton type={"Twitter"} text={"Share on Twitter"} />

@@ -17,7 +17,6 @@ import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
 import {
-  ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
   getENSTokenContractAddress,
   getReverseRecordsAddress,
@@ -101,8 +100,8 @@ const filterDelegateData = (results) => {
 const bigNumberToDecimal = (bigNumber) =>
   Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)));
 
-const stringToInt = (numberString) =>
-  Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)));
+// const stringToInt = (numberString) =>
+//   Number(window.BigInt(numberString) / window.BigInt(Math.pow(10, 18)));
 
 const cleanDelegatesList = (delegatesList) =>
   delegatesList.map((delegateItem) => ({
@@ -114,20 +113,20 @@ const cleanDelegatesList = (delegatesList) =>
     ranking: bigNumberToDecimal(delegateItem.votes),
   }));
 
-const fetchTokenAllocations = async (addressArray) => {
-  try {
-    const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
-    const allocations = await fetch(url);
-    const json = await allocations.json();
-    const integerScores = json.score.map((x) => ({
-      address: x.address?.toLowerCase(),
-      score: stringToInt(x.score),
-    }));
-    return integerScores;
-  } catch (error) {
-    console.error("fetchTokenAllocations error: ", error);
-  }
-};
+// const fetchTokenAllocations = async (addressArray) => {
+//   try {
+//     const url = `${ALLOCATION_ENDPOINT}?addresses=${addressArray.join(",")}`;
+//     const allocations = await fetch(url);
+//     const json = await allocations.json();
+//     const integerScores = json.score.map((x) => ({
+//       address: x.address?.toLowerCase(),
+//       score: stringToInt(x.score),
+//     }));
+//     return integerScores;
+//   } catch (error) {
+//     console.error("fetchTokenAllocations error: ", error);
+//   }
+// };
 
 const createItemBatches = (items, perBatch = 2) => {
   var result = items.reduce((resultArray, item, index) => {
@@ -173,8 +172,8 @@ export const rankDelegates = (
   const cleanList = cleanDelegatesList(delegateList);
   const withTokenBalance = addBalance(cleanList, tokensDelegated);
   const sortedList = withTokenBalance.sort((x, y) => {
-    if (x.name == prepopDelegate) return -1;
-    if (y.name == prepopDelegate) return 1;
+    if (x.name === prepopDelegate) return -1;
+    if (y.name === prepopDelegate) return 1;
     return y.ranking - x.ranking;
   });
   return sortedList;
@@ -346,5 +345,5 @@ export const useGetTransactionDone = (txHash) => {
     }
   }, [txHash, provider]);
 
-  return transactionDone;
+  return { transactionDone, loading };
 };

@@ -8,9 +8,11 @@ import { initWeb3 } from "../web3modal";
 import Profile from "./Profile";
 import { largerThan } from "../utils/styledComponents";
 
-import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo64.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/Wordmark-seamless.svg";
 import { ReactComponent as DefaultYellowWarning } from "../assets/imgs/YellowWarning.svg";
 import { Link } from "react-router-dom";
+
+import { theme } from "./theme";
 
 import { Button } from "@ensdomains/thorin";
 
@@ -19,16 +21,17 @@ const HeaderContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 150px;
+  height: 100px;
   flex-direction: column;
+  background-color: ${theme.colors.bg.headerFooter};
 `;
 
 const HeaderContainerInner = styled.div`
   width: 100%;
-  max-width: 1024px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 48px;
 `;
 
 const LeftContainer = styled.div`
@@ -86,16 +89,16 @@ const DelegateLink = styled(Link)`
   /* identical to box height */
   letter-spacing: -0.01em;
   margin-right: 15px;
-  color: #989898;
+  color: white;
 
   &:hover {
-    color: #1a1a1a;
+    color: grey;
   }
 
   ${(p) =>
     p.current &&
     `
-    color: #1A1A1A;
+    color: grey;
   `}
 `;
 

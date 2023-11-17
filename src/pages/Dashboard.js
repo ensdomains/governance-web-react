@@ -13,12 +13,10 @@ import {
   DecimalBalance,
   Header,
   IntegerBalance,
-  Link,
   Statistic,
   SubsubTitle,
 } from "../components/text";
 import Gap from "../components/Gap";
-import { useHistory } from "react-router-dom";
 import { largerThan } from "../utils/styledComponents";
 
 import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
@@ -54,7 +52,7 @@ const ENSLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;
-  marign-top: 0px;
+  margin-top: 0px;
 `;
 
 const SmallENSLogo = styled(ENSLogo)`
@@ -118,35 +116,9 @@ const AdditionalSubtitle = styled(SubsubTitle)`
   margin-left: 10px;
 `;
 
-const AdditionalHeader = styled(Header)`
-  font-size: 20px;
-`;
-
-const AdditionalIntegerBalance = styled(IntegerBalance)`
-  font-size: 20px;
-  line-height: 24px;
-`;
-
-const AdditionalDecimalBalance = styled(DecimalBalance)`
-  font-size: 20px;
-  line-height: 24px;
-`;
-
-const AdditionalLink = styled(Link)`
-  font-size: 20px;
-`;
-
-const AdditionalContent = styled(Content)`
-  font-size: 14px;
-`;
-
-const EndAlignedCTAButton = styled(CTAButton)`
-  align-self: flex-end;
-`;
-
 const Dashboard = () => {
   const {
-    data: { address, addressDetails, ep2AddressDetails, network },
+    data: { address, addressDetails, ep2AddressDetails },
   } = useQuery(gql`
     query getHeaderData @client {
       address
@@ -158,7 +130,6 @@ const Dashboard = () => {
 
   const {
     lastExpiringName,
-    longestOwnedName,
     pastTokens,
     futureTokens,
     balance,
@@ -167,13 +138,7 @@ const Dashboard = () => {
     eligible,
   } = addressDetails;
 
-  const {
-    shortBalance: ep2Balance,
-    rawBalance: ep2RawBalance,
-    eligible: ep2Eligible,
-  } = ep2AddressDetails;
-
-  const history = useHistory();
+  const { eligible: ep2Eligible } = ep2AddressDetails;
 
   return (
     <ClaimEnsTokenContainer>
@@ -265,7 +230,7 @@ const Dashboard = () => {
               <>
                 <WrappedContent>
                   You qualified to receive these tokens for being an early
-                  participant of the ENS community. Use this power wisely!
+                  participant of the SEAM community. Use this power wisely!
                 </WrappedContent>
                 <Gap height={5} />
                 <CTAButton text="Airdrop finished" type="disabled" />

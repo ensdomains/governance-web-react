@@ -40,6 +40,6 @@ module.exports = (on, config) => {
       process.env.PASSWORD = password;
 
       return true;
-    }
+    },
   });
 };

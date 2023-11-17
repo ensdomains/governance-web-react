@@ -21,7 +21,7 @@ const Symbol = styled.span`
 const Token = ({ asset, start }) => (
   <Asset start={start}>
     <Logo />
-    <Symbol>ENS</Symbol>
+    <Symbol>SEAM</Symbol>
   </Asset>
 );
 

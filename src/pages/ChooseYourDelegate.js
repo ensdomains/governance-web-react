@@ -277,7 +277,7 @@ const ChooseYourDelegate = () => {
 
           <div>
             <WrappedCTAButton
-              text={"Enter ENS or address"}
+              text="Enter ENS or address"
               type={"deny"}
               onClick={() => {
                 history.push("/manual-delegates");

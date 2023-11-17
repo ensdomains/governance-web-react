@@ -7,6 +7,7 @@ import Gap from "../components/Gap";
 import { useHistory } from "react-router-dom";
 import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import { largerThan } from "../utils/styledComponents";
+import { theme } from "../components/theme";
 
 const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
 
@@ -24,14 +25,16 @@ const WrappedTitle = styled.div`
   text-align: center;
   letter-spacing: -0.01em;
   color: black;
-  /* background: linear-gradient(
+  background: ${theme.colors.gradients.seamless};
+  /* linear-gradient(
     330.4deg,
     #44bcf0 4.54%,
     #7298f8 59.2%,
     #a099ff 148.85%
-  );
+  ); */
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; */
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 
   ${largerThan.mobile`
     font-size: 44px;
@@ -66,6 +69,7 @@ const ButtonCaption = styled.div`
 
 const DelegateButton = styled(Button)`
   width: 290px;
+  background-color: ${theme.colors.gradients.seamless};
 `;
 
 const Home = () => {
@@ -78,7 +82,7 @@ const Home = () => {
   return (
     <HomeContainer>
       <SeamlessLogo />
-      <Gap height={1} />
+      <Gap height={12} />
       <WrappedTitle>Help decide</WrappedTitle>
       <WrappedTitle>the future of Seamless</WrappedTitle>
       <Gap height={3} />
