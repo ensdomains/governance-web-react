@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
 
 import { Button } from "@ensdomains/thorin";
@@ -10,6 +10,10 @@ import { largerThan } from "../utils/styledComponents";
 import { theme } from "../components/theme";
 
 const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
+
+export const config = {
+  runtime: "edge",
+};
 
 const HomeContainer = styled.div`
   display: flex;
@@ -26,12 +30,6 @@ const WrappedTitle = styled.div`
   letter-spacing: -0.01em;
   color: black;
   background: ${theme.colors.gradients.seamless};
-  /* linear-gradient(
-    330.4deg,
-    #44bcf0 4.54%,
-    #7298f8 59.2%,
-    #a099ff 148.85%
-  ); */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -42,10 +40,11 @@ const WrappedTitle = styled.div`
 `;
 
 const WrappedSubTitle = styled.div`
+  ${(p) => p.fontSize && `font-size: ${p.fontSize}px;`}
+
   max-width: 440px;
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
   line-height: 150%;
 
   text-align: center;
@@ -75,22 +74,55 @@ const DelegateButton = styled(Button)`
 const Home = () => {
   const history = useHistory();
 
+  const [configItems, setConfigItems] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const readItems = await fetch(
+          `https://edge-config.vercel.com/${process.env.REACT_APP_CONFIG_ID}?token=${process.env.REACT_APP_VERCEL_TOKEN}`
+          //"https://edge-config.vercel.com/ecfg_3eh8clg3msruczzvmbieqmmzll7r?token=14cadaad-72c1-4b8d-ad12-56d7b7f8f33f"
+        );
+        const result = await readItems.json();
+        console.log("result", result);
+
+        if (result.items) {
+          setConfigItems(result.items);
+        } else {
+          console.error("Unexpected API response format");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleClick = () => {
     history.push("/delegate-ranking");
   };
 
   return (
     <HomeContainer>
+      <Gap height={4} />
       <SeamlessLogo />
-      <Gap height={12} />
+      <Gap height={8} />
       <WrappedTitle>Help decide</WrappedTitle>
       <WrappedTitle>the future of Seamless</WrappedTitle>
       <Gap height={3} />
-      <WrappedSubTitle>
+      <WrappedSubTitle fontSize={18}>
         Delegate your <b>$SEAM</b> to participate and govern the Seamless
         protocol.
       </WrappedSubTitle>
-      <Gap height={10} />
+      <Gap height={4} />
+      <WrappedSubTitle fontSize={8}>
+        edge config key: greeting, value: {configItems.greeting}
+      </WrappedSubTitle>
+      <WrappedSubTitle fontSize={8}>
+        edge config key: seam, value: {configItems.seam}
+      </WrappedSubTitle>
+      <Gap height={4} />
       <ButtonContainer>
         <DelegateButton text={"Choose a Delegate"} onClick={handleClick} />
         {new Date() <= END_FREE_DELEGATION_DATE && (
