@@ -112,6 +112,32 @@ export const getClaimData = async (address, type = "mainnet") => {
   };
 };
 
+export const parseAndUseAirdrop = (jsonString) => {
+  try {
+    const airdropString = jsonString.items?.airdrop || jsonString.airdrop;
+
+    if (airdropString) {
+      console.log("Original airdrop string:", airdropString);
+
+      // Replace single quotes with double quotes
+      const correctedAirdropString = airdropString.replace(/'/g, '"');
+      console.log("Corrected airdrop string:", correctedAirdropString);
+
+      // Attempt to parse the corrected "airdrop" field content as JSON
+      const parsedAirdrop = JSON.parse(correctedAirdropString);
+      console.log("Parsed airdrop:", parsedAirdrop);
+
+      return parsedAirdrop.string2;
+    } else {
+      console.error('No valid "airdrop" field found');
+      return null;
+    }
+  } catch (error) {
+    console.error("Error parsing JSON:", error);
+    return null;
+  }
+};
+
 export const sendToDelegateJsonRpc = async (method, params) => {
   return fetch(getDelegateRpcURL(), {
     method: "POST",

@@ -63,14 +63,15 @@ const WrappedLogo = styled(SeamlessLogo)`
 `;
 
 const NetworkWarningContainer = styled("div")`
-  padding: 2px 15px;
-  border: 1px solid rgb(239, 239, 239);
+  padding: 0 15px;
+  border: 1px solid rgb(200, 200, 200);
   border-radius: 30px;
   color: rgb(136, 136, 136);
   display: flex;
   height: 50px;
+  margin-bottom: -36px;
   align-items: center;
-  margin-bottom: 20px;
+  background-color: white;
 `;
 
 const YellowWarning = styled(DefaultYellowWarning)`

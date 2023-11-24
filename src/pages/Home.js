@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import { largerThan } from "../utils/styledComponents";
 import { theme } from "../components/theme";
+import { parseAndUseAirdrop } from "../utils/utils";
 
 const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
 
@@ -81,17 +82,27 @@ const Home = () => {
       try {
         const readItems = await fetch(
           `https://edge-config.vercel.com/${process.env.REACT_APP_CONFIG_ID}?token=${process.env.REACT_APP_VERCEL_TOKEN}`
-          //"https://edge-config.vercel.com/ecfg_3eh8clg3msruczzvmbieqmmzll7r?token=14cadaad-72c1-4b8d-ad12-56d7b7f8f33f"
         );
         const result = await readItems.json();
 
-        if (result.items) {
-          setConfigItems(result.items);
+        console.log("API response:", result);
+
+        const airdropField = result.items?.airdrop || result.airdrop;
+
+        if (airdropField) {
+          const parsedAirdrop = parseAndUseAirdrop(result);
+          console.log("Parsed airdrop:", parsedAirdrop);
+
+          if (parsedAirdrop !== null) {
+            setConfigItems(parsedAirdrop);
+          } else {
+            console.error("Error parsing airdrop JSON");
+          }
         } else {
-          console.error("Unexpected API response format");
+          console.error('No "airdrop" field found in API response');
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -115,12 +126,11 @@ const Home = () => {
         protocol.
       </WrappedSubTitle>
       <Gap height={4} />
-      <WrappedSubTitle fontSize={8}>
-        edge config key: greeting, value: {configItems.greeting}
-      </WrappedSubTitle>
-      <WrappedSubTitle fontSize={8}>
-        edge config key: seam, value: {configItems.seam}
-      </WrappedSubTitle>
+      {configItems && (
+        <WrappedSubTitle fontSize={8}>
+          edge config key: greeting, value: {configItems}
+        </WrappedSubTitle>
+      )}
       <Gap height={4} />
       <ButtonContainer>
         <DelegateButton text={"Get started"} onClick={handleClick} />
