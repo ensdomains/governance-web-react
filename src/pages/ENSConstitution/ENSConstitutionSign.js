@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import { Client } from "@snapshot-labs/snapshot.js";
-
 import Footer from "../../components/Footer";
 import { Content, Header } from "../../components/text";
 import { ContentBox, NarrowColumn } from "../../components/layout";
@@ -13,31 +12,38 @@ import TransactionState from "../../components/TransactionState";
 import { PROPOSAL_ID, SNAPSHOT_TIMEOUT, SPACE_ID } from "../../utils/consts";
 import { getChoices } from "./constitutionHelpers";
 
+
 const handleVote = async (setVoteState, address, history) => {
   const snapshotClient = new Client();
   const ethersProvider = getEthersProvider();
+
   try {
     setVoteState({
       state: "LOADING",
       message: "",
     });
     let timeout;
+    try{
     await Promise.race([
       snapshotClient.vote(ethersProvider, address, SPACE_ID, {
         proposal: PROPOSAL_ID,
         choice: getChoices(address),
+        metadata: {}
       }),
       new Promise((_, reject) => {
         timeout = setTimeout(() => {
           reject("Error with signing vote please try again");
         }, SNAPSHOT_TIMEOUT);
       }),
-    ]);
-    clearTimeout(timeout);
+    ]);} catch(e) {
+      console.log(e);
+    }
+
     setVoteState({
       state: "SUCCESS",
       message: "",
     });
+
     return setTimeout(() => {
       history.push("/delegates");
     }, 2000);
@@ -117,7 +123,7 @@ const ENSConstitutionSign = ({ location }) => {
         rightButtonText={getRightButtonText(voteState.state)}
         rightButtonCallback={() => {
           if (voteState.state === "SUCCESS") {
-            history.push("/delegates");
+            history.push("/claim");
             return;
           }
           handleVote(setVoteState, data.address, history);

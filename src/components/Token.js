@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 
 const Asset = styled.span`
   position: relative;
 `;
 
-const Logo = styled(SplashENSLogo)`
+const Logo = styled(SeamlessLogo)`
   position: absolute;
   width: 21px;
   height: 21px;
@@ -21,7 +21,7 @@ const Symbol = styled.span`
 const Token = ({ asset, start }) => (
   <Asset start={start}>
     <Logo />
-    <Symbol>ENS</Symbol>
+    <Symbol>SEAM</Symbol>
   </Asset>
 );
 

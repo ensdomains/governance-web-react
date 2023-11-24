@@ -19,9 +19,9 @@ import {
 import Gap from "../../components/Gap";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { ReactComponent as SplashENSLogo } from "../../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../../assets/imgs/SeamlessLogo.svg";
 
-const ENSLogo = styled(SplashENSLogo)`
+const ENSLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;
@@ -41,16 +41,7 @@ const ClaimType = styled.div`
 `;
 
 const ENSEP2ClaimSummary = () => {
-  const {
-    data: { ep2AddressDetails },
-  } = useQuery(gql`
-    query privateRouteQuery @client {
-      isConnected
-      address
-      ep2AddressDetails
-    }
-  `);
-  const { balance } = ep2AddressDetails;
+  const balance = "1550.00";
   const history = useHistory();
 
   return (

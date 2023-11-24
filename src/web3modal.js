@@ -11,7 +11,7 @@ import {
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
-export const rpcUrl = 'https://web3.ens.domains/v1/mainnet'
+export const rpcUrl = "https://web3.ens.domains/v1/mainnet";
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
@@ -31,8 +31,8 @@ const option = {
       packageFactory: true,
       options: {
         rpc: {
-          1: rpcUrl
-        }
+          1: rpcUrl,
+        },
       },
     },
     walletlink: {
@@ -114,9 +114,7 @@ export const initWeb3Read = async () => {
     await initWeb3(false);
   }
   if (!ethersProvider) {
-    ethersProvider = new ethers.providers.JsonRpcProvider(
-      rpcUrl
-    );
+    ethersProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
     isConnected(true);
     const net = await ethersProvider.getNetwork();
     network(net.chainId);

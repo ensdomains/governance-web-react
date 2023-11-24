@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";
@@ -13,19 +13,19 @@ import {
   DecimalBalance,
   Header,
   IntegerBalance,
-  Link,
   Statistic,
   SubsubTitle,
 } from "../components/text";
 import Gap from "../components/Gap";
-import { useHistory } from "react-router-dom";
 import { largerThan } from "../utils/styledComponents";
+import { useHistory } from "react-router-dom";
 
-import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
+import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
+const merkleTreeData = require('../root.json'); 
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -50,11 +50,11 @@ const RightContainer = styled.div`
     `}
 `;
 
-const ENSLogo = styled(SplashENSLogo)`
+const ENSLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;
-  marign-top: 0px;
+  margin-top: 0px;
 `;
 
 const SmallENSLogo = styled(ENSLogo)`
@@ -114,155 +114,86 @@ const WrappedContent = styled(Content)`
   color: #1a1a1a;
 `;
 
-const AdditionalSubtitle = styled(SubsubTitle)`
-  margin-left: 10px;
-`;
-
-const AdditionalHeader = styled(Header)`
-  font-size: 20px;
-`;
-
-const AdditionalIntegerBalance = styled(IntegerBalance)`
-  font-size: 20px;
-  line-height: 24px;
-`;
-
-const AdditionalDecimalBalance = styled(DecimalBalance)`
-  font-size: 20px;
-  line-height: 24px;
-`;
-
-const AdditionalLink = styled(Link)`
-  font-size: 20px;
-`;
-
-const AdditionalContent = styled(Content)`
-  font-size: 14px;
-`;
-
-const EndAlignedCTAButton = styled(CTAButton)`
-  align-self: flex-end;
-`;
-
 const Dashboard = () => {
+  const history = useHistory();
+
   const {
-    data: { address, addressDetails, ep2AddressDetails, network },
+    data: { address },
   } = useQuery(gql`
     query getHeaderData @client {
       address
-      addressDetails
-      ep2AddressDetails
-      network
     }
   `);
 
-  const {
-    lastExpiringName,
-    longestOwnedName,
-    pastTokens,
-    futureTokens,
-    balance,
-    rawBalance,
-    hasReverseRecord,
-    eligible,
-  } = addressDetails;
+  const eligible = true;
+  console.log(address);
+  console.log(merkleTreeData);
+  const balance = merkleTreeData[address];
+  console.log(balance);
 
-  const {
-    shortBalance: ep2Balance,
-    rawBalance: ep2RawBalance,
-    eligible: ep2Eligible,
-  } = ep2AddressDetails;
 
-  const history = useHistory();
+  const rewards =[ 
+    {"OG points": "500"},
+    {"ILM": "15000"},
+  ]
+
+  const handleClick = () => {
+     history.push("/why");
+  };
 
   return (
     <ClaimEnsTokenContainer>
       <LeftContainer>
         {address && <Profile large {...{ address }} />}
-        <Gap height={3} />
+        <Gap height={4} />
+
+{
+/*
+    Hardcode 0.1 and 0.9 until we know exact proportions
+*/
+}
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
           </StatsRow>
           <Divider />
           <StatsRow>
-            <RowLabel>Historical activity </RowLabel>
+            <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>
-                {hasReverseRecord ? (pastTokens / 2).toFixed(2) : pastTokens}
-              </StatsNumber>
+              {balance * 0.1} 
               <SmallENSLogo />
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
+
           <StatsRow>
-            <RowLabel>Future registration </RowLabel>
-            <NumberWithLogoContainer>
-              <StatsNumber>
-                {hasReverseRecord
-                  ? (futureTokens / 2).toFixed(2)
-                  : futureTokens}
-              </StatsNumber>
-              <SmallENSLogo />
-            </NumberWithLogoContainer>
+            <RowLabel>Escrow SEAM</RowLabel>
+              <NumberWithLogoContainer>
+                {balance * 0.9}
+                <SmallENSLogo />
+              </NumberWithLogoContainer>
           </StatsRow>
-          {hasReverseRecord && (
-            <>
-              <Divider />
-              <StatsRow>
-                <RowLabel>Primary ENS Name set </RowLabel>
-                <NumberWithLogoContainer>
-                  <StatsNumber>2x</StatsNumber>
-                </NumberWithLogoContainer>
-              </StatsRow>
-            </>
-          )}
+          
         </StatsSection>
 
-        <StatsSection>
-          <StatsRow>
-            <StatsSubtitle>Fun facts</StatsSubtitle>
-          </StatsRow>
-          <Divider />
-          <StatsRow>
-            <RowLabel>Latest expiration </RowLabel>
-            <NumberWithLogoContainer>
-              <StatsNumber>{lastExpiringName}</StatsNumber>
-            </NumberWithLogoContainer>
-          </StatsRow>
-        </StatsSection>
       </LeftContainer>
 
       <RightContainer>
         <NarrowColumn>
-          {
-            eligible ? (
-              <Pill
-                text="You were eligible for the airdrop!"
-              />
-            ) : (
-              <Pill error text={"You were not eligible for the airdrop"} />
-            )
-          }
+          {eligible ? (
+            <Pill text="You were eligible for the airdrop!" />
+          ) : (
+            <Pill error text={"You were not eligible for the airdrop"} />
+          )}
           <ContentBox>
-            <Header>
-              Past Airdrop
-            </Header>
-            <Gap height={3} />
-            <WrappedContent>
-              {rawBalance
-                ? "You were eligible for the retroactive airdrop."
-                : "This Ethereum account was not eligible for the airdrop."}
-            </WrappedContent>
+            <Header>Claim your tokens</Header>
             <Gap height={5} />
             <InnerContentBox>
-              <SubsubTitle>
-                {rawBalance && "You were eligible for..."}
-              </SubsubTitle>
               <Gap height={2} />
               <Statistic>
-                <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
-                <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>
+                <IntegerBalance>{balance}</IntegerBalance>
+                {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance> */}
+                {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance> */}
                 <ENSLogo />
               </Statistic>
             </InnerContentBox>
@@ -270,24 +201,15 @@ const Dashboard = () => {
             {eligible && (
               <>
                 <WrappedContent>
-                  You qualified to receive these tokens for being an early participant
-                  of the ENS community. Use this power wisely!
+                  You qualified to receive these tokens for being an early
+                  participant of the SEAM community. Use this power wisely!
                 </WrappedContent>
                 <Gap height={5} />
-                <CTAButton
-                  text="Airdrop finished"
-                  type="disabled"
-                />
+                <CTAButton text="Start your claiming process" onClick={handleClick}/>
               </>
             )}
           </ContentBox>
           <Gap height={6} />
-          {<AdditionalSubtitle>
-            {ep2Eligible
-              ? "This Ethereum account was eligible for additional token claims."
-              : "This Ethereum account was not eligible for additional token claims."}
-          </AdditionalSubtitle> }
-          <Gap height={ep2Eligible ? 3 : 0} />
         </NarrowColumn>
       </RightContainer>
     </ClaimEnsTokenContainer>

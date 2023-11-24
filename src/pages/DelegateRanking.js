@@ -159,7 +159,6 @@ const DelegateBox = (data) => {
     votes,
     name,
     address,
-    setRenderKey,
     userAccount,
     delegatedTo,
     search,
@@ -277,6 +276,7 @@ const Input = styled.input`
   height: 64px;
   box-sizing: border-box;
   -webkit-appearance: none;
+  appearance: none;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #f6f6f6;
@@ -414,7 +414,7 @@ const ChooseYourDelegate = () => {
   useGetDelegateBySigStatus(chooseData.address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
-  const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
+  const { delegatedTo } = chooseData.delegatedTo;
   const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
@@ -422,11 +422,11 @@ const ChooseYourDelegate = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const transactionDone = useGetTransactionDone(
+  const { transactionDone } = useGetTransactionDone(
     location.state && location.state.hash
   );
 
-  const [renderKey, setRenderKey] = useState(0);
+  const [, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
 
   return (

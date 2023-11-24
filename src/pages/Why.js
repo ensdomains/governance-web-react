@@ -4,14 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
-import {
-  Header,
-  Content,
-  TokenText,
-  SubsubTitle,
-  Statistic,
-} from "../components/text";
-import { InnerContentBox, NarrowColumn } from "../components/layout";
+import { Header, Content } from "../components/text";
 import { ContentBox } from "../components/layout";
 import { largerThan } from "../utils/styledComponents";
 import Divider from "../components/Divider";
@@ -75,32 +68,31 @@ const Why = () => {
   return (
     <Container>
       <WhatIsENSContentBox>
-        <Header>What is ENS?</Header>
+        <Header>What is SEAM?</Header>
         <Gap height={3} />
         <Content>
-          Your ENS name is your web3 username and profile, one name for all of
-          your crypto addresses, and your decentralized website.
+          Your SEAM Tokens name is for governance of the Seamless Protocol.
         </Content>
         <Gap height={5} />
         <StatsSection>
           <StatsRow>
             <RowLabel>Names</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>>400k</StatsNumber>
+              <StatsNumber>&gt;400k</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
           <StatsRow>
             <RowLabel>Years registered</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>>1,775,000</StatsNumber>
+              <StatsNumber>&gt;1,775,000</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
           <StatsRow>
             <RowLabel>Integrations</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>>310</StatsNumber>
+              <StatsNumber>&gt;310</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
         </StatsSection>
@@ -111,7 +103,7 @@ const Why = () => {
         <Gap height={3} />
         <Content>
           <Token /> is an important step in further decentralizing governance of
-          the ENS protocol.
+          the Seamless protocol.
         </Content>
         <Gap height={5} />
         <Content>
@@ -123,8 +115,8 @@ const Why = () => {
         <Header>Why launch it now?</Header>
         <Gap height={3} />
         <Content>
-          Both ENS and the DAO space have matured in the last year. We believe
-          now is the time for ENS to further decentralize protocol governance.
+          Both SEAM and the DAO space have matured in the last year. We believe
+          now is the time for SEAM to further decentralize protocol governance.
         </Content>
       </ContentBox>
       <Footer

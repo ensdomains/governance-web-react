@@ -1,12 +1,12 @@
-# ENS Token claim front-end 
+# Seamless Token claim front-end
 
-This is the code for the front-end app that allowed people to claim their $ENS airdrop between November 2021 - May 2022. It does not include any of the 'backend' infrastructure (smart contracts etc.), this can be found [here](https://github.com/ensdomains/governance).
+This is the code for the front-end app that allowed people to claim their $SEAM airdrop. It does not include any of the 'backend' infrastructure (smart contracts etc.), this can be found [here](https://github.com/seamless-protocol/governance).
 
 For more info on how merkle airdrops work, see [here](https://blog.openzeppelin.com/workshop-recap-building-an-nft-merkle-drop/).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-### Testing note
+## Testing note
 
 To test with cypress, you shouldn't use `yarn cypress:open` as it breaks the metamask plugin implementation.\
 You can run all tests as standard with `yarn cypress:ci:local` on your machine.

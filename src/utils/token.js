@@ -1,6 +1,6 @@
 import { BigNumber, Contract, utils } from "ethers";
 import { network } from "../apollo";
-import ENSTokenAbi from "../assets/abis/ENSToken.json";
+import ENSTokenAbi from "../assets/abis/Seam.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
 import merkleRoot from "../assets/root.json";
@@ -15,6 +15,12 @@ import {
   getMerkleAirdropContractAddress,
 } from "./consts";
 import { sendToDelegateJsonRpc } from "./utils";
+import MerkleTree from "merkletreejs";
+import keccak256 from "keccak256";
+import {parseUnits, solidityKeccak256 } from "ethers/lib/utils";
+const merkleTreeData = require('../root.json'); 
+
+
 
 const testingMerkleRoot = {
   root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
@@ -48,7 +54,7 @@ export const hasClaimed = async (address, type = "mainnet") => {
     const signer = provider.getSigner();
     const airdropContract =
       type === "mainnet"
-        ? new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer)
+        ? new Contract(ENSTokenAbi.address, ENSTokenAbi.abi, signer)
         : new Contract(
             getMerkleAirdropContractAddress(),
             MerkleAirdropAbi.abi,
@@ -77,20 +83,15 @@ export const submitClaim = async (
     let airdropContractAddress;
     let abi;
     let claimTokensFunc;
-    if (type === "mainnet") {
-      airdropContractAddress = getENSTokenContractAddress();
-      abi = ENSTokenAbi.abi;
-      claimTokensFunc = (claimTokens) =>
-        claimTokens(balance, address, proof, { gasLimit: GAS_LIMIT });
-    } else {
-      airdropContractAddress = getMerkleAirdropContractAddress();
-      abi = MerkleAirdropAbi.abi;
-      claimTokensFunc = (claimTokens) =>
-        claimTokens(address, balance, proof, { gasLimit: GAS_LIMIT });
-    }
+
+    airdropContractAddress = "0x2a8491354b023da5378b3Fe1Da86F1cd2089412d";
+    abi = ENSTokenAbi.abi;
+    claimTokensFunc = (claim) =>
+      claim(address, balance, proof, { gasLimit: GAS_LIMIT });
+
     const airdropContract = new Contract(airdropContractAddress, abi, signer);
     airdropContract.connect(signer);
-    const result = await claimTokensFunc(airdropContract.claimTokens);
+    const result = await claimTokensFunc(airdropContract.claim);
     await result.wait(1);
     setClaimState({
       state: "SUCCESS",
@@ -113,7 +114,7 @@ export async function delegate(address, setClaimState, history) {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
     const ENSTokenContract = new Contract(
-      getENSTokenContractAddress(),
+      ENSTokenAbi.address,
       ENSTokenAbi.abi,
       signer
     );
@@ -127,7 +128,7 @@ export async function delegate(address, setClaimState, history) {
       message: "",
     });
     return setTimeout(() => {
-      history.push("/delegate-ranking");
+      history.push("/claim");
     }, 2000);
   } catch (error) {
     console.error(error);
@@ -195,6 +196,13 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
   }
 }
 
+export const generateLeaf = (address, value) => {
+  return Buffer.from(
+    solidityKeccak256(["address", "uint256"], [address, value]).slice(2),
+    "hex"
+  );
+}
+
 export const handleClaim = async (
   address,
   setClaimState,
@@ -207,43 +215,22 @@ export const handleClaim = async (
       message: "",
     });
 
-    let outputAddress;
-    let provider = getEthersProvider();
-    let displayName;
-
-    if (type === "mainnet") {
-      displayName = getDelegateChoice(address);
-      if (!displayName) {
-        throw "No chosen delegate";
-      }
-    } else {
-      displayName = address;
-    }
-
-    if (displayName.includes(".eth")) {
-      outputAddress = await provider.resolveName(displayName);
-    } else {
-      outputAddress = displayName;
-    }
-
-    const response = await fetch(generateMerkleShardUrl(address, type));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } = merkleRoot;
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
+    const leaves = Object.entries(merkleTreeData).map(([address,value]) => {
+      return generateLeaf(address, parseUnits(value.toString(), 18).toString())
+    });
+    
+    const merkleTree = new MerkleTree(
+      leaves, 
+      keccak256,
+      { sortPairs: true }
     );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
+    const balance = parseUnits(merkleTreeData[address].toString(), 18).toString();
+    const proof = merkleTree.getHexProof(generateLeaf(address, balance.toString()));
+
     return await submitClaim(
-      entry.balance,
+      balance,
       proof,
-      outputAddress,
+      address,
       setClaimState,
       history,
       type

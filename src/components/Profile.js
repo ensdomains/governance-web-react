@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { utils } from "ethers";
 
@@ -35,6 +35,11 @@ const ProfileContainer = styled.div`
         max-width: 200px;
         padding: 0;
         box-shadow: none;
+      `;
+      default:
+        return `
+        background: white;
+        max-width: 220px;
       `;
     }
   }}
@@ -188,7 +193,6 @@ const StyledProfileArrow = styled(ProfileArrow)(({ hasOpened }) => ({
 const Profile = ({ address, size, hasDropdown }) => {
   const [profileDetails, setProfileDetails] = useState({});
   const [navOpen, setNavOpen] = useState(false);
-  const navSizeRef = useRef(null);
   let isAddress;
   try {
     isAddress = utils.getAddress(address);
