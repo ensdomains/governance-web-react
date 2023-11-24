@@ -216,7 +216,7 @@ const EnsSummary = () => {
         <CTAButton
           onClick={() => {
             history.push({
-              pathname: "/summary/claim",
+              pathname: "/claim",
               state: "CLAIM",
             });
           }}

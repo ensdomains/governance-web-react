@@ -25,6 +25,7 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
+const merkleTreeData = require('../root.json'); 
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -125,7 +126,11 @@ const Dashboard = () => {
   `);
 
   const eligible = true;
-  const balance = "15500.00";
+  console.log(address);
+  console.log(merkleTreeData);
+  const balance = merkleTreeData[address];
+  console.log(balance);
+
 
   const rewards =[ 
     {"OG points": "500"},
@@ -142,30 +147,33 @@ const Dashboard = () => {
         {address && <Profile large {...{ address }} />}
         <Gap height={4} />
 
+{
+/*
+    Hardcode 0.1 and 0.9 until we know exact proportions
+*/
+}
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
           </StatsRow>
           <Divider />
+          <StatsRow>
+            <RowLabel>SEAM</RowLabel>
+            <NumberWithLogoContainer>
+              {balance * 0.1} 
+              <SmallENSLogo />
+            </NumberWithLogoContainer>
+          </StatsRow>
+          <Divider />
 
-          {
-            rewards.map((reward, index) => (
-              <React.Fragment key={index}>
-              {Object.entries(reward).map(([key, value]) => (
-                <React.Fragment key={key}>
-                <StatsRow>
-                 <RowLabel>{key}</RowLabel>
-                  <NumberWithLogoContainer>
-                    {value}
-                   <SmallENSLogo />
-                  </NumberWithLogoContainer>
-                </StatsRow>
-                <Divider />
-                </React.Fragment>
-              ))}
-              </React.Fragment>
-            ))
-          }
+          <StatsRow>
+            <RowLabel>Escrow SEAM</RowLabel>
+              <NumberWithLogoContainer>
+                {balance * 0.9}
+                <SmallENSLogo />
+              </NumberWithLogoContainer>
+          </StatsRow>
+          
         </StatsSection>
 
       </LeftContainer>
@@ -183,8 +191,9 @@ const Dashboard = () => {
             <InnerContentBox>
               <Gap height={2} />
               <Statistic>
-                <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
-                <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>
+                <IntegerBalance>{balance}</IntegerBalance>
+                {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance> */}
+                {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance> */}
                 <ENSLogo />
               </Statistic>
             </InnerContentBox>

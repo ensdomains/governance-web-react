@@ -118,7 +118,7 @@ export async function delegate(address, setClaimState, history) {
       ENSTokenAbi.abi,
       signer
     );
-    NSTokenContract.connect(signer);
+    ENSTokenContract.connect(signer);
     const result = await ENSTokenContract.delegate(address, {
       gasLimit: DELEGATE_GAS_LIMIT,
     });
