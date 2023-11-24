@@ -83,7 +83,7 @@ const NetworkWarning = function () {
   return (
     <NetworkWarningContainer>
       <YellowWarning />
-      Please change your network to Ethereum Mainnet
+      Please change your network to Base Mainnet
     </NetworkWarningContainer>
   );
 };
@@ -330,7 +330,7 @@ const Header = () => {
           </MobileLink>
         ))}
       </MobileLinkContainer>
-      {network !== null && network !== 1 && <NetworkWarning />}
+      {network !== null && network !== 84531 && <NetworkWarning />}
     </HeaderContainer>
   );
 };

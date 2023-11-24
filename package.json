@@ -21,11 +21,13 @@
     "@walletconnect/web3-provider": "1.6.5",
     "bitski": "^0.11.0-beta.5",
     "ethers": "5.4.6",
+    "firebase": "^10.6.0",
+    "fs": "^0.0.1-security",
     "graphql": "15.5.3",
     "js-sha3": "0.8.0",
     "keccak256": "1.0.3",
     "lodash.debounce": "4.0.8",
-    "merkletreejs": "0.2.24",
+    "merkletreejs": "^0.3.11",
     "react": "^17.0.2",
     "react-confetti": "6.0.1",
     "react-dom": "^17.0.2",
@@ -34,7 +36,8 @@
     "react-use": "17.3.1",
     "styled-components": "5.3.3",
     "walletlink": "2.1.11",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "wrtc": "^0.4.7"
   },
   "scripts": {
     "start": "REACT_APP_STAGE=testing react-scripts start",

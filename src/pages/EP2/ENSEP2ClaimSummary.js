@@ -41,16 +41,7 @@ const ClaimType = styled.div`
 `;
 
 const ENSEP2ClaimSummary = () => {
-  const {
-    data: { ep2AddressDetails },
-  } = useQuery(gql`
-    query privateRouteQuery @client {
-      isConnected
-      address
-      ep2AddressDetails
-    }
-  `);
-  const { balance } = ep2AddressDetails;
+  const balance = "1550.00";
   const history = useHistory();
 
   return (

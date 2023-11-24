@@ -144,17 +144,18 @@ const ENSTokenClaim = ({ location }) => {
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/delegate-ranking");
+          // history.push("/delegate-ranking");
         }}
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
-            history.push("/delegate-ranking");
+            // history.push("/delegate-ranking");
             return;
           } else if (claimState.state === "QUEUED") {
-            history.push("/delegate-ranking", {
-              hash: claimState.message,
-            });
+            // history.push("/delegate-ranking", {
+              // hash: claimState.message,
+            //  }
+            // );
           }
           delegateToAddress(
             setClaimState,

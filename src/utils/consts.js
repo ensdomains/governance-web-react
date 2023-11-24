@@ -1,6 +1,6 @@
 export const PROPOSAL_ID =
   "0xd810c4cf2f09737a6f833f1ec51eaa5504cbc0afeeb883a21a7e1c91c8a597e4";
-export const SPACE_ID = "ens.eth";
+export const SPACE_ID = "nonrequired.eth";
 export const ALLOCATION_ENDPOINT =
   "https://us-central1-ens-manager.cloudfunctions.net/getvotes";
 export const GAS_LIMIT = 200000;

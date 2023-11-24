@@ -29,7 +29,6 @@ module.exports = (on, config) => {
 
   on("task", {
     submitRpcUrl(rpcUrl) {
-      console.log("using fork:", rpcUrl);
       process.env.RPC_URL = rpcUrl;
 
       return true;

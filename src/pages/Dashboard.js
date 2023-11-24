@@ -18,6 +18,7 @@ import {
 } from "../components/text";
 import Gap from "../components/Gap";
 import { largerThan } from "../utils/styledComponents";
+import { useHistory } from "react-router-dom";
 
 import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import Divider from "../components/Divider";
@@ -112,90 +113,61 @@ const WrappedContent = styled(Content)`
   color: #1a1a1a;
 `;
 
-const AdditionalSubtitle = styled(SubsubTitle)`
-  margin-left: 10px;
-`;
-
 const Dashboard = () => {
+  const history = useHistory();
+
   const {
-    data: { address, addressDetails, ep2AddressDetails },
+    data: { address },
   } = useQuery(gql`
     query getHeaderData @client {
       address
-      addressDetails
-      ep2AddressDetails
-      network
     }
   `);
 
-  const {
-    lastExpiringName,
-    pastTokens,
-    futureTokens,
-    balance,
-    rawBalance,
-    hasReverseRecord,
-    eligible,
-  } = addressDetails;
+  const eligible = true;
+  const balance = "15500.00";
 
-  const { eligible: ep2Eligible } = ep2AddressDetails;
+  const rewards =[ 
+    {"OG points": "500"},
+    {"ILM": "15000"},
+  ]
+
+  const handleClick = () => {
+     history.push("/why");
+  };
 
   return (
     <ClaimEnsTokenContainer>
       <LeftContainer>
         {address && <Profile large {...{ address }} />}
-        <Gap height={3} />
+        <Gap height={4} />
+
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
           </StatsRow>
           <Divider />
-          <StatsRow>
-            <RowLabel>Historical activity </RowLabel>
-            <NumberWithLogoContainer>
-              <StatsNumber>
-                {hasReverseRecord ? (pastTokens / 2).toFixed(2) : pastTokens}
-              </StatsNumber>
-              <SmallENSLogo />
-            </NumberWithLogoContainer>
-          </StatsRow>
-          <Divider />
-          <StatsRow>
-            <RowLabel>Future registration </RowLabel>
-            <NumberWithLogoContainer>
-              <StatsNumber>
-                {hasReverseRecord
-                  ? (futureTokens / 2).toFixed(2)
-                  : futureTokens}
-              </StatsNumber>
-              <SmallENSLogo />
-            </NumberWithLogoContainer>
-          </StatsRow>
-          {hasReverseRecord && (
-            <>
-              <Divider />
-              <StatsRow>
-                <RowLabel>Primary ENS Name set </RowLabel>
-                <NumberWithLogoContainer>
-                  <StatsNumber>2x</StatsNumber>
-                </NumberWithLogoContainer>
-              </StatsRow>
-            </>
-          )}
+
+          {
+            rewards.map((reward, index) => (
+              <React.Fragment key={index}>
+              {Object.entries(reward).map(([key, value]) => (
+                <React.Fragment key={key}>
+                <StatsRow>
+                 <RowLabel>{key}</RowLabel>
+                  <NumberWithLogoContainer>
+                    {value}
+                   <SmallENSLogo />
+                  </NumberWithLogoContainer>
+                </StatsRow>
+                <Divider />
+                </React.Fragment>
+              ))}
+              </React.Fragment>
+            ))
+          }
         </StatsSection>
 
-        <StatsSection>
-          <StatsRow>
-            <StatsSubtitle>Fun facts</StatsSubtitle>
-          </StatsRow>
-          <Divider />
-          <StatsRow>
-            <RowLabel>Latest expiration </RowLabel>
-            <NumberWithLogoContainer>
-              <StatsNumber>{lastExpiringName}</StatsNumber>
-            </NumberWithLogoContainer>
-          </StatsRow>
-        </StatsSection>
       </LeftContainer>
 
       <RightContainer>
@@ -206,18 +178,9 @@ const Dashboard = () => {
             <Pill error text={"You were not eligible for the airdrop"} />
           )}
           <ContentBox>
-            <Header>Past Airdrop</Header>
-            <Gap height={3} />
-            <WrappedContent>
-              {rawBalance
-                ? "You were eligible for the retroactive airdrop."
-                : "This Ethereum account was not eligible for the airdrop."}
-            </WrappedContent>
+            <Header>Claim your tokens</Header>
             <Gap height={5} />
             <InnerContentBox>
-              <SubsubTitle>
-                {rawBalance && "You were eligible for..."}
-              </SubsubTitle>
               <Gap height={2} />
               <Statistic>
                 <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
@@ -233,19 +196,11 @@ const Dashboard = () => {
                   participant of the SEAM community. Use this power wisely!
                 </WrappedContent>
                 <Gap height={5} />
-                <CTAButton text="Airdrop finished" type="disabled" />
+                <CTAButton text="Start your claiming process" onClick={handleClick}/>
               </>
             )}
           </ContentBox>
           <Gap height={6} />
-          {
-            <AdditionalSubtitle>
-              {ep2Eligible
-                ? "This Ethereum account was eligible for additional token claims."
-                : "This Ethereum account was not eligible for additional token claims."}
-            </AdditionalSubtitle>
-          }
-          <Gap height={ep2Eligible ? 3 : 0} />
         </NarrowColumn>
       </RightContainer>
     </ClaimEnsTokenContainer>

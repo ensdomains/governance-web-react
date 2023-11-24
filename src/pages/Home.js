@@ -84,7 +84,6 @@ const Home = () => {
           //"https://edge-config.vercel.com/ecfg_3eh8clg3msruczzvmbieqmmzll7r?token=14cadaad-72c1-4b8d-ad12-56d7b7f8f33f"
         );
         const result = await readItems.json();
-        console.log("result", result);
 
         if (result.items) {
           setConfigItems(result.items);
@@ -100,7 +99,7 @@ const Home = () => {
   }, []);
 
   const handleClick = () => {
-    history.push("/delegate-ranking");
+    history.push("/dashboard");
   };
 
   return (
@@ -124,7 +123,7 @@ const Home = () => {
       </WrappedSubTitle>
       <Gap height={4} />
       <ButtonContainer>
-        <DelegateButton text={"Choose a Delegate"} onClick={handleClick} />
+        <DelegateButton text={"Get started"} onClick={handleClick} />
         {new Date() <= END_FREE_DELEGATION_DATE && (
           <ButtonCaption>
             Delegate for free until{" "}

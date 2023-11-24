@@ -46,13 +46,10 @@ async function nextTimestamp(address) {
   if (!addressAllowed(address)) {
     return undefined;
   }
-  console.log("address allowed", address);
   const balance = await contract.balanceOf(address);
-  console.log("balance is:", balance);
   if (balance.lt(MIN_BALANCE)) {
     return undefined;
   }
-  console.log("has enough balance");
   const now = Math.floor(Date.now() / 1000);
   const doc = db.accounts[address.toLowerCase()];
   if (!doc) {
@@ -90,7 +87,6 @@ async function handleDelegate(params) {
     { delegatee, nonce, expiry },
     { v, r, s }
   );
-  console.log(address);
   const now = Math.floor(Date.now() / 1000);
   const next = await nextTimestamp(address);
   if (next === undefined) {
@@ -116,8 +112,6 @@ async function handleDelegateRequest(req) {
       "Access-Control-Allow-Origin": "*",
     },
   };
-
-  console.log(contract);
 
   if (req.method === "OPTIONS") {
     response.headers["Access-Control-Allow-Methods"] = "POST";
@@ -167,7 +161,6 @@ Cypress.Commands.add("interceptDelegateBySig", () => {
   const { wallet, forkId } = Cypress.env("DELEGATE_WALLET");
   const rpcUrl = `https://rpc.tenderly.co/fork/${forkId}`;
 
-  console.log(wallet, rpcUrl);
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl, CHAIN_ID);
   signer = new ethers.Wallet(wallet, provider);

@@ -38,6 +38,7 @@ const ENSEP2TokenClaim = ({ location }) => {
       address
     }
   `);
+
   const history = useHistory();
   const [claimState, setClaimState] = useState({
     state: "LOADING",
@@ -47,7 +48,6 @@ const ENSEP2TokenClaim = ({ location }) => {
   useEffect(() => {
     let timeout;
     const run = async () => {
-      console.log(location.state);
       if (location.state === "EP2CLAIM" && isConnected) {
         timeout = await handleClaim(address, setClaimState, history, "ep2");
       }

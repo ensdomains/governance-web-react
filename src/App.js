@@ -23,6 +23,13 @@ import Home from "./pages/Home";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
 import { hasClaimed } from "./utils/token";
 import { initWeb3Read } from "./web3modal";
+import Why from "./pages/Why";
+import ENSGovernance from "./pages/ENSGovernance";
+import ENSConstitutionInfo from "./pages/ENSConstitution/ENSConstitutionInfo";
+import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
+import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
+import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
+import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -157,7 +164,6 @@ function App() {
         <AppContainerMid>
           <AppContainer>
             <Switch>
-              <PrivateRoute path="/delegates" component={ChooseYourDelegate} />
               <PrivateRoute
                 path="/manual-delegates"
                 component={EnteryourDelegate}
@@ -166,11 +172,18 @@ function App() {
                 path="/manual-delegates-no-claim"
                 component={EnteryourDelegate}
               />
-              <ConnectedRoute
+              <PrivateRoute
                 path="/delegate-tokens"
                 component={DelegateTokens}
               />
+              <PrivateRoute path="/delegates" component={EnteryourDelegate} />
+              <PrivateRoute path="/why" component={Why}></PrivateRoute>
+              <PrivateRoute path="/governance" component={ENSGovernance}></PrivateRoute>
+              <PrivateRoute path="/constitution" component={ENSConstitution}></PrivateRoute>
+              <PrivateRoute path="/signature" component={ENSConstitutionSign}></PrivateRoute>
+              <PrivateRoute path="/claim" component={ENSEP2ClaimSummary}></PrivateRoute>
               <PrivateRoute path="/dashboard" component={Dashboard} />
+              <PrivateRoute path="/ep2/claim" component={ENSEP2TokenClaim} />
               <Route path="/delegate-ranking">
                 <DelegateRanking />
               </Route>

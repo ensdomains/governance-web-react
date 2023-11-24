@@ -112,7 +112,7 @@ const Summary = ({ currentStep, setCurrentStep, constitution }) => {
         rightButtonText="Sign"
         rightButtonCallback={() => {
           history.push({
-            pathname: "/constitution/sign",
+            pathname: "/signature",
             state: "VOTE",
           });
         }}

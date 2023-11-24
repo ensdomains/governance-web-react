@@ -94,7 +94,6 @@ const InputComponent = ({
     setValue(value);
 
     const run = async () => {
-      console.log("run");
       if (value.includes(".")) {
         try {
           const result = await getEthersProvider().resolveName(value);
@@ -190,7 +189,8 @@ const EnteryourDelegate = () => {
     message: "",
     isError: false,
   });
-  let noClaim = useRouteMatch("/manual-delegates-no-claim");
+  let noClaim;
+  // let noClaim = useRouteMatch("/manual-delegates-no-claim");
   const {
     data: {
       address,
@@ -229,7 +229,7 @@ const EnteryourDelegate = () => {
         </Content>
         <Gap height={5} />
         <InputComponent
-          placeholder={"delegate.eth"}
+          placeholder={"Enter address"}
           {...{
             validationMessage,
             setValidationMessage,
@@ -243,10 +243,7 @@ const EnteryourDelegate = () => {
       </ContentBox>
       <Footer
         disabled={
-          validationMessage.isError ||
-          !value ||
-          delegatedToLoading ||
-          _delegateSigDetails.loading
+          validationMessage.isError  || !value
         }
         rightButtonText={
           noClaim
@@ -256,16 +253,11 @@ const EnteryourDelegate = () => {
             : "Next"
         }
         rightButtonCallback={() => {
-          if (noClaim) {
             selectedDelegateReactive({
-              address: ensNameAddress === "" ? value : ensNameAddress,
+              address: value,
               name: null,
             });
             history.push("/delegate-tokens");
-          } else {
-            setDelegateChoice(address, value);
-            history.push("/summary");
-          }
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
