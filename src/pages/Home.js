@@ -8,7 +8,8 @@ import { useHistory } from "react-router-dom";
 import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import { largerThan } from "../utils/styledComponents";
 import { theme } from "../components/theme";
-import { parseAndUseAirdrop } from "../utils/utils";
+import { parseAndUseDelegates } from "../utils/utils";
+import { parse } from "graphql";
 
 const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
 
@@ -40,7 +41,7 @@ const WrappedTitle = styled.div`
   `}
 `;
 
-const WrappedSubTitle = styled.div`
+export const WrappedSubTitle = styled.div`
   ${(p) => p.fontSize && `font-size: ${p.fontSize}px;`}
 
   max-width: 440px;
@@ -75,40 +76,6 @@ const DelegateButton = styled(Button)`
 const Home = () => {
   const history = useHistory();
 
-  const [configItems, setConfigItems] = useState({});
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const readItems = await fetch(
-          `https://edge-config.vercel.com/${process.env.REACT_APP_CONFIG_ID}?token=${process.env.REACT_APP_VERCEL_TOKEN}`
-        );
-        const result = await readItems.json();
-
-        console.log("API response:", result);
-
-        const airdropField = result.items?.airdrop || result.airdrop;
-
-        if (airdropField) {
-          const parsedAirdrop = parseAndUseAirdrop(result);
-          console.log("Parsed airdrop:", parsedAirdrop);
-
-          if (parsedAirdrop !== null) {
-            setConfigItems(parsedAirdrop);
-          } else {
-            console.error("Error parsing airdrop JSON");
-          }
-        } else {
-          console.error('No "airdrop" field found in API response');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const handleClick = () => {
     history.push("/dashboard");
   };
@@ -126,11 +93,7 @@ const Home = () => {
         protocol.
       </WrappedSubTitle>
       <Gap height={4} />
-      {configItems && (
-        <WrappedSubTitle fontSize={8}>
-          edge config key: greeting, value: {configItems}
-        </WrappedSubTitle>
-      )}
+
       <Gap height={4} />
       <ButtonContainer>
         <DelegateButton text={"Get started"} onClick={handleClick} />

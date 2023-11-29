@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { utils } from "ethers";
 import { gql } from "graphql-tag";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { selectedDelegateReactive } from "../apollo";
@@ -25,21 +25,22 @@ import {
   useGetTransactionDone,
 } from "../utils/hooks";
 import { largerThan } from "../utils/styledComponents";
-import { imageUrl } from "../utils/utils";
+import { imageUrl, parseAndUseDelegates } from "../utils/utils";
 import { initWeb3 } from "../web3modal";
+import { WrappedSubTitle } from "./Home";
 
-const DELEGATE_RANKING_QUERY = gql`
-  query delegateRankingQuery @client {
-    addressDetails
-    isConnected
-    address
-    delegates
-    tokensOwned
-    delegatedTo
-    delegateSigDetails
-    selectedDelegate
-  }
-`;
+// const DELEGATE_RANKING_QUERY = gql`
+//   query delegateRankingQuery @client {
+//     addressDetails
+//     isConnected
+//     address
+//     delegates
+//     tokensOwned
+//     delegatedTo
+//     delegateSigDetails
+//     selectedDelegate
+//   }
+// `;
 
 const DelegateBoxContainer = styled.div`
   border: 1px solid
@@ -408,16 +409,16 @@ function CurrentDelegation({
 }
 
 const ChooseYourDelegate = () => {
-  const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
-  useGetTokens(chooseData.address);
-  useGetDelegatedTo(chooseData.address);
-  useGetDelegateBySigStatus(chooseData.address);
-  const { delegates, loading: delegatesLoading } = chooseData.delegates;
-  const { balance, loading: balanceLoading } = chooseData.tokensOwned;
-  const { delegatedTo } = chooseData.delegatedTo;
-  const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
-    chooseData.delegateSigDetails;
-  const { selectedDelegate } = chooseData;
+  //const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
+  // useGetTokens(chooseData.address);
+  // useGetDelegatedTo(chooseData.address);
+  // useGetDelegateBySigStatus(chooseData.address);
+  // const { delegates, loading: delegatesLoading } = chooseData.delegates;
+  // const { balance, loading: balanceLoading } = chooseData.tokensOwned;
+  // const { delegatedTo } = chooseData.delegatedTo;
+  // const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
+  //   chooseData.delegateSigDetails;
+  // const { selectedDelegate } = chooseData;
 
   const history = useHistory();
   const location = useLocation();
@@ -428,6 +429,36 @@ const ChooseYourDelegate = () => {
 
   const [, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
+
+  const [configItems, setConfigItems] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const readItems = await fetch(
+          `https://edge-config.vercel.com/${process.env.REACT_APP_CONFIG_ID}?token=${process.env.REACT_APP_VERCEL_TOKEN}`
+        );
+        console.log("readItems", readItems);
+        const result = await readItems.json();
+        console.log("result", result);
+        if (result) {
+          const parsedDelegates = parseAndUseDelegates(result.items.delegates);
+          console.log("parsedDelegates", parsedDelegates);
+          if (parsedDelegates !== null) {
+            setConfigItems(parsedDelegates);
+          } else {
+            console.error("Error parsing delegates JSON");
+          }
+        } else {
+          console.error('No valid "delegates" field found in API response');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <WrappedNarrowColumn>
@@ -440,7 +471,7 @@ const ChooseYourDelegate = () => {
           <Gap height={3} />
         </>
       )}
-      {chooseData?.address && (
+      {/* {chooseData?.address && (
         <FreeDelegationContentBox>
           {delegateSigDetails?.next !== undefined ? (
             <Fragment>
@@ -469,7 +500,7 @@ const ChooseYourDelegate = () => {
             </FreeDelegationHeader>
           )}
         </FreeDelegationContentBox>
-      )}
+      )} */}
 
       <Gap height={3} />
       <ContentBox padding={"none"}>
@@ -491,7 +522,7 @@ const ChooseYourDelegate = () => {
             </Content>
           </CopyContainer>
 
-          <div>
+          {/* <div>
             {chooseData.address ? (
               <WrappedCTAButton
                 text={"Enter ENS or address"}
@@ -512,9 +543,10 @@ const ChooseYourDelegate = () => {
                 }}
               />
             )}
-          </div>
+          </div> */}
         </HeaderContainer>
-        <SubHeader account={chooseData?.address}>
+      </ContentBox>
+      {/* <SubHeader account={chooseData?.address}>
           {chooseData?.address &&
             (balanceLoading ? null : (
               <CurrentDelegation
@@ -551,7 +583,7 @@ const ChooseYourDelegate = () => {
             ))}
           </DelegatesContainer>
         )}
-      </ContentBox>
+     
       {chooseData?.address &&
         (!delegateSigDetailsLoading ? (
           <Footer
@@ -571,7 +603,26 @@ const ChooseYourDelegate = () => {
           />
         ) : (
           <Footer rightButtonText={"Loading..."} disabled />
-        ))}
+        ))} */}
+      {configItems && (
+        <div>
+          <WrappedSubTitle fontSize={8}>Edge Config Keys:</WrappedSubTitle>
+          {configItems.map((item, index) => (
+            <div key={index}>
+              <div>
+                <WrappedSubTitle fontSize={8}>Discourse Link:</WrappedSubTitle>
+                <WrappedSubTitle fontSize={8}>
+                  {item.discourseLink}
+                </WrappedSubTitle>
+              </div>
+              <div>
+                <WrappedSubTitle fontSize={8}>Address:</WrappedSubTitle>
+                <WrappedSubTitle fontSize={8}>{item.address}</WrappedSubTitle>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </WrappedNarrowColumn>
   );
 };

@@ -112,24 +112,23 @@ export const getClaimData = async (address, type = "mainnet") => {
   };
 };
 
-export const parseAndUseAirdrop = (jsonString) => {
+export const parseAndUseDelegates = (jsonString) => {
   try {
-    const airdropString = jsonString.items?.airdrop || jsonString.airdrop;
+    console.log("Original delegates string:", jsonString);
 
-    if (airdropString) {
-      console.log("Original airdrop string:", airdropString);
+    const parsedDelegates = JSON.parse(jsonString);
 
-      // Replace single quotes with double quotes
-      const correctedAirdropString = airdropString.replace(/'/g, '"');
-      console.log("Corrected airdrop string:", correctedAirdropString);
+    if (Array.isArray(parsedDelegates)) {
+      // If parsedDelegates is an array, you can iterate over each object
+      parsedDelegates.forEach((delegate, index) => {
+        console.log(`Parsed delegate ${index + 1}:`, delegate);
+      });
 
-      // Attempt to parse the corrected "airdrop" field content as JSON
-      const parsedAirdrop = JSON.parse(correctedAirdropString);
-      console.log("Parsed airdrop:", parsedAirdrop);
-
-      return parsedAirdrop.string2;
+      return parsedDelegates;
     } else {
-      console.error('No valid "airdrop" field found');
+      console.error(
+        'Invalid format for "delegates" field. Expected a JSON array.'
+      );
       return null;
     }
   } catch (error) {
