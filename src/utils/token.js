@@ -1,11 +1,12 @@
 import { BigNumber, Contract, utils } from "ethers";
 import { network } from "../apollo";
-import ENSTokenAbi from "../assets/abis/Seam.json";
+import SeamTokenAbi from "../assets/abis/Seam.json";
+import EsSeamTokenAbi from "../assets/abis/EsSeam.json";
+import SeamAirdrop from "../assets/abis/SeamAirdrop.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
-import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
 import {
   DELEGATE_GAS_LIMIT,
@@ -20,7 +21,7 @@ import keccak256 from "keccak256";
 import {parseUnits, solidityKeccak256 } from "ethers/lib/utils";
 const merkleTreeData = require('../root.json'); 
 
-
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const testingMerkleRoot = {
   root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
@@ -54,7 +55,7 @@ export const hasClaimed = async (address, type = "mainnet") => {
     const signer = provider.getSigner();
     const airdropContract =
       type === "mainnet"
-        ? new Contract(ENSTokenAbi.address, ENSTokenAbi.abi, signer)
+        ? new Contract(SeamTokenAbi.address, SeamTokenAbi.abi, signer)
         : new Contract(
             getMerkleAirdropContractAddress(),
             MerkleAirdropAbi.abi,
@@ -80,16 +81,10 @@ export const submitClaim = async (
   try {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
-    let airdropContractAddress;
-    let abi;
-    let claimTokensFunc;
-
-    airdropContractAddress = "0x2a8491354b023da5378b3Fe1Da86F1cd2089412d";
-    abi = ENSTokenAbi.abi;
-    claimTokensFunc = (claim) =>
+    let claimTokensFunc = (claim) =>
       claim(address, balance, proof, { gasLimit: GAS_LIMIT });
 
-    const airdropContract = new Contract(airdropContractAddress, abi, signer);
+    const airdropContract = new Contract(SeamAirdrop.address, SeamAirdrop.abi, signer);
     airdropContract.connect(signer);
     const result = await claimTokensFunc(airdropContract.claim);
     await result.wait(1);
@@ -113,16 +108,36 @@ export async function delegate(address, setClaimState, history) {
   try {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
-    const ENSTokenContract = new Contract(
-      ENSTokenAbi.address,
-      ENSTokenAbi.abi,
+    const SeamTokenContract = new Contract(
+      SeamTokenAbi.address,
+      SeamTokenAbi.abi,
       signer
     );
-    ENSTokenContract.connect(signer);
-    const result = await ENSTokenContract.delegate(address, {
-      gasLimit: DELEGATE_GAS_LIMIT,
-    });
-    await result.wait(1);
+    SeamTokenContract.connect(signer);
+
+    const seamDelegate = await SeamTokenContract.delegates(address);
+    if (seamDelegate === ZERO_ADDRESS) {
+      const result = await SeamTokenContract.delegate(address, {
+       gasLimit: DELEGATE_GAS_LIMIT,
+      });
+      await result.wait(1);
+    }
+
+    const EsSeamTokenContract = new Contract(
+      EsSeamTokenAbi.address,
+      EsSeamTokenAbi.abi,
+      signer
+    );
+    EsSeamTokenContract.connect(signer);
+
+    const esSeamDelegate = await EsSeamTokenContract.delegates(address);
+    if (esSeamDelegate === ZERO_ADDRESS) {
+      const result = await EsSeamTokenContract.delegate(address, {
+        gasLimit: DELEGATE_GAS_LIMIT,
+      });
+      await result.wait(1);
+    }
+    
     setClaimState({
       state: "SUCCESS",
       message: "",

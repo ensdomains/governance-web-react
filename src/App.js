@@ -10,7 +10,6 @@ import {
 import styled from "styled-components/macro";
 import Header from "./components/Header";
 import SharedFooter from "./components/SharedFooter";
-import ChooseYourDelegate from "./pages/ChooseYourDelegate";
 import Dashboard from "./pages/Dashboard";
 import DelegateRanking from "./pages/DelegateRanking";
 import DelegateTokens from "./pages/DelegateTokens";
@@ -25,7 +24,6 @@ import { hasClaimed } from "./utils/token";
 import { initWeb3Read } from "./web3modal";
 import Why from "./pages/Why";
 import ENSGovernance from "./pages/ENSGovernance";
-import ENSConstitutionInfo from "./pages/ENSConstitution/ENSConstitutionInfo";
 import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
 import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
@@ -75,6 +73,7 @@ function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
   useEffect(() => {
     let finalAddressDetails =
       type === "mainnet" ? data.addressDetails : data.ep2AddressDetails;
+
     const run = async () => {
       try {
         if (
@@ -155,7 +154,7 @@ function App() {
     }
   }, [address]);
 
-  useGetDelegates(isConnected);
+  // useGetDelegates(isConnected);
 
   return (
     <>

@@ -331,7 +331,7 @@ const Header = () => {
           </MobileLink>
         ))}
       </MobileLinkContainer>
-      {network !== null && network !== 84531 && <NetworkWarning />}
+      {network !== null && network !== 8453 && <NetworkWarning />}
     </HeaderContainer>
   );
 };

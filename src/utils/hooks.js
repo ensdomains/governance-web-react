@@ -13,6 +13,7 @@ import {
 } from "../apollo";
 import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
+import SeamTokenAbi from "../assets/abis/Seam.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
@@ -90,12 +91,12 @@ const processENSDelegateContractResults = (
     };
   });
 
-const filterDelegateData = (results) => {
-  return results
-    .filter((data) => data.addr?.id)
-    .filter((data) => data.texts?.includes("avatar"))
-    .filter((data) => data.address === data.domain.resolver.address);
-};
+// const filterDelegateData = (results) => {
+//   return results
+//     .filter((data) => data.addr?.id)
+//     .filter((data) => data.texts?.includes("avatar"))
+//     .filter((data) => data.address === data.domain.resolver.address);
+// };
 
 const bigNumberToDecimal = (bigNumber) =>
   Number(bigNumber.toBigInt() / window.BigInt(Math.pow(10, 18)));
@@ -179,6 +180,7 @@ export const rankDelegates = (
   return sortedList;
 };
 
+/*
 export const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState({});
   const [loading, setLoading] = useState(true);
@@ -260,6 +262,7 @@ export const useGetDelegates = (isConnected) => {
 
   delegatesReactive({ delegates, loading });
 };
+*/
 
 export const useGetTokens = (address) => {
   const [balance, setBalance] = useState();
@@ -289,15 +292,15 @@ export const useGetDelegatedTo = (address) => {
   const [delegatedToAddress, setDelegatedToAddress] = useState();
   const [loading, setLoading] = useState(true);
   const provider = getEthersProvider();
-  const ENSTokenContract = new Contract(
+  const SeamTokenContract = new Contract(
     getENSTokenContractAddress(),
-    ENSTokenAbi.abi,
+    SeamTokenAbi.abi,
     provider
   );
 
   useEffect(() => {
     async function run() {
-      const delegatedToAddress = await ENSTokenContract.delegates(address);
+      const delegatedToAddress = await SeamTokenContract.delegates(address);
       setDelegatedToAddress(delegatedToAddress);
       setLoading(false);
     }

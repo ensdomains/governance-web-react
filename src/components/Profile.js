@@ -254,11 +254,6 @@ const Profile = ({ address, size, hasDropdown }) => {
           <EmptyAvatar size={size} />
         )}
         <RightContainer>
-          {profileDetails.ensName ? (
-            <EnsNameText {...{ size }}>{profileDetails.ensName}</EnsNameText>
-          ) : (
-            <NoNameText>No name set</NoNameText>
-          )}
           <AddressText
             {...{
               size,
@@ -308,11 +303,6 @@ const Profile = ({ address, size, hasDropdown }) => {
           <EmptyAvatar size={size} />
         )}
         <RightContainer>
-          {profileDetails.ensName ? (
-            <EnsNameText size={size}>{profileDetails.ensName}</EnsNameText>
-          ) : (
-            <NoNameText>No name set</NoNameText>
-          )}
           <AddressText size={size} ensName={profileDetails.ensName}>
             {isAddress &&
               address &&

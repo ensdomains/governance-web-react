@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import theme from "./theme";
-import { Link } from "react-router-dom";
 
 const SharedFooterContainer = styled.div`
   height: 56px;

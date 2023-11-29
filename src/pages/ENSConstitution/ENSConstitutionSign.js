@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
-import { Client } from "@snapshot-labs/snapshot.js";
+import { Client712 } from "@snapshot-labs/snapshot.js";
 import Footer from "../../components/Footer";
 import { Content, Header } from "../../components/text";
 import { ContentBox, NarrowColumn } from "../../components/layout";
@@ -11,10 +11,14 @@ import { getEthersProvider } from "../../web3modal";
 import TransactionState from "../../components/TransactionState";
 import { PROPOSAL_ID, SNAPSHOT_TIMEOUT, SPACE_ID } from "../../utils/consts";
 import { getChoices } from "./constitutionHelpers";
+import SeamTokenAbi from "../../assets/abis/Seam.json";
+import EsSeamTokenAbi from "../../assets/abis/EsSeam.json";
+import { Contract } from "ethers";
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const handleVote = async (setVoteState, address, history) => {
-  const snapshotClient = new Client();
+  const snapshotClient = new Client712("https://testnet.hub.snapshot.org");
   const ethersProvider = getEthersProvider();
 
   try {
@@ -25,10 +29,11 @@ const handleVote = async (setVoteState, address, history) => {
     let timeout;
     try{
     await Promise.race([
-      snapshotClient.vote(ethersProvider, address, SPACE_ID, {
+      snapshotClient.vote(ethersProvider, address, {
+        space: SPACE_ID,
         proposal: PROPOSAL_ID,
+        type: "approval-voting",
         choice: getChoices(address),
-        metadata: {}
       }),
       new Promise((_, reject) => {
         timeout = setTimeout(() => {
@@ -44,8 +49,32 @@ const handleVote = async (setVoteState, address, history) => {
       message: "",
     });
 
-    return setTimeout(() => {
-      history.push("/delegates");
+    return setTimeout(async () => {
+      const provider = getEthersProvider();
+      const signer = provider.getSigner();
+
+      const seamTokenContract = new Contract(
+        SeamTokenAbi.address,
+        SeamTokenAbi.abi,
+        signer
+      );
+      seamTokenContract.connect(signer);
+      const seamDelegate = await seamTokenContract.delegates(address);
+
+      const esSeamTokenContract = new Contract(
+        EsSeamTokenAbi.address,
+        EsSeamTokenAbi.abi,
+        signer
+      );
+      esSeamTokenContract.connect(signer);
+      const esSeamDelegate = await esSeamTokenContract.delegates(address);
+
+
+      if (seamDelegate !== ZERO_ADDRESS && esSeamDelegate !== ZERO_ADDRESS) {
+        history.push("/claim");
+      }else {
+        history.push("/delegates");
+      } 
     }, 2000);
   } catch (error) {
     setVoteState({

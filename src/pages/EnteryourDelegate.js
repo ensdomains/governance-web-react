@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { utils } from "ethers";
 import debounce from "lodash.debounce";
 import React, { useEffect, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
 import { selectedDelegateReactive } from "../apollo";
 import Footer from "../components/Footer";
@@ -13,7 +13,6 @@ import { useGetDelegateBySigStatus, useGetDelegatedTo } from "../utils/hooks";
 import { getEthersProvider } from "../web3modal";
 import {
   getDelegateChoice,
-  setDelegateChoice,
 } from "./ENSConstitution/delegateHelpers";
 
 const Input = styled.input`

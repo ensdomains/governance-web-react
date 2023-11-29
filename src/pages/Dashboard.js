@@ -10,11 +10,9 @@ import {
 } from "../components/layout";
 import {
   Content,
-  DecimalBalance,
   Header,
   IntegerBalance,
   Statistic,
-  SubsubTitle,
 } from "../components/text";
 import Gap from "../components/Gap";
 import { largerThan } from "../utils/styledComponents";
@@ -97,14 +95,6 @@ const StatsSection = styled.div`
   margin-bottom: 35px;
 `;
 
-const StatsNumber = styled.div`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  text-align: right;
-  color: #000000;
-`;
-
 const NumberWithLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -125,17 +115,8 @@ const Dashboard = () => {
     }
   `);
 
-  const eligible = true;
-  console.log(address);
-  console.log(merkleTreeData);
+  const eligible = merkleTreeData[address] !== undefined;
   const balance = merkleTreeData[address];
-  console.log(balance);
-
-
-  const rewards =[ 
-    {"OG points": "500"},
-    {"ILM": "15000"},
-  ]
 
   const handleClick = () => {
      history.push("/why");
@@ -144,7 +125,7 @@ const Dashboard = () => {
   return (
     <ClaimEnsTokenContainer>
       <LeftContainer>
-        {address && <Profile large {...{ address }} />}
+        { address && <Profile large {...{ address }} />} 
         <Gap height={4} />
 
 {
@@ -160,7 +141,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {balance * 0.1} 
+              { balance * 0.1 }
               <SmallENSLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -169,7 +150,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Escrow SEAM</RowLabel>
               <NumberWithLogoContainer>
-                {balance * 0.9}
+                { balance * 0.9 }
                 <SmallENSLogo />
               </NumberWithLogoContainer>
           </StatsRow>
@@ -180,25 +161,25 @@ const Dashboard = () => {
 
       <RightContainer>
         <NarrowColumn>
-          {eligible ? (
-            <Pill text="You were eligible for the airdrop!" />
-          ) : (
-            <Pill error text={"You were not eligible for the airdrop"} />
-          )}
+          { eligible ? ( 
+             <Pill text="You were eligible for the airdrop!" /> 
+           ) : ( 
+             <Pill error text={"You were not eligible for the airdrop"} /> 
+          )} 
           <ContentBox>
             <Header>Claim your tokens</Header>
             <Gap height={5} />
             <InnerContentBox>
               <Gap height={2} />
               <Statistic>
-                <IntegerBalance>{balance}</IntegerBalance>
-                {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance> */}
-                {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance> */}
+                 <IntegerBalance>{balance}</IntegerBalance> 
+                 {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>  */}
+                 {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>  */}
                 <ENSLogo />
               </Statistic>
             </InnerContentBox>
             <Gap height={5} />
-            {eligible && (
+            { eligible && (
               <>
                 <WrappedContent>
                   You qualified to receive these tokens for being an early
