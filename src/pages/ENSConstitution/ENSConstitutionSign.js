@@ -27,20 +27,21 @@ const handleVote = async (setVoteState, address, history) => {
       message: "",
     });
     let timeout;
-    try{
-    await Promise.race([
-      snapshotClient.vote(ethersProvider, address, {
-        space: SPACE_ID,
-        proposal: PROPOSAL_ID,
-        type: "approval-voting",
-        choice: getChoices(address),
-      }),
-      new Promise((_, reject) => {
-        timeout = setTimeout(() => {
-          reject("Error with signing vote please try again");
-        }, SNAPSHOT_TIMEOUT);
-      }),
-    ]);} catch(e) {
+    try {
+      await Promise.race([
+        snapshotClient.vote(ethersProvider, address, {
+          space: SPACE_ID,
+          proposal: PROPOSAL_ID,
+          type: "approval-voting",
+          choice: getChoices(address),
+        }),
+        new Promise((_, reject) => {
+          timeout = setTimeout(() => {
+            reject("Error with signing vote please try again");
+          }, SNAPSHOT_TIMEOUT);
+        }),
+      ]);
+    } catch (e) {
       console.log(e);
     }
 
@@ -69,12 +70,11 @@ const handleVote = async (setVoteState, address, history) => {
       esSeamTokenContract.connect(signer);
       const esSeamDelegate = await esSeamTokenContract.delegates(address);
 
-
       if (seamDelegate !== ZERO_ADDRESS && esSeamDelegate !== ZERO_ADDRESS) {
         history.push("/claim");
-      }else {
+      } else {
         history.push("/delegates");
-      } 
+      }
     }, 2000);
   } catch (error) {
     setVoteState({
@@ -97,7 +97,9 @@ const getRightButtonText = (state) => {
       return "Signing...";
     case "SUCCESS":
       return "Continuing...";
-    case "ERROR":
+    case "EROR":
+      return "Try again";
+    default:
       return "Try again";
   }
 };

@@ -8,12 +8,7 @@ import {
   InnerContentBox,
   NarrowColumn,
 } from "../components/layout";
-import {
-  Content,
-  Header,
-  IntegerBalance,
-  Statistic,
-} from "../components/text";
+import { Content, Header, IntegerBalance, Statistic } from "../components/text";
 import Gap from "../components/Gap";
 import { largerThan } from "../utils/styledComponents";
 import { useHistory } from "react-router-dom";
@@ -23,7 +18,7 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
-const merkleTreeData = require('../root.json'); 
+const merkleTreeData = require("../root.json");
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -48,14 +43,14 @@ const RightContainer = styled.div`
     `}
 `;
 
-const ENSLogo = styled(SeamlessLogo)`
+const SeamLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;
   margin-top: 0px;
 `;
 
-const SmallENSLogo = styled(ENSLogo)`
+const SmallSeamLogo = styled(SeamlessLogo)`
   width: 25px;
   height: 25px;
   margin-top: 1px;
@@ -119,20 +114,18 @@ const Dashboard = () => {
   const balance = merkleTreeData[address];
 
   const handleClick = () => {
-     history.push("/why");
+    history.push("/why");
   };
 
   return (
     <ClaimEnsTokenContainer>
       <LeftContainer>
-        { address && <Profile large {...{ address }} />} 
+        {address && <Profile large {...{ address }} />}
         <Gap height={4} />
 
-{
-/*
+        {/*
     Hardcode 0.1 and 0.9 until we know exact proportions
-*/
-}
+*/}
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
@@ -141,52 +134,53 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              { balance * 0.1 }
-              <SmallENSLogo />
+              {balance * 0.1}
+              <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
 
           <StatsRow>
             <RowLabel>Escrow SEAM</RowLabel>
-              <NumberWithLogoContainer>
-                { balance * 0.9 }
-                <SmallENSLogo />
-              </NumberWithLogoContainer>
+            <NumberWithLogoContainer>
+              {balance * 0.9}
+              <SmallSeamLogo />
+            </NumberWithLogoContainer>
           </StatsRow>
-          
         </StatsSection>
-
       </LeftContainer>
 
       <RightContainer>
         <NarrowColumn>
-          { eligible ? ( 
-             <Pill text="You were eligible for the airdrop!" /> 
-           ) : ( 
-             <Pill error text={"You were not eligible for the airdrop"} /> 
-          )} 
+          {eligible ? (
+            <Pill text="You were eligible for the airdrop!" />
+          ) : (
+            <Pill error text={"You were not eligible for the airdrop"} />
+          )}
           <ContentBox>
             <Header>Claim your tokens</Header>
             <Gap height={5} />
             <InnerContentBox>
               <Gap height={2} />
               <Statistic>
-                 <IntegerBalance>{balance}</IntegerBalance> 
-                 {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>  */}
-                 {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>  */}
-                <ENSLogo />
+                <IntegerBalance>{balance}</IntegerBalance>
+                {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>  */}
+                {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>  */}
+                <SeamLogo />
               </Statistic>
             </InnerContentBox>
             <Gap height={5} />
-            { eligible && (
+            {eligible && (
               <>
                 <WrappedContent>
                   You qualified to receive these tokens for being an early
                   participant of the SEAM community. Use this power wisely!
                 </WrappedContent>
                 <Gap height={5} />
-                <CTAButton text="Start your claiming process" onClick={handleClick}/>
+                <CTAButton
+                  text="Start your claiming process"
+                  onClick={handleClick}
+                />
               </>
             )}
           </ContentBox>

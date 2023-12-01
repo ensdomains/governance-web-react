@@ -47,7 +47,7 @@ const TextAndSubText = styled.div`
   justify-content: center;
 `;
 
-const Footer = ({
+export const Footer = ({
   rightButtonText,
   rightButtonCallback,
   leftButtonText,

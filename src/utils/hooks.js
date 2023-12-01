@@ -23,6 +23,7 @@ import {
   getReverseRecordsAddress,
 } from "./consts";
 import { getCanDelegateBySig } from "./utils";
+import { parseAndUseDelegates } from "./utils";
 
 export function useQueryString() {
   return new URLSearchParams(useLocation().search);
@@ -178,6 +179,43 @@ export const rankDelegates = (
     return y.ranking - x.ranking;
   });
   return sortedList;
+};
+
+export const useGetDelegates = () => {
+  const [delegates, setDelegates] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const readItems = await fetch(
+          `https://edge-config.vercel.com/${process.env.REACT_APP_CONFIG_ID}?token=${process.env.REACT_APP_VERCEL_TOKEN}`
+        );
+
+        const result = await readItems.json();
+
+        if (result && result.items && result.items.delegates) {
+          const parsedDelegates = parseAndUseDelegates(result.items.delegates);
+
+          if (parsedDelegates !== null) {
+            setDelegates(parsedDelegates);
+          } else {
+            console.error("Error parsing delegates JSON");
+          }
+        } else {
+          console.error('No valid "delegates" field found in API response');
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return { delegates, isLoading };
 };
 
 /*

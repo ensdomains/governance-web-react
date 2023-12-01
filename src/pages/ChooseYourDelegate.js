@@ -14,13 +14,15 @@ import { useQuery } from "@apollo/client";
 import { imageUrl } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
+
+import { CTAButton } from "../components/buttons";
+import { largerThan } from "../utils/styledComponents";
+import GreenTick from "../assets/imgs/GreenTick.svg";
+
 import {
   getDelegateChoice,
   setDelegateChoice,
 } from "./ENSConstitution/delegateHelpers";
-import { CTAButton } from "../components/buttons";
-import { largerThan } from "../utils/styledComponents";
-import GreenTick from "../assets/imgs/GreenTick.svg";
 
 const CHOOSE_YOUR_DELEGATE_QUERY = gql`
   query chooseDelegateQuery @client {
@@ -270,14 +272,13 @@ const ChooseYourDelegate = () => {
             <Gap height={2} />
             <Content style={{ fontSize: 15 }}>
               You can delegate to someone not listed, or to yourself, by
-              entering an ENS name or Ethereum address with the button on the
-              right.
+              entering an Ethereum address with the button on the right.
             </Content>
           </CopyContainer>
 
           <div>
             <WrappedCTAButton
-              text="Enter ENS or address"
+              text="Enter an address"
               type={"deny"}
               onClick={() => {
                 history.push("/manual-delegates");

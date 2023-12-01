@@ -1,86 +1,21 @@
-import { useQuery } from "@apollo/client";
-import { utils } from "ethers";
-import { gql } from "graphql-tag";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { selectedDelegateReactive } from "../apollo";
-import GradientAvatar from "../assets/imgs/Gradient.svg";
 import GreenTick from "../assets/imgs/GreenTick.svg";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
 import { CTAButton } from "../components/buttons";
 import EtherscanBox from "../components/EtherscanBox";
-import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import { ContentBox, NarrowColumn } from "../components/layout";
-import LazyImage from "../components/LazyImage";
 import Loader from "../components/Loader";
-import Profile from "../components/Profile";
 import { Content, Header, SubTitle } from "../components/text";
-import { emptyAddress } from "../utils/consts";
-import {
-  useGetDelegateBySigStatus,
-  useGetDelegatedTo,
-  useGetTokens,
-  useGetTransactionDone,
-} from "../utils/hooks";
+import { useGetDelegates, useGetTransactionDone } from "../utils/hooks";
 import { largerThan } from "../utils/styledComponents";
-import { imageUrl, parseAndUseDelegates } from "../utils/utils";
+import { shortenAddress } from "../utils/utils";
+import { Footer } from "../components/Footer";
+import { selectedDelegateReactive } from "../apollo";
 import { initWeb3 } from "../web3modal";
-import { WrappedSubTitle } from "./Home";
-
-// const DELEGATE_RANKING_QUERY = gql`
-//   query delegateRankingQuery @client {
-//     addressDetails
-//     isConnected
-//     address
-//     delegates
-//     tokensOwned
-//     delegatedTo
-//     delegateSigDetails
-//     selectedDelegate
-//   }
-// `;
-
-const DelegateBoxContainer = styled.div`
-  border: 1px solid
-    ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
-  box-sizing: border-box;
-  border-radius: 16px;
-  display: ${(p) => (p.search ? "flex" : "none")};
-  height: 80px;
-  align-items: center;
-  padding: 15px;
-  justify-content: space-between;
-  cursor: ${({ alreadyDelegated }) =>
-    alreadyDelegated ? "default" : "pointer"};
-  transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
-  position: relative;
-
-  ${({ alreadyDelegated }) =>
-    alreadyDelegated &&
-    `
-      background-color: rgba(0, 0, 0, 0.08);
-    `}
-
-  ${(p) =>
-    p.account
-      ? `
-      &:hover {
-        border: 1px solid
-          ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
-      }
-  `
-      : ""}
-`;
-
-const AvatarImg = styled.img`
-  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
-  border-radius: 50%;
-  width: ${(p) => (p.large ? "60px" : "50px")};
-  height: ${(p) => (p.large ? "60px" : "50px")};
-  margin-right: 10px;
-`;
+import { keccak_256 as sha3_256 } from "js-sha3";
 
 const MidContainer = styled.div`
   overflow: hidden;
@@ -133,76 +68,74 @@ const ProfileLink = styled.a`
   flex-basis: auto;
 `;
 
-const DelegateBoxVotes = styled.div`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
+function getRandomColor(address) {
+  const hash = sha3_256.create();
+  hash.update(address);
+  const hashedAddress = hash.hex();
 
-  display: flex;
-  align-items: center;
-
-  color: #989898;
-`;
+  const color = `#${hashedAddress.substring(0, 6)}`;
+  return color;
+}
 
 const Gradient = styled.div`
-  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
+  background: linear-gradient(
+    157.05deg,
+    ${(p) => p.color1} -5%,
+    ${(p) => p.color2} 141.71%
+  );
   width: ${(p) => (p.large ? "60px" : "50px")};
   height: ${(p) => (p.large ? "60px" : "50px")};
   border-radius: 50%;
   margin-right: 10px;
 `;
 
-const DelegateBox = (data) => {
-  const {
-    avatar,
-    profile,
-    votes,
-    name,
-    address,
-    userAccount,
-    delegatedTo,
-    search,
-    selectedDelegate,
-  } = data;
-  const selected = name === selectedDelegate.name;
-  const imageSrc = imageUrl(avatar, name, 1);
+const DelegateBoxContainer = styled.div`
+  border: 1px solid
+    ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
+  cursor: pointer;
+  box-sizing: border-box;
+  border-radius: 16px;
+  display: "flex";
+  height: 80px;
+  align-items: center;
+  padding: 15px;
+  justify-content: space-between;
+  transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
+  position: relative;
+
+  ${(p) =>
+    p.account
+      ? `
+      &:hover {
+        border: 1px solid
+          ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
+      }
+  `
+      : ""}
+`;
+
+const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
+  console.log("discourseLink", discourseLink);
   return (
     <DelegateBoxContainer
-      key={name}
-      onClick={() => {
-        if (delegatedTo !== address) {
-          selectedDelegateReactive({ name, address });
-        }
-      }}
-      alreadyDelegated={delegatedTo === address}
-      search={search}
-      selected={selected}
-      account={userAccount}
+      key={address}
+      onClick={() => setSelected(address)}
+      selected={selected === address}
     >
-      {selected && <Logo src={GreenTick} />}
+      {selected === address && <Logo src={GreenTick} />}
       <LeftContainer>
-        {imageSrc ? (
-          <LazyImage
-            src={imageUrl(avatar, name, 1)}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = GradientAvatar;
-            }}
-            ImageComponent={AvatarImg}
-          />
-        ) : (
-          <Gradient />
-        )}
+        <Gradient
+          color1={getRandomColor(address)}
+          color2={getRandomColor(address)}
+        />
         <MidContainer>
           <DelegateBoxName data-testid="delegate-box-name">
-            {name}
+            {shortenAddress(address)}
           </DelegateBoxName>
-          <DelegateBoxVotes>{Math.floor(votes)} votes</DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
       <ProfileLink
-        href={profile}
+        href={`https://${discourseLink}`}
         target={"_blank"}
         onClick={(e) => e.stopPropagation()}
       >
@@ -370,7 +303,7 @@ function CurrentDelegation({
       <span>
         You have delegated <strong>{tokens}</strong> votes to
       </span>
-      <Profile address={delegatedTo} size="small" />
+      {/* <Profile address={delegatedTo} size="small" /> */}
     </>
   );
   if (selection) {
@@ -379,12 +312,12 @@ function CurrentDelegation({
         <span>
           You will delegate <strong>{tokens}</strong> votes to
         </span>
-        <Profile address={selection} size="small" />
+        {/* <Profile address={selection} size="small" /> */}
       </>
     );
   }
 
-  if (!selection && delegatedTo === emptyAddress) {
+  if (!selection) {
     text = (
       <span>
         You have <strong>{tokens}</strong> undelegated votes
@@ -393,7 +326,7 @@ function CurrentDelegation({
   }
 
   return (
-    <CurrentDelegationContainer data-testid="current-delegation">
+    <CurrentDelegationContainer>
       {text}
       {selection !== null && (
         <Clear
@@ -409,16 +342,13 @@ function CurrentDelegation({
 }
 
 const ChooseYourDelegate = () => {
-  //const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
   // useGetTokens(chooseData.address);
   // useGetDelegatedTo(chooseData.address);
   // useGetDelegateBySigStatus(chooseData.address);
-  // const { delegates, loading: delegatesLoading } = chooseData.delegates;
-  // const { balance, loading: balanceLoading } = chooseData.tokensOwned;
-  // const { delegatedTo } = chooseData.delegatedTo;
-  // const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
-  //   chooseData.delegateSigDetails;
-  // const { selectedDelegate } = chooseData;
+
+  const [selected, setSelected] = useState(null);
+
+  const { delegates, isLoading } = useGetDelegates();
 
   const history = useHistory();
   const location = useLocation();
@@ -428,37 +358,7 @@ const ChooseYourDelegate = () => {
   );
 
   const [, setRenderKey] = useState(0);
-  const [search, setSearch] = useState("");
-
-  const [configItems, setConfigItems] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const readItems = await fetch(
-          `https://edge-config.vercel.com/${process.env.REACT_APP_CONFIG_ID}?token=${process.env.REACT_APP_VERCEL_TOKEN}`
-        );
-        console.log("readItems", readItems);
-        const result = await readItems.json();
-        console.log("result", result);
-        if (result) {
-          const parsedDelegates = parseAndUseDelegates(result.items.delegates);
-          console.log("parsedDelegates", parsedDelegates);
-          if (parsedDelegates !== null) {
-            setConfigItems(parsedDelegates);
-          } else {
-            console.error("Error parsing delegates JSON");
-          }
-        } else {
-          console.error('No valid "delegates" field found in API response');
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  // const [search, setSearch] = useState("");
 
   return (
     <WrappedNarrowColumn>
@@ -501,7 +401,6 @@ const ChooseYourDelegate = () => {
           )}
         </FreeDelegationContentBox>
       )} */}
-
       <Gap height={3} />
       <ContentBox padding={"none"}>
         <HeaderContainer>
@@ -510,8 +409,7 @@ const ChooseYourDelegate = () => {
             <Gap height={3} />
             <Content>
               Select a community member to represent you. You can change this at
-              any time. Click on the
-              <SpeechBubbleImgText src={SpeechBubble} />
+              any time. Click on the <SpeechBubbleImgText src={SpeechBubble} />
               icon to read their application.
             </Content>
             <Gap height={2} />
@@ -522,18 +420,18 @@ const ChooseYourDelegate = () => {
             </Content>
           </CopyContainer>
 
-          {/* <div>
-            {chooseData.address ? (
+          <div>
+            {"chooseData.address" ? (
               <WrappedCTAButton
                 text={"Enter ENS or address"}
                 type={"deny"}
                 onClick={() => {
-                  if (chooseData?.address) {
+                  if ("chooseData?.address") {
                     history.push("/manual-delegates-no-claim");
                   }
                 }}
-                account={chooseData?.address}
-                disabled={chooseData?.address && selectedDelegate.name}
+                account={"chooseData?.address"}
+                disabled={"chooseData?.address" && !delegates.length}
               />
             ) : (
               <WrappedCTAButton
@@ -543,10 +441,9 @@ const ChooseYourDelegate = () => {
                 }}
               />
             )}
-          </div> */}
+          </div>
         </HeaderContainer>
-      </ContentBox>
-      {/* <SubHeader account={chooseData?.address}>
+        {/* <SubHeader account={chooseData?.address}>
           {chooseData?.address &&
             (balanceLoading ? null : (
               <CurrentDelegation
@@ -565,64 +462,43 @@ const ChooseYourDelegate = () => {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
           />
-        </SubHeader>
-        {delegatesLoading ? (
+        </SubHeader> */}
+        {isLoading ? (
           <Loader center large />
-        ) : (
-          <DelegatesContainer data-testid="delegates-list-container">
+        ) : delegates ? (
+          <DelegatesContainer>
             {delegates.map((d) => (
               <DelegateBox
-                {...d}
-                selectedDelegate={selectedDelegate}
-                key={d.name}
+                key={d.address}
                 address={d.address}
-                userAccount={chooseData.address}
-                delegatedTo={delegatedTo}
-                search={d.name.includes(search)}
+                discourseLink={d.discourseLink}
+                selected={selected}
+                setSelected={setSelected}
               />
             ))}
           </DelegatesContainer>
-        )}
-     
-      {chooseData?.address &&
-        (!delegateSigDetailsLoading ? (
-          <Footer
-            rightButtonText={"Delegate"}
-            rightButtonCallback={() => {
-              history.push("/delegate-tokens");
-            }}
-            text={delegateSigDetails?.canSign ? "Gas Free" : "Requires Gas"}
-            subText={
-              delegateSigDetails?.formattedDate !== undefined &&
-              "You can delegate gas-free " + delegateSigDetails?.formattedDate
-            }
-            disabled={
-              !selectedDelegate.address ||
-              selectedDelegate.address === delegatedTo
-            }
-          />
         ) : (
-          <Footer rightButtonText={"Loading..."} disabled />
-        ))} */}
-      {configItems && (
-        <div>
-          <WrappedSubTitle fontSize={8}>Edge Config Keys:</WrappedSubTitle>
-          {configItems.map((item, index) => (
-            <div key={index}>
-              <div>
-                <WrappedSubTitle fontSize={8}>Discourse Link:</WrappedSubTitle>
-                <WrappedSubTitle fontSize={8}>
-                  {item.discourseLink}
-                </WrappedSubTitle>
-              </div>
-              <div>
-                <WrappedSubTitle fontSize={8}>Address:</WrappedSubTitle>
-                <WrappedSubTitle fontSize={8}>{item.address}</WrappedSubTitle>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "30px",
+            }}
+          >
+            No data
+          </div>
+        )}
+      </ContentBox>
+      <Footer
+        rightButtonText={"Delegate"}
+        rightButtonCallback={() => {
+          history.push("/delegate-tokens");
+        }}
+        disabled={isLoading || !delegates.length || !transactionDone}
+      />
+
+      {/*<Footer rightButtonText={"Loading..."} disabled />*/}
     </WrappedNarrowColumn>
   );
 };

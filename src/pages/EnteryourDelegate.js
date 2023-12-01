@@ -11,9 +11,7 @@ import { ContentBox, NarrowColumn } from "../components/layout";
 import { Content, Header } from "../components/text";
 import { useGetDelegateBySigStatus, useGetDelegatedTo } from "../utils/hooks";
 import { getEthersProvider } from "../web3modal";
-import {
-  getDelegateChoice,
-} from "./ENSConstitution/delegateHelpers";
+import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
 
 const Input = styled.input`
   height: 64px;
@@ -222,10 +220,7 @@ const EnteryourDelegate = () => {
       <ContentBox>
         <Header>Custom delegate</Header>
         <Gap height={3} />
-        <Content>
-          Delegate your voting power to an ENS name. You can also enter their
-          Ethereum address.
-        </Content>
+        <Content>Delegate your voting power to their Ethereum address.</Content>
         <Gap height={5} />
         <InputComponent
           placeholder={"Enter address"}
@@ -241,9 +236,7 @@ const EnteryourDelegate = () => {
         />
       </ContentBox>
       <Footer
-        disabled={
-          validationMessage.isError  || !value
-        }
+        disabled={validationMessage.isError || !value}
         rightButtonText={
           noClaim
             ? delegatedToLoading || _delegateSigDetails.loading
@@ -252,11 +245,11 @@ const EnteryourDelegate = () => {
             : "Next"
         }
         rightButtonCallback={() => {
-            selectedDelegateReactive({
-              address: value,
-              name: null,
-            });
-            history.push("/delegate-tokens");
+          selectedDelegateReactive({
+            address: value,
+            name: null,
+          });
+          history.push("/delegate-tokens");
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {

@@ -114,16 +114,9 @@ export const getClaimData = async (address, type = "mainnet") => {
 
 export const parseAndUseDelegates = (jsonString) => {
   try {
-    console.log("Original delegates string:", jsonString);
-
     const parsedDelegates = JSON.parse(jsonString);
 
     if (Array.isArray(parsedDelegates)) {
-      // If parsedDelegates is an array, you can iterate over each object
-      parsedDelegates.forEach((delegate, index) => {
-        console.log(`Parsed delegate ${index + 1}:`, delegate);
-      });
-
       return parsedDelegates;
     } else {
       console.error(

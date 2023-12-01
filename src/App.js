@@ -177,10 +177,22 @@ function App() {
               />
               <PrivateRoute path="/delegates" component={EnteryourDelegate} />
               <PrivateRoute path="/why" component={Why}></PrivateRoute>
-              <PrivateRoute path="/governance" component={ENSGovernance}></PrivateRoute>
-              <PrivateRoute path="/constitution" component={ENSConstitution}></PrivateRoute>
-              <PrivateRoute path="/signature" component={ENSConstitutionSign}></PrivateRoute>
-              <PrivateRoute path="/claim" component={ENSEP2ClaimSummary}></PrivateRoute>
+              <PrivateRoute
+                path="/governance"
+                component={ENSGovernance}
+              ></PrivateRoute>
+              <PrivateRoute
+                path="/constitution"
+                component={ENSConstitution}
+              ></PrivateRoute>
+              <PrivateRoute
+                path="/signature"
+                component={ENSConstitutionSign}
+              ></PrivateRoute>
+              <PrivateRoute
+                path="/claim"
+                component={ENSEP2ClaimSummary}
+              ></PrivateRoute>
               <PrivateRoute path="/dashboard" component={Dashboard} />
               <PrivateRoute path="/ep2/claim" component={ENSEP2TokenClaim} />
               <Route path="/delegate-ranking">

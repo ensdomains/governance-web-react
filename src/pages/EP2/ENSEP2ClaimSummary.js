@@ -18,11 +18,11 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as SeamlessLogo } from "../../assets/imgs/SeamlessLogo.svg";
 
-const ENSLogo = styled(SeamlessLogo)`
+const SeamLogo = styled(SeamlessLogo)`
   width: 40px;
   height: 40px;
   margin-left: 5px;
-  marign-top: 0px;
+  margin-top: 0px;
 `;
 
 const ClaimType = styled.div`
@@ -56,7 +56,7 @@ const ENSEP2ClaimSummary = () => {
           <Statistic>
             <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>
             <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>
-            <ENSLogo />
+            <SeamLogo />
           </Statistic>
         </InnerContentBox>
         <Gap height={3} />
