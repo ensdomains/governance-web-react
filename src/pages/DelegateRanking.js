@@ -8,14 +8,26 @@ import EtherscanBox from "../components/EtherscanBox";
 import Gap from "../components/Gap";
 import { ContentBox, NarrowColumn } from "../components/layout";
 import Loader from "../components/Loader";
-import { Content, Header, SubTitle } from "../components/text";
+import { Content, Header } from "../components/text";
 import { useGetDelegates, useGetTransactionDone } from "../utils/hooks";
 import { largerThan } from "../utils/styledComponents";
 import { shortenAddress } from "../utils/utils";
 import { Footer } from "../components/Footer";
-import { selectedDelegateReactive } from "../apollo";
+import { isConnected } from "../apollo";
 import { initWeb3 } from "../web3modal";
 import { keccak_256 as sha3_256 } from "js-sha3";
+import { setDelegateChoice } from "./ENSConstitution/delegateHelpers";
+import { gql } from "graphql-tag";
+import { useQuery } from "@apollo/client";
+
+const merkleTreeData = require("../root.json");
+
+const USER_INFO_QUERY = gql`
+  query delegateRankingQuery @client {
+    isConnected
+    address
+  }
+`;
 
 const MidContainer = styled.div`
   overflow: hidden;
@@ -115,7 +127,6 @@ const DelegateBoxContainer = styled.div`
 `;
 
 const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
-  console.log("discourseLink", discourseLink);
   return (
     <DelegateBoxContainer
       key={address}
@@ -205,29 +216,6 @@ const SubHeader = styled.div`
   `}
 `;
 
-const Input = styled.input`
-  font-family: inherit;
-  height: 64px;
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  appearance: none;
-  outline: none;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #f6f6f6;
-  border-radius: 14px;
-  padding: 0px 20px;
-
-  font-style: normal;
-  font-weight: bold;
-  font-size: 22px;
-  line-height: 28px;
-
-  &::placeholder {
-    color: black;
-    opacity: 0.23;
-  }
-`;
-
 const Clear = styled("button")`
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -275,28 +263,12 @@ const CurrentDelegationContainer = styled("div")`
   }
 `;
 
-const FreeDelegationHeader = styled(Header)`
-  font-size: 22px;
-  display: inline-block;
-`;
-
-const FreeDelegationSubTitle = styled(SubTitle)`
-  display: inline-block;
-`;
-
-const FreeDelegationContentBox = styled(ContentBox)`
-  display: flex;
-  padding: 15px 30px;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
 function CurrentDelegation({
-  account,
+  address,
   tokens,
   selection,
-  delegatedTo,
-  setRenderKey,
+  //delegatedTo,
+  setSelected,
 }) {
   let text = (
     <>
@@ -312,7 +284,11 @@ function CurrentDelegation({
         <span>
           You will delegate <strong>{tokens}</strong> votes to
         </span>
-        {/* <Profile address={selection} size="small" /> */}
+        <Gradient
+          color1={getRandomColor(selection)}
+          color2={getRandomColor(selection)}
+        />
+        {shortenAddress(selection)}
       </>
     );
   }
@@ -329,22 +305,15 @@ function CurrentDelegation({
     <CurrentDelegationContainer>
       {text}
       {selection !== null && (
-        <Clear
-          onClick={() => {
-            selectedDelegateReactive({ name: null, address: null });
-          }}
-        >
-          Clear
-        </Clear>
+        <Clear onClick={() => setSelected(null)}>Clear</Clear>
       )}
     </CurrentDelegationContainer>
   );
 }
 
 const ChooseYourDelegate = () => {
-  // useGetTokens(chooseData.address);
-  // useGetDelegatedTo(chooseData.address);
-  // useGetDelegateBySigStatus(chooseData.address);
+  const { data: userData } = useQuery(USER_INFO_QUERY);
+  const balance = merkleTreeData[userData.address];
 
   const [selected, setSelected] = useState(null);
 
@@ -357,9 +326,6 @@ const ChooseYourDelegate = () => {
     location.state && location.state.hash
   );
 
-  const [, setRenderKey] = useState(0);
-  // const [search, setSearch] = useState("");
-
   return (
     <WrappedNarrowColumn>
       {!transactionDone && (
@@ -371,36 +337,6 @@ const ChooseYourDelegate = () => {
           <Gap height={3} />
         </>
       )}
-      {/* {chooseData?.address && (
-        <FreeDelegationContentBox>
-          {delegateSigDetails?.next !== undefined ? (
-            <Fragment>
-              <FreeDelegationHeader>
-                {!delegateSigDetails?.canSign &&
-                delegateSigDetails?.formattedDate
-                  ? `You will be eligible for gas free-delegation ${
-                      delegateSigDetails?.formattedDate.split(" ")[0]
-                    }`
-                  : "You are eligible for gas free-delegation"}
-              </FreeDelegationHeader>
-              <FreeDelegationSubTitle>
-                {!delegateSigDetails?.canSign &&
-                delegateSigDetails?.formattedDate
-                  ? delegateSigDetails?.formattedDate.split(" ")[1]
-                  : ""}
-              </FreeDelegationSubTitle>
-            </Fragment>
-          ) : !delegateSigDetailsLoading ? (
-            <FreeDelegationHeader>
-              You're not eligible for gas-free delegation
-            </FreeDelegationHeader>
-          ) : (
-            <FreeDelegationHeader>
-              Checking gas-free delegation eligibility...
-            </FreeDelegationHeader>
-          )}
-        </FreeDelegationContentBox>
-      )} */}
       <Gap height={3} />
       <ContentBox padding={"none"}>
         <HeaderContainer>
@@ -421,17 +357,17 @@ const ChooseYourDelegate = () => {
           </CopyContainer>
 
           <div>
-            {"chooseData.address" ? (
+            {userData.isConnected ? (
               <WrappedCTAButton
                 text={"Enter ENS or address"}
                 type={"deny"}
                 onClick={() => {
-                  if ("chooseData?.address") {
+                  if (userData?.address) {
                     history.push("/manual-delegates-no-claim");
                   }
                 }}
-                account={"chooseData?.address"}
-                disabled={"chooseData?.address" && !delegates.length}
+                account={userData?.address}
+                disabled={userData?.address && !delegates.length}
               />
             ) : (
               <WrappedCTAButton
@@ -443,26 +379,16 @@ const ChooseYourDelegate = () => {
             )}
           </div>
         </HeaderContainer>
-        {/* <SubHeader account={chooseData?.address}>
-          {chooseData?.address &&
-            (balanceLoading ? null : (
-              <CurrentDelegation
-                account={chooseData?.address}
-                tokens={
-                  balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
-                }
-                selection={selectedDelegate.name}
-                delegatedTo={delegatedTo}
-                setRenderKey={setRenderKey}
-              />
-            ))}
-          <Input
-            account={chooseData?.address}
-            type="text"
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search..."
-          />
-        </SubHeader> */}
+        <SubHeader account={userData?.address}>
+          {userData?.address && (
+            <CurrentDelegation
+              address={userData?.address}
+              tokens={balance ?? 0}
+              selection={selected}
+              setSelected={setSelected}
+            />
+          )}
+        </SubHeader>
         {isLoading ? (
           <Loader center large />
         ) : delegates ? (
@@ -490,15 +416,26 @@ const ChooseYourDelegate = () => {
           </div>
         )}
       </ContentBox>
-      <Footer
-        rightButtonText={"Delegate"}
-        rightButtonCallback={() => {
-          history.push("/delegate-tokens");
-        }}
-        disabled={isLoading || !delegates.length || !transactionDone}
-      />
 
-      {/*<Footer rightButtonText={"Loading..."} disabled />*/}
+      {!isLoading ? (
+        <Footer
+          rightButtonText={"Delegate"}
+          rightButtonCallback={() => {
+            setDelegateChoice(userData.address, selected);
+            history.push("/delegate-tokens");
+          }}
+          leftButtonText={"Back"}
+          leftButtonCallback={() => {
+            setDelegateChoice(userData.address, "");
+            history.push("/delegate-tokens");
+          }}
+          disabled={
+            isLoading || !delegates.length || !transactionDone || !isConnected
+          }
+        />
+      ) : (
+        <Footer rightButtonText={"Loading..."} disabled />
+      )}
     </WrappedNarrowColumn>
   );
 };

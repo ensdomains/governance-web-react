@@ -19,8 +19,7 @@ import {
 } from "./pages/ENSConstitution/delegateHelpers";
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import Home from "./pages/Home";
-import { useGetDelegates, useQueryString } from "./utils/hooks";
-import { hasClaimed } from "./utils/token";
+import { useQueryString } from "./utils/hooks";
 import { initWeb3Read } from "./web3modal";
 import Why from "./pages/Why";
 import ENSGovernance from "./pages/ENSGovernance";
@@ -28,6 +27,7 @@ import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
 import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
 import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
+import ENSEP2ClaimSuccess from "./pages/EP2/ENSEP2ClaimSuccess";
 
 const AppContainer = styled.div`
   margin: auto;
@@ -66,53 +66,55 @@ const PRIVATE_ROUTE_QUERY = gql`
   }
 `;
 
-function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
-  const { data } = useQuery(PRIVATE_ROUTE_QUERY);
-  const history = useHistory();
+// function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
+//   const { data } = useQuery(PRIVATE_ROUTE_QUERY);
+//   const history = useHistory();
 
-  useEffect(() => {
-    let finalAddressDetails =
-      type === "mainnet" ? data.addressDetails : data.ep2AddressDetails;
+//   console.log("priv", data);
 
-    const run = async () => {
-      try {
-        if (
-          finalAddressDetails.eligible !== undefined &&
-          !finalAddressDetails.eligible
-        ) {
-          history.push("/dashboard");
-          return;
-        }
-        const isClaimed = await hasClaimed(data.address, type);
-        if (isClaimed) {
-          history.push("/dashboard");
-        }
-      } catch (error) {
-        console.error("Private Route error: ", error);
-        history.push("/dashboard");
-      }
-    };
+//   useEffect(() => {
+//     let finalAddressDetails =
+//       type === "mainnet" ? data.addressDetails : data.ep2AddressDetails;
 
-    if (
-      data.isConnected &&
-      data.address &&
-      data.addressDetails.eligible !== undefined
-    ) {
-      run();
-    }
+//     const run = async () => {
+//       try {
+//         if (
+//           finalAddressDetails.eligible !== undefined &&
+//           !finalAddressDetails.eligible
+//         ) {
+//           history.push("/dashboard");
+//           return;
+//         }
+//         const isClaimed = await hasClaimed(data.address, type);
+//         if (isClaimed) {
+//           history.push("/dashboard");
+//         }
+//       } catch (error) {
+//         console.error("Private Route error: ", error);
+//         history.push("/dashboard");
+//       }
+//     };
 
-    if (!data.address && data.isConnected) {
-      history.push("/");
-    }
-  }, [
-    data.address,
-    data.isConnected,
-    data.addressDetails,
-    data.ep2AddressDetails,
-  ]);
+//     if (
+//       data.isConnected &&
+//       data.address &&
+//       data.addressDetails.eligible !== undefined
+//     ) {
+//       run();
+//     }
 
-  return <Route {...rest} render={(props) => <Component {...props} />} />;
-}
+//     if (!data.address && data.isConnected) {
+//       history.push("/");
+//     }
+//   }, [
+//     data.address,
+//     data.isConnected,
+//     data.addressDetails,
+//     data.ep2AddressDetails,
+//   ]);
+
+//   return <Route {...rest} render={(props) => <Component {...props} />} />;
+// }
 
 function ConnectedRoute({ component: Component, ...rest }) {
   const { data } = useQuery(PRIVATE_ROUTE_QUERY);
@@ -139,7 +141,7 @@ function ConnectedRoute({ component: Component, ...rest }) {
 function App() {
   const query = useQueryString();
   const {
-    data: { address, isConnected },
+    data: { address },
   } = useQuery(gql`
     query getAddress @client {
       address
@@ -154,8 +156,6 @@ function App() {
     }
   }, [address]);
 
-  // useGetDelegates(isConnected);
-
   return (
     <>
       <Header />
@@ -163,7 +163,7 @@ function App() {
         <AppContainerMid>
           <AppContainer>
             <Switch>
-              <PrivateRoute
+              <ConnectedRoute
                 path="/manual-delegates"
                 component={EnteryourDelegate}
               />
@@ -171,33 +171,29 @@ function App() {
                 path="/manual-delegates-no-claim"
                 component={EnteryourDelegate}
               />
-              <PrivateRoute
+              <ConnectedRoute
                 path="/delegate-tokens"
                 component={DelegateTokens}
               />
-              <PrivateRoute path="/delegates" component={EnteryourDelegate} />
-              <PrivateRoute path="/why" component={Why}></PrivateRoute>
-              <PrivateRoute
-                path="/governance"
-                component={ENSGovernance}
-              ></PrivateRoute>
-              <PrivateRoute
+              <ConnectedRoute path="/delegates" component={EnteryourDelegate} />
+              <ConnectedRoute path="/why" component={Why} />
+              <ConnectedRoute path="/governance" component={ENSGovernance} />
+              <ConnectedRoute
                 path="/constitution"
                 component={ENSConstitution}
-              ></PrivateRoute>
-              <PrivateRoute
+              />
+              <ConnectedRoute
                 path="/signature"
                 component={ENSConstitutionSign}
-              ></PrivateRoute>
-              <PrivateRoute
-                path="/claim"
-                component={ENSEP2ClaimSummary}
-              ></PrivateRoute>
-              <PrivateRoute path="/dashboard" component={Dashboard} />
-              <PrivateRoute path="/ep2/claim" component={ENSEP2TokenClaim} />
-              <Route path="/delegate-ranking">
-                <DelegateRanking />
-              </Route>
+              />
+              <ConnectedRoute path="/claim" component={ENSEP2ClaimSummary} />
+              <ConnectedRoute path="/dashboard" component={Dashboard} />
+              <ConnectedRoute path="/ep2/claim" component={ENSEP2TokenClaim} />
+              <ConnectedRoute
+                path="/ep2/success"
+                component={ENSEP2ClaimSuccess}
+              />
+              <Route path="/delegate-ranking" component={DelegateRanking} />
               <Route path="/">
                 <Home />
               </Route>

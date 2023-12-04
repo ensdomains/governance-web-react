@@ -2,7 +2,6 @@ import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { selectedDelegateReactive } from "../apollo";
 import EtherscanBox from "../components/EtherscanBox";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
@@ -11,6 +10,8 @@ import Pill from "../components/Pill";
 import { Content, Header } from "../components/text";
 import TransactionState from "../components/TransactionState";
 import { delegate, delegateBySig } from "../utils/token";
+import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
+const ethereumjs = require("ethereumjs-util");
 
 const delegateToAddress = async (
   setClaimState,
@@ -29,15 +30,20 @@ const delegateToAddress = async (
     }
 
     const tx =
-      sigDetails && sigDetails.canSign
-        ? await delegateBySig(
-            delegateAddress,
-            setClaimState,
-            history,
-            sigDetails.nonce
-          )
-        : await delegate(delegateAddress, setClaimState, history);
-    selectedDelegateReactive("");
+      // sigDetails && sigDetails.canSign
+      //   ? await delegateBySig(
+      //       delegateAddress,
+      //       setClaimState,
+      //       history,
+      //       sigDetails.nonce
+      //     )
+      //   :
+      await delegate(
+        ethereumjs.toChecksumAddress(delegateAddress),
+        setClaimState,
+        history
+      );
+    localStorage.removeItem("delegate");
     return tx;
   } catch (error) {
     console.error(error);
@@ -63,22 +69,16 @@ const getRightButtonText = (state) => {
   }
 };
 
-const ENSTokenClaim = ({ location }) => {
+const ENSTokenClaim = () => {
   const {
-    data: {
-      address,
-      selectedDelegate,
-      delegateSigDetails: _delegateSigDetails,
-    },
+    data: { address },
   } = useQuery(gql`
     query privateRouteQuery @client {
-      isConnected
       address
-      selectedDelegate
-      delegateSigDetails
     }
   `);
-  const delegateSigDetails = _delegateSigDetails && _delegateSigDetails.details;
+
+  const delegateAddress = getDelegateChoice(address);
   const history = useHistory();
   const [claimState, setClaimState] = useState({
     state: "LOADING",
@@ -92,8 +92,7 @@ const ENSTokenClaim = ({ location }) => {
         timeout = await delegateToAddress(
           setClaimState,
           history,
-          selectedDelegate.address,
-          delegateSigDetails
+          delegateAddress
         );
       }
     };
@@ -115,9 +114,9 @@ const ENSTokenClaim = ({ location }) => {
         <Header>Confirm with wallet</Header>
         <Gap height={3} />
         <Content>
-          {delegateSigDetails?.canSign
-            ? "Please sign the message to delegate your tokens"
-            : "Please approve the transaction to delegate your tokens"}
+          {/* {delegateSigDetails?.canSign
+            ? "Please sign the message to delegate your tokens" */}
+          Please approve the transaction to delegate your tokens
         </Content>
         <Gap height={6} />
         <TransactionState
@@ -126,9 +125,9 @@ const ENSTokenClaim = ({ location }) => {
           }
           title={"Delegate"}
           content={
-            delegateSigDetails?.canSign
-              ? "This transaction happens on-chain, but is subsidised and does not require paying gas"
-              : "This transaction happens on-chain, and will require paying gas"
+            // delegateSigDetails?.canSign
+            //   ? "This transaction happens on-chain, but is subsidised and does not require paying gas"
+            "This transaction happens on-chain, and will require paying gas"
           }
         />
       </ContentBox>
@@ -144,25 +143,19 @@ const ENSTokenClaim = ({ location }) => {
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          // history.push("/delegate-ranking");
+          history.push("/delegate-ranking");
         }}
         rightButtonText={getRightButtonText(claimState.state)}
         rightButtonCallback={() => {
           if (claimState.state === "SUCCESS") {
-            // history.push("/delegate-ranking");
+            history.push("/delegate-ranking");
             return;
           } else if (claimState.state === "QUEUED") {
             // history.push("/delegate-ranking", {
-              // hash: claimState.message,
-            //  }
-            // );
+            //   hash: claimState.message,
+            // });
           }
-          delegateToAddress(
-            setClaimState,
-            history,
-            selectedDelegate.address,
-            delegateSigDetails
-          );
+          delegateToAddress(setClaimState, history, delegateAddress);
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
       />

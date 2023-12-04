@@ -4122,9 +4122,9 @@
     "@types/node" "*"
 
 "@types/bn.js@^5.1.0":
-  "integrity" "sha512-QSSVYj7pYFN49kW77o2s9xTCwZ8F2xLbjLLSEVh8D2F4JUhZtPAGOFLTD+ffqksBx/u4cE/KImFjyhqCjn/LIA=="
-  "resolved" "https://registry.npmjs.org/@types/bn.js/-/bn.js-5.1.0.tgz"
-  "version" "5.1.0"
+  "integrity" "sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A=="
+  "resolved" "https://registry.npmjs.org/@types/bn.js/-/bn.js-5.1.5.tgz"
+  "version" "5.1.5"
   dependencies:
     "@types/node" "*"
 
@@ -5943,10 +5943,10 @@
   "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz"
   "version" "5.2.0"
 
-"bn.js@^5.1.2", "bn.js@^5.2.0":
-  "integrity" "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
-  "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.0.tgz"
-  "version" "5.2.0"
+"bn.js@^5.1.2":
+  "integrity" "sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ=="
+  "resolved" "https://registry.npmjs.org/bn.js/-/bn.js-5.2.1.tgz"
+  "version" "5.2.1"
 
 "bn.js@^5.2.0":
   "integrity" "sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw=="
@@ -9327,7 +9327,46 @@
     "ethereumjs-common" "^1.5.0"
     "ethereumjs-util" "^6.0.0"
 
-"ethereumjs-util@^5.0.0", "ethereumjs-util@^5.1.1", "ethereumjs-util@^5.1.2", "ethereumjs-util@^5.1.5":
+"ethereumjs-util@^5.0.0":
+  "integrity" "sha512-v3kT+7zdyCm1HIqWlLNrHGqHGLpGYIhjeHxQjnDXjLT2FyGJDsd3LWMYUo7pAFRrk86CR3nUJfhC81CCoJNNGQ=="
+  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-5.2.1.tgz"
+  "version" "5.2.1"
+  dependencies:
+    "bn.js" "^4.11.0"
+    "create-hash" "^1.1.2"
+    "elliptic" "^6.5.2"
+    "ethereum-cryptography" "^0.1.3"
+    "ethjs-util" "^0.1.3"
+    "rlp" "^2.0.0"
+    "safe-buffer" "^5.1.1"
+
+"ethereumjs-util@^5.1.1":
+  "integrity" "sha512-v3kT+7zdyCm1HIqWlLNrHGqHGLpGYIhjeHxQjnDXjLT2FyGJDsd3LWMYUo7pAFRrk86CR3nUJfhC81CCoJNNGQ=="
+  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-5.2.1.tgz"
+  "version" "5.2.1"
+  dependencies:
+    "bn.js" "^4.11.0"
+    "create-hash" "^1.1.2"
+    "elliptic" "^6.5.2"
+    "ethereum-cryptography" "^0.1.3"
+    "ethjs-util" "^0.1.3"
+    "rlp" "^2.0.0"
+    "safe-buffer" "^5.1.1"
+
+"ethereumjs-util@^5.1.2":
+  "integrity" "sha512-v3kT+7zdyCm1HIqWlLNrHGqHGLpGYIhjeHxQjnDXjLT2FyGJDsd3LWMYUo7pAFRrk86CR3nUJfhC81CCoJNNGQ=="
+  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-5.2.1.tgz"
+  "version" "5.2.1"
+  dependencies:
+    "bn.js" "^4.11.0"
+    "create-hash" "^1.1.2"
+    "elliptic" "^6.5.2"
+    "ethereum-cryptography" "^0.1.3"
+    "ethjs-util" "^0.1.3"
+    "rlp" "^2.0.0"
+    "safe-buffer" "^5.1.1"
+
+"ethereumjs-util@^5.1.5":
   "integrity" "sha512-v3kT+7zdyCm1HIqWlLNrHGqHGLpGYIhjeHxQjnDXjLT2FyGJDsd3LWMYUo7pAFRrk86CR3nUJfhC81CCoJNNGQ=="
   "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-5.2.1.tgz"
   "version" "5.2.1"
@@ -9353,32 +9392,10 @@
     "ethjs-util" "0.1.6"
     "rlp" "^2.2.3"
 
-"ethereumjs-util@^7.0.10":
-  "integrity" "sha512-y+82tEbyASO0K0X1/SRhbJJoAlfcvq8JbrG4a5cjrOks7HS/36efU/0j2flxCPOUM++HFahk33kr/ZxyC4vNuw=="
-  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-7.1.3.tgz"
-  "version" "7.1.3"
-  dependencies:
-    "@types/bn.js" "^5.1.0"
-    "bn.js" "^5.1.2"
-    "create-hash" "^1.1.2"
-    "ethereum-cryptography" "^0.1.3"
-    "rlp" "^2.2.4"
-
-"ethereumjs-util@^7.1.0":
-  "integrity" "sha512-y+82tEbyASO0K0X1/SRhbJJoAlfcvq8JbrG4a5cjrOks7HS/36efU/0j2flxCPOUM++HFahk33kr/ZxyC4vNuw=="
-  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-7.1.3.tgz"
-  "version" "7.1.3"
-  dependencies:
-    "@types/bn.js" "^5.1.0"
-    "bn.js" "^5.1.2"
-    "create-hash" "^1.1.2"
-    "ethereum-cryptography" "^0.1.3"
-    "rlp" "^2.2.4"
-
-"ethereumjs-util@^7.1.3":
-  "integrity" "sha512-y+82tEbyASO0K0X1/SRhbJJoAlfcvq8JbrG4a5cjrOks7HS/36efU/0j2flxCPOUM++HFahk33kr/ZxyC4vNuw=="
-  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-7.1.3.tgz"
-  "version" "7.1.3"
+"ethereumjs-util@^7.0.10", "ethereumjs-util@^7.1.0", "ethereumjs-util@^7.1.3", "ethereumjs-util@^7.1.5":
+  "integrity" "sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg=="
+  "resolved" "https://registry.npmjs.org/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz"
+  "version" "7.1.5"
   dependencies:
     "@types/bn.js" "^5.1.0"
     "bn.js" "^5.1.2"

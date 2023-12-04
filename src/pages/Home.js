@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components/macro";
 
 import { Button } from "@ensdomains/thorin";
@@ -8,10 +8,16 @@ import { useHistory } from "react-router-dom";
 import { ReactComponent as SeamlessLogo } from "../assets/imgs/SeamlessLogo.svg";
 import { largerThan } from "../utils/styledComponents";
 import { theme } from "../components/theme";
-import { parseAndUseDelegates } from "../utils/utils";
-import { parse } from "graphql";
+import { gql } from "graphql-tag";
+import { initWeb3 } from "../web3modal";
+import { useQuery } from "@apollo/client";
 
-const END_FREE_DELEGATION_DATE = new Date(2022, 11, 8);
+const USER_INFO_QUERY = gql`
+  query delegateRankingQuery @client {
+    isConnected
+    address
+  }
+`;
 
 export const config = {
   runtime: "edge",
@@ -74,6 +80,8 @@ const DelegateButton = styled(Button)`
 `;
 
 const Home = () => {
+  const { data: userData } = useQuery(USER_INFO_QUERY);
+
   const history = useHistory();
 
   const handleClick = () => {
@@ -95,18 +103,17 @@ const Home = () => {
       <Gap height={4} />
 
       <Gap height={4} />
-      <ButtonContainer>
-        <DelegateButton text={"Get started"} onClick={handleClick} />
-        {new Date() <= END_FREE_DELEGATION_DATE && (
-          <ButtonCaption>
-            Delegate for free until{" "}
-            {END_FREE_DELEGATION_DATE.toLocaleDateString(undefined, {
-              month: "long",
-              day: "numeric",
-            })}
-          </ButtonCaption>
-        )}
-      </ButtonContainer>
+      {userData.address ? (
+        <ButtonContainer>
+          <DelegateButton text={"Get started"} onClick={handleClick} />
+        </ButtonContainer>
+      ) : (
+        <Button
+          data-testid="header-connect-button"
+          onClick={initWeb3}
+          text={"Connect"}
+        />
+      )}
     </HomeContainer>
   );
 };

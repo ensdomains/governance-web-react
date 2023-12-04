@@ -154,7 +154,7 @@ const ENSConstitutionSign = ({ location }) => {
         rightButtonText={getRightButtonText(voteState.state)}
         rightButtonCallback={() => {
           if (voteState.state === "SUCCESS") {
-            history.push("/claim");
+            history.push("/delegate-ranking");
             return;
           }
           handleVote(setVoteState, data.address, history);

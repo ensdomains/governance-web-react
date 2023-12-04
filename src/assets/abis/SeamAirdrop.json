@@ -1,5 +1,5 @@
 {
-  "address": "0x2a8491354b023da5378b3Fe1Da86F1cd2089412d",
+  "address": "0x53B56D1e0a5e28e219a080cFa84b952F0510779e",
   "abi": [
     {
       "inputs": [
@@ -753,18 +753,10 @@
     "absolutePath": "src/airdrop/SeamAirdrop.sol",
     "id": 1541,
     "exportedSymbols": {
-      "Airdrop": [
-        1496
-      ],
-      "IERC20": [
-        225
-      ],
-      "SafeERC20": [
-        551
-      ],
-      "SeamAidrop": [
-        1540
-      ]
+      "Airdrop": [1496],
+      "IERC20": [225],
+      "SafeERC20": [551],
+      "SeamAidrop": [1540]
     },
     "nodeType": "SourceUnit",
     "src": "39:530:8",
@@ -774,12 +766,7 @@
         "nodeType": "PragmaDirective",
         "src": "39:24:8",
         "nodes": [],
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".20"
-        ]
+        "literals": ["solidity", "^", "0.8", ".20"]
       },
       {
         "id": 1500,
@@ -923,9 +910,7 @@
                 "modifierName": {
                   "id": 1515,
                   "name": "Airdrop",
-                  "nameLocations": [
-                    "387:7:8"
-                  ],
+                  "nameLocations": ["387:7:8"],
                   "nodeType": "IdentifierPath",
                   "referencedDeclaration": 1496,
                   "src": "387:7:8"
@@ -961,9 +946,7 @@
                     "pathNode": {
                       "id": 1507,
                       "name": "IERC20",
-                      "nameLocations": [
-                        "315:6:8"
-                      ],
+                      "nameLocations": ["315:6:8"],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 225,
                       "src": "315:6:8"
@@ -1161,9 +1144,7 @@
                 }
               ]
             },
-            "baseFunctions": [
-              1495
-            ],
+            "baseFunctions": [1495],
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -1255,9 +1236,7 @@
             "baseName": {
               "id": 1505,
               "name": "Airdrop",
-              "nameLocations": [
-                "280:7:8"
-              ],
+              "nameLocations": ["280:7:8"],
               "nodeType": "IdentifierPath",
               "referencedDeclaration": 1496,
               "src": "280:7:8"
@@ -1271,32 +1250,12 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "linearizedBaseContracts": [
-          1540,
-          1496,
-          147,
-          826,
-          1583
-        ],
+        "linearizedBaseContracts": [1540, 1496, 147, 826, 1583],
         "name": "SeamAidrop",
         "nameLocation": "266:10:8",
         "scope": 1541,
-        "usedErrors": [
-          13,
-          18,
-          278,
-          559,
-          564,
-          567,
-          1563,
-          1565
-        ],
-        "usedEvents": [
-          24,
-          1547,
-          1553,
-          1559
-        ]
+        "usedErrors": [13, 18, 278, 559, 564, 567, 1563, 1565],
+        "usedEvents": [24, 1547, 1553, 1559]
       }
     ],
     "license": "UNLICENSED"

@@ -17,6 +17,9 @@ import Gap from "../../components/Gap";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as SeamlessLogo } from "../../assets/imgs/SeamlessLogo.svg";
+import { useQuery } from "@apollo/client";
+import { gql } from "graphql-tag";
+const balances = require("../../root.json");
 
 const SeamLogo = styled(SeamlessLogo)`
   width: 40px;
@@ -38,7 +41,15 @@ const ClaimType = styled.div`
 `;
 
 const ENSEP2ClaimSummary = () => {
-  const balance = "1550.00";
+  const {
+    data: { address },
+  } = useQuery(gql`
+    query privateRouteQuery @client {
+      isConnected
+      address
+    }
+  `);
+  const balance = balances[address];
   const history = useHistory();
 
   return (

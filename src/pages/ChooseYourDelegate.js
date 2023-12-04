@@ -5,60 +5,52 @@ import styled from "styled-components";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import Loader from "../components/Loader";
-import LazyImage from "../components/LazyImage";
 import { Header, Content } from "../components/text";
 import { NarrowColumn } from "../components/layout";
 import { ContentBox } from "../components/layout";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
-import { imageUrl } from "../utils/utils";
 import SpeechBubble from "../assets/imgs/SpeechBubble.svg";
-import GradientAvatar from "../assets/imgs/Gradient.svg";
 
 import { CTAButton } from "../components/buttons";
 import { largerThan } from "../utils/styledComponents";
 import GreenTick from "../assets/imgs/GreenTick.svg";
+import { keccak_256 as sha3_256 } from "js-sha3";
+import { shortenAddress } from "../utils/utils";
 
-import {
-  getDelegateChoice,
-  setDelegateChoice,
-} from "./ENSConstitution/delegateHelpers";
+import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
+import { useGetDelegates } from "../utils/hooks";
 
-const CHOOSE_YOUR_DELEGATE_QUERY = gql`
+const USER_INFO_QUERY = gql`
   query chooseDelegateQuery @client {
-    addressDetails
     isConnected
     address
-    delegates
   }
 `;
 
 const DelegateBoxContainer = styled.div`
   border: 1px solid
     ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "rgba(0, 0, 0, 0.08)")};
+  cursor: pointer;
   box-sizing: border-box;
   border-radius: 16px;
-  display: ${(p) => (p.search ? "flex" : "none")};
+  display: "flex";
   height: 80px;
   align-items: center;
   padding: 15px;
   justify-content: space-between;
-  cursor: pointer;
   transition: all 0.33s cubic-bezier(0.83, 0, 0.17, 1);
   position: relative;
 
-  &:hover {
-    border: 1px solid
-      ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
-  }
-`;
-
-const AvatarImg = styled.img`
-  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
-  border-radius: 50%;
-  width: ${(p) => (p.large ? "60px" : "50px")};
-  height: ${(p) => (p.large ? "60px" : "50px")};
-  margin-right: 10px;
+  ${(p) =>
+    p.account
+      ? `
+      &:hover {
+        border: 1px solid
+          ${(p) => (p.selected ? "rgba(73, 179, 147, 1)" : "#5298FF")};
+      }
+  `
+      : ""}
 `;
 
 const MidContainer = styled.div`
@@ -112,64 +104,48 @@ const ProfileLink = styled.a`
   flex-basis: auto;
 `;
 
-const DelegateBoxVotes = styled.div`
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
+function getRandomColor(address) {
+  const hash = sha3_256.create();
+  hash.update(address);
+  const hashedAddress = hash.hex();
 
-  display: flex;
-  align-items: center;
-
-  color: #989898;
-`;
+  const color = `#${hashedAddress.substring(0, 6)}`;
+  return color;
+}
 
 const Gradient = styled.div`
-  background: linear-gradient(157.05deg, #9fc6ff -5%, #256eda 141.71%);
+  background: linear-gradient(
+    157.05deg,
+    ${(p) => p.color1} -5%,
+    ${(p) => p.color2} 141.71%
+  );
   width: ${(p) => (p.large ? "60px" : "50px")};
   height: ${(p) => (p.large ? "60px" : "50px")};
   border-radius: 50%;
   margin-right: 10px;
 `;
 
-const DelegateBox = (data) => {
-  const { avatar, profile, votes, name, setRenderKey, userAccount, search } =
-    data;
-  const selected = name === getDelegateChoice(userAccount);
-  const imageSrc = imageUrl(avatar, name, 1);
+const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
   return (
     <DelegateBoxContainer
-      key={name}
-      onClick={() => {
-        setDelegateChoice(userAccount, name);
-        setRenderKey((x) => x + 1);
-      }}
-      search={search}
-      selected={selected}
+      key={address}
+      onClick={() => setSelected(address)}
+      selected={selected === address}
     >
-      {selected && <Logo src={GreenTick} />}
+      {selected === address && <Logo src={GreenTick} />}
       <LeftContainer>
-        {imageSrc ? (
-          <LazyImage
-            src={imageUrl(avatar, name, 1)}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = GradientAvatar;
-            }}
-            ImageComponent={AvatarImg}
-          />
-        ) : (
-          <Gradient />
-        )}
+        <Gradient
+          color1={getRandomColor(address)}
+          color2={getRandomColor(address)}
+        />
         <MidContainer>
           <DelegateBoxName data-testid="delegate-box-name">
-            {name}
+            {shortenAddress(address)}
           </DelegateBoxName>
-          <DelegateBoxVotes>{Math.floor(votes)} votes</DelegateBoxVotes>
         </MidContainer>
       </LeftContainer>
       <ProfileLink
-        href={profile}
+        href={`https://${discourseLink}`}
         target={"_blank"}
         onClick={(e) => e.stopPropagation()}
       >
@@ -219,42 +195,18 @@ const CopyContainer = styled.div`
   margin-bottom: 20px;
 
   ${largerThan.mobile`
-     margin-bottom: 0px;
+    margin-bottom: 0px;
   `}
 `;
 
-const Input = styled.input`
-  font-family: inherit;
-  height: 64px;
-  width: calc(100% - 60px);
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  outline: none;
-  border: none;
-  background: #f6f6f6;
-  border-radius: 14px;
-  padding: 0px 20px;
-
-  font-style: normal;
-  font-weight: bold;
-  font-size: 22px;
-  line-height: 28px;
-
-  margin: 0 30px 10px;
-
-  &::placeholder {
-    color: black;
-    opacity: 0.23;
-  }
-`;
-
 const ChooseYourDelegate = () => {
-  const { data } = useQuery(CHOOSE_YOUR_DELEGATE_QUERY);
-  const { delegates, loading: delegatesLoading } = data.delegates;
-  const history = useHistory();
+  const { data } = useQuery(USER_INFO_QUERY);
 
-  const [, setRenderKey] = useState(0);
-  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState(null);
+
+  const { delegates, isLoading } = useGetDelegates();
+
+  const history = useHistory();
 
   return (
     <WrappedNarrowColumn>
@@ -286,37 +238,49 @@ const ChooseYourDelegate = () => {
             />
           </div>
         </HeaderContainer>
-        <Input
-          type="text"
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search delegates"
-        />
-        {delegatesLoading ? (
+        {isLoading ? (
           <Loader center large />
-        ) : (
-          <DelegatesContainer data-testid="delegates-list-container">
-            {delegates
-              .map((x) => ({
-                ...x,
-                setRenderKey,
-                userAccount: data.address,
-                search: x.name.includes(search),
-              }))
-              .map(DelegateBox)}
+        ) : delegates ? (
+          <DelegatesContainer>
+            {delegates.map((d) => (
+              <DelegateBox
+                key={d.address}
+                address={d.address}
+                discourseLink={d.discourseLink}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            ))}
           </DelegatesContainer>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "30px",
+            }}
+          >
+            No data
+          </div>
         )}
       </ContentBox>
-      <Footer
-        rightButtonText="Next"
-        rightButtonCallback={() => {
-          history.push("/summary");
-        }}
-        leftButtonText="Back"
-        leftButtonCallback={() => {
-          history.push("/governance");
-        }}
-        disabled={!getDelegateChoice(data?.address)}
-      />
+      {!isLoading ? (
+        <Footer
+          rightButtonText="Next"
+          rightButtonCallback={() => {
+            history.push("/summary");
+          }}
+          leftButtonText="Back"
+          leftButtonCallback={() => {
+            localStorage.removeItem("delegate");
+            history.push("/governance");
+          }}
+          disabled={!getDelegateChoice(data?.address)}
+        />
+      ) : (
+        <Footer rightButtonText={"Loading..."} disabled />
+      )}
     </WrappedNarrowColumn>
   );
 };

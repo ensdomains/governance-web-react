@@ -190,7 +190,7 @@ const StyledProfileArrow = styled(ProfileArrow)(({ hasOpened }) => ({
   transition: "all 0.2s ease-out",
 }));
 
-const Profile = ({ address, size, hasDropdown }) => {
+export const Profile = ({ address, size, hasDropdown }) => {
   const [profileDetails, setProfileDetails] = useState({});
   const [navOpen, setNavOpen] = useState(false);
   let isAddress;
@@ -257,7 +257,10 @@ const Profile = ({ address, size, hasDropdown }) => {
           <AddressText
             {...{
               size,
-              ensName: profileDetails.ensName,
+              ensName: address,
+              // profileDetails.ensName
+              //   ? profileDetails.ensName
+              //   :
             }}
           >
             {isAddress &&

@@ -123,6 +123,8 @@ export async function delegate(address, setClaimState, history) {
       await result.wait(1);
     }
 
+    //TODO: uncomment if we want to airdrop EsSeam otherwise delete
+    /*
     const EsSeamTokenContract = new Contract(
       EsSeamTokenAbi.address,
       EsSeamTokenAbi.abi,
@@ -137,6 +139,7 @@ export async function delegate(address, setClaimState, history) {
       });
       await result.wait(1);
     }
+    */
     
     setClaimState({
       state: "SUCCESS",

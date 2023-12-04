@@ -134,7 +134,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {balance * 0.1}
+              {balance ?? 0 * 1}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -143,7 +143,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Escrow SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {balance * 0.9}
+              {balance ?? 0 * 0.0}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -163,7 +163,7 @@ const Dashboard = () => {
             <InnerContentBox>
               <Gap height={2} />
               <Statistic>
-                <IntegerBalance>{balance}</IntegerBalance>
+                <IntegerBalance>{balance ?? 0}</IntegerBalance>
                 {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>  */}
                 {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>  */}
                 <SeamLogo />
