@@ -4,14 +4,22 @@ import debounce from "lodash.debounce";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components/macro";
-import { selectedDelegateReactive } from "../apollo";
 import Footer from "../components/Footer";
 import Gap from "../components/Gap";
 import { ContentBox, NarrowColumn } from "../components/layout";
 import { Content, Header } from "../components/text";
 import { useGetDelegateBySigStatus, useGetDelegatedTo } from "../utils/hooks";
 import { getEthersProvider } from "../web3modal";
-import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
+import {
+  getDelegateChoice,
+  setDelegateChoice,
+} from "./ENSConstitution/delegateHelpers";
+
+const USER_INFO_QUERY = gql`
+  query delegateRankingQuery @client {
+    address
+  }
+`;
 
 const Input = styled.input`
   height: 64px;
@@ -181,6 +189,7 @@ const InputComponent = ({
 };
 
 const EnteryourDelegate = () => {
+  const { data: userData } = useQuery(USER_INFO_QUERY);
   const history = useHistory();
   const [validationMessage, setValidationMessage] = useState({
     message: "",
@@ -220,7 +229,9 @@ const EnteryourDelegate = () => {
       <ContentBox>
         <Header>Custom delegate</Header>
         <Gap height={3} />
-        <Content>Delegate your voting power to their Ethereum address.</Content>
+        <Content>
+          Delegate your voting power to an ENS name or Ethereum address.
+        </Content>
         <Gap height={5} />
         <InputComponent
           placeholder={"Enter address"}
@@ -231,7 +242,7 @@ const EnteryourDelegate = () => {
             setEnsNameAddress,
             setValue,
             delegatedTo,
-            defaultValue: value,
+            defaultValue: null,
           }}
         />
       </ContentBox>
@@ -245,15 +256,12 @@ const EnteryourDelegate = () => {
             : "Next"
         }
         rightButtonCallback={() => {
-          selectedDelegateReactive({
-            address: value,
-            name: null,
-          });
+          setDelegateChoice(userData.address, value);
           history.push("/delegate-tokens");
         }}
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push(noClaim ? "/delegate-ranking" : "/delegates");
+          history.push("/delegate-ranking");
         }}
         text={
           noClaim &&
