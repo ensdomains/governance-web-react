@@ -106,6 +106,7 @@ export const submitClaim = async (
 
 export async function delegate(address, setClaimState, history) {
   try {
+    console.log("usoooooo");
     const provider = getEthersProvider();
     const signer = provider.getSigner();
     const SeamTokenContract = new Contract(
@@ -115,7 +116,11 @@ export async function delegate(address, setClaimState, history) {
     );
     SeamTokenContract.connect(signer);
 
-    const seamDelegate = await SeamTokenContract.delegates(address);
+    console.log("addresssssssssssssssssss");
+    console.log(address);
+    console.log(signer);
+    const seamDelegate = await SeamTokenContract.delegates(signer.address);
+    console.log(seamDelegate);
     if (seamDelegate === ZERO_ADDRESS) {
       const result = await SeamTokenContract.delegate(address, {
        gasLimit: DELEGATE_GAS_LIMIT,
@@ -123,8 +128,6 @@ export async function delegate(address, setClaimState, history) {
       await result.wait(1);
     }
 
-    //TODO: uncomment if we want to airdrop EsSeam otherwise delete
-    /*
     const EsSeamTokenContract = new Contract(
       EsSeamTokenAbi.address,
       EsSeamTokenAbi.abi,
@@ -132,14 +135,13 @@ export async function delegate(address, setClaimState, history) {
     );
     EsSeamTokenContract.connect(signer);
 
-    const esSeamDelegate = await EsSeamTokenContract.delegates(address);
+    const esSeamDelegate = await EsSeamTokenContract.delegates(signer.address);
     if (esSeamDelegate === ZERO_ADDRESS) {
       const result = await EsSeamTokenContract.delegate(address, {
         gasLimit: DELEGATE_GAS_LIMIT,
       });
       await result.wait(1);
     }
-    */
     
     setClaimState({
       state: "SUCCESS",
