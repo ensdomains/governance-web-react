@@ -19,6 +19,7 @@ import { sendToDelegateJsonRpc } from "./utils";
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
 import {parseUnits, solidityKeccak256 } from "ethers/lib/utils";
+import { parse } from "path";
 const merkleTreeData = require('../root.json'); 
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -81,13 +82,13 @@ export const submitClaim = async (
   try {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
-    let claimTokensFunc = (claim) =>
-      claim(address, balance, proof, { gasLimit: GAS_LIMIT });
 
     const airdropContract = new Contract(SeamAirdrop.address, SeamAirdrop.abi, signer);
-    airdropContract.connect(signer);
-    const result = await claimTokensFunc(airdropContract.claim);
+     airdropContract.connect(signer);
+
+    const result = await airdropContract.claim(address,  BigNumber.from(balance), proof, { gasLimit: GAS_LIMIT });
     await result.wait(1);
+
     setClaimState({
       state: "SUCCESS",
       message: "",
@@ -106,7 +107,6 @@ export const submitClaim = async (
 
 export async function delegate(address, setClaimState, history) {
   try {
-    console.log("usoooooo");
     const provider = getEthersProvider();
     const signer = provider.getSigner();
     const SeamTokenContract = new Contract(
@@ -116,11 +116,7 @@ export async function delegate(address, setClaimState, history) {
     );
     SeamTokenContract.connect(signer);
 
-    console.log("addresssssssssssssssssss");
-    console.log(address);
-    console.log(signer);
-    const seamDelegate = await SeamTokenContract.delegates(signer.address);
-    console.log(seamDelegate);
+    const seamDelegate = await SeamTokenContract.delegates(await signer.getAddress());
     if (seamDelegate === ZERO_ADDRESS) {
       const result = await SeamTokenContract.delegate(address, {
        gasLimit: DELEGATE_GAS_LIMIT,
@@ -135,7 +131,7 @@ export async function delegate(address, setClaimState, history) {
     );
     EsSeamTokenContract.connect(signer);
 
-    const esSeamDelegate = await EsSeamTokenContract.delegates(signer.address);
+    const esSeamDelegate = await EsSeamTokenContract.delegates(await signer.getAddress());
     if (esSeamDelegate === ZERO_ADDRESS) {
       const result = await EsSeamTokenContract.delegate(address, {
         gasLimit: DELEGATE_GAS_LIMIT,
@@ -245,6 +241,7 @@ export const handleClaim = async (
       { sortPairs: true }
     );
     const balance = parseUnits(merkleTreeData[address].toString(), 18).toString();
+
     const proof = merkleTree.getHexProof(generateLeaf(address, balance.toString()));
 
     return await submitClaim(
