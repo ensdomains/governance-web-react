@@ -14,6 +14,8 @@ import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 export const rpcUrl =
   "https://rpc.tenderly.co/fork/c1626274-17a0-4b7e-9b8b-54a493cea145";
 
+export const mainnetRpc = "https://eth.llamarpc.com";
+
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
 let provider;
@@ -101,6 +103,7 @@ export const disconnect = async function () {
   }
   // clear connection data and reconnect with infura
   ethersProvider = undefined;
+  ensInstance = undefined;
 
   isConnected(false);
   addressReactive(null);
@@ -116,6 +119,7 @@ export const initWeb3Read = async () => {
   }
   if (!ethersProvider) {
     ethersProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    ensInstance = new ethers.providers.StaticJsonRpcProvider(mainnetRpc, 1);
     isConnected(true);
     const net = await ethersProvider.getNetwork();
     network(net.chainId);
@@ -147,6 +151,7 @@ export const initWeb3 = async (showPrompt = true) => {
 
   try {
     ethersProvider = new ethers.providers.Web3Provider(web3Provider);
+    ensInstance = new ethers.providers.StaticJsonRpcProvider(mainnetRpc, 1);
   } catch (e) {
     console.error(e);
   }

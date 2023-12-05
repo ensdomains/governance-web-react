@@ -44,7 +44,7 @@ const SocialButton = ({ type, text }) => {
       href={
         type === "Twitter"
           ? `https://twitter.com/intent/tweet?text=${TWITTER_INTENT}`
-          : "https://chat.ens.domains/"
+          : "https://discord.gg/urQPJu3CKt"
       }
       target={"_blank"}
       rel="noreferrer"

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import GreenTick from "../assets/imgs/GreenTick.svg";
@@ -19,6 +19,7 @@ import { keccak_256 as sha3_256 } from "js-sha3";
 import { setDelegateChoice } from "./ENSConstitution/delegateHelpers";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
+import { getEnsInstance } from "../web3modal";
 
 const merkleTreeData = require("../root.json");
 
@@ -127,6 +128,28 @@ const DelegateBoxContainer = styled.div`
 `;
 
 const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
+  const [displayName, setDisplayName] = useState(address);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await getEnsInstance().lookupAddress(address);
+
+        if (result) {
+          setDisplayName(result);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [address]);
+
   return (
     <DelegateBoxContainer
       key={address}
@@ -140,8 +163,12 @@ const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
           color2={getRandomColor(address)}
         />
         <MidContainer>
-          <DelegateBoxName data-testid="delegate-box-name">
-            {shortenAddress(address)}
+          <DelegateBoxName>
+            {loading
+              ? "Loading..."
+              : displayName === address
+              ? shortenAddress(address)
+              : displayName}
           </DelegateBoxName>
         </MidContainer>
       </LeftContainer>
