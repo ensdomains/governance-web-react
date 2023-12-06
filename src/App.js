@@ -21,10 +21,9 @@ import EnteryourDelegate from "./pages/EnteryourDelegate";
 import Home from "./pages/Home";
 import { useQueryString } from "./utils/hooks";
 import { initWeb3Read } from "./web3modal";
+import Tos from "./pages/Tos";
 import Why from "./pages/Why";
 import ENSGovernance from "./pages/ENSGovernance";
-import ENSConstitution from "./pages/ENSConstitution/ENSConstitution";
-import ENSConstitutionSign from "./pages/ENSConstitution/ENSConstitutionSign";
 import ENSEP2ClaimSummary from "./pages/EP2/ENSEP2ClaimSummary";
 import ENSEP2TokenClaim from "./pages/EP2/ENSEP2TokenClaim";
 import ENSEP2ClaimSuccess from "./pages/EP2/ENSEP2ClaimSuccess";
@@ -178,14 +177,19 @@ function App() {
               <ConnectedRoute path="/delegates" component={EnteryourDelegate} />
               <ConnectedRoute path="/why" component={Why} />
               <ConnectedRoute path="/governance" component={ENSGovernance} />
-              <ConnectedRoute
+              {/* <ConnectedRoute
                 path="/constitution"
                 component={ENSConstitution}
               />
               <ConnectedRoute
                 path="/signature"
                 component={ENSConstitutionSign}
-              />
+              /> 
+              <ConnectedRoute
+                path="/signature"
+                component={ENSConstitutionSign}
+              />*/}
+              <ConnectedRoute path="/sign" component={Tos} />
               <ConnectedRoute path="/claim" component={ENSEP2ClaimSummary} />
               <ConnectedRoute path="/dashboard" component={Dashboard} />
               <ConnectedRoute path="/ep2/claim" component={ENSEP2TokenClaim} />

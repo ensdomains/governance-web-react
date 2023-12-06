@@ -145,7 +145,7 @@ const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
         </MidContainer>
       </LeftContainer>
       <ProfileLink
-        href={`https://${discourseLink}`}
+        href={discourseLink}
         target={"_blank"}
         onClick={(e) => e.stopPropagation()}
       >

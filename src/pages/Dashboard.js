@@ -134,7 +134,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {balance ?? 0 * 1}
+              {(balance ?? 0) * 1}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -143,7 +143,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Escrow SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {balance ?? 0 * 0.0}
+              {(balance ?? 0) * 0.0}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -153,9 +153,9 @@ const Dashboard = () => {
       <RightContainer>
         <NarrowColumn>
           {eligible ? (
-            <Pill text="You were eligible for the airdrop!" />
+            <Pill text="You are eligible for the airdrop!" />
           ) : (
-            <Pill error text={"You were not eligible for the airdrop"} />
+            <Pill error text="You are not eligible for the airdrop" />
           )}
           <ContentBox>
             <Header>Claim your tokens</Header>
@@ -173,8 +173,9 @@ const Dashboard = () => {
             {eligible && (
               <>
                 <WrappedContent>
-                  You qualified to receive these tokens for being an early
-                  participant of the SEAM community. Use this power wisely!
+                  You’ve qualified to receive these tokens for participating in
+                  important activities within the Seamless ecosystem. The future
+                  is in your hands 🤝!
                 </WrappedContent>
                 <Gap height={5} />
                 <CTAButton

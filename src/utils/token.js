@@ -1,7 +1,6 @@
 import { BigNumber, Contract, utils } from "ethers";
 import { network } from "../apollo";
 import SeamTokenAbi from "../assets/abis/Seam.json";
-import EsSeamTokenAbi from "../assets/abis/EsSeam.json";
 import SeamAirdrop from "../assets/abis/SeamAirdrop.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
@@ -119,7 +118,7 @@ export async function delegate(address, setClaimState, history) {
     const seamDelegate = await SeamTokenContract.delegates(await signer.getAddress());
     if (seamDelegate === ZERO_ADDRESS) {
       const result = await SeamTokenContract.delegate(address, {
-       gasLimit: DELEGATE_GAS_LIMIT,
+        gasLimit: DELEGATE_GAS_LIMIT,
       });
       await result.wait(1);
     }
@@ -168,7 +167,7 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
     const chainId = network();
     const sig = await signer._signTypedData(
       {
-        name: "Ethereum Name Service",
+        name: "Seamless",
         version: "1",
         chainId: chainId,
         verifyingContract: getENSTokenContractAddress(chainId),
@@ -217,7 +216,7 @@ export const generateLeaf = (address, value) => {
     solidityKeccak256(["address", "uint256"], [address, value]).slice(2),
     "hex"
   );
-}
+};
 
 export const handleClaim = async (
   address,
@@ -231,18 +230,18 @@ export const handleClaim = async (
       message: "",
     });
 
-    const leaves = Object.entries(merkleTreeData).map(([address,value]) => {
-      return generateLeaf(address, parseUnits(value.toString(), 18).toString())
+    const leaves = Object.entries(merkleTreeData).map(([address, value]) => {
+      return generateLeaf(address, parseUnits(value.toString(), 18).toString());
     });
-    
-    const merkleTree = new MerkleTree(
-      leaves, 
-      keccak256,
-      { sortPairs: true }
-    );
-    const balance = parseUnits(merkleTreeData[address].toString(), 18).toString();
 
-    const proof = merkleTree.getHexProof(generateLeaf(address, balance.toString()));
+    const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
+    const balance = parseUnits(
+      merkleTreeData[address].toString(),
+      18
+    ).toString();
+    const proof = merkleTree.getHexProof(
+      generateLeaf(address, balance.toString())
+    );
 
     return await submitClaim(
       balance,

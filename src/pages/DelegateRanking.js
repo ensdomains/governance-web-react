@@ -173,7 +173,7 @@ const DelegateBox = ({ address, discourseLink, selected, setSelected }) => {
         </MidContainer>
       </LeftContainer>
       <ProfileLink
-        href={`https://${discourseLink}`}
+        href={discourseLink}
         target={"_blank"}
         onClick={(e) => e.stopPropagation()}
       >
@@ -297,14 +297,38 @@ function CurrentDelegation({
   //delegatedTo,
   setSelected,
 }) {
-  let text = (
-    <>
-      <span>
-        You have delegated <strong>{tokens}</strong> votes to
-      </span>
-      {/* <Profile address={delegatedTo} size="small" /> */}
-    </>
-  );
+  const [displayName, setDisplayName] = useState(selection);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await getEnsInstance().lookupAddress(selection);
+
+        if (result) {
+          setDisplayName(result);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selection]);
+
+  let text;
+  //  = (
+  //   <>
+  //     <span>
+  //       You have delegated <strong>{tokens}</strong> votes to
+  //     </span>
+  //     {/* <Profile address={delegatedTo} size="small" /> */}
+  //   </>
+  // );
+
   if (selection) {
     text = (
       <>
@@ -315,7 +339,11 @@ function CurrentDelegation({
           color1={getRandomColor(selection)}
           color2={getRandomColor(selection)}
         />
-        {shortenAddress(selection)}
+        {loading
+          ? "Loading..."
+          : displayName === address
+          ? shortenAddress(address)
+          : displayName}
       </>
     );
   }
@@ -372,7 +400,8 @@ const ChooseYourDelegate = () => {
             <Gap height={3} />
             <Content>
               Select a community member to represent you. You can change this at
-              any time. Click on the <SpeechBubbleImgText src={SpeechBubble} />
+              any time (Note: you can only delegate to 1 wallet at a time).
+              Click on the <SpeechBubbleImgText src={SpeechBubble} />
               icon to read their application.
             </Content>
             <Gap height={2} />
@@ -454,7 +483,7 @@ const ChooseYourDelegate = () => {
           leftButtonText={"Back"}
           leftButtonCallback={() => {
             setDelegateChoice(userData.address, "");
-            history.push("/delegate-tokens");
+            history.push("/governance");
           }}
           disabled={
             isLoading || !delegates.length || !transactionDone || !isConnected

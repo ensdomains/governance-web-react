@@ -74,7 +74,7 @@ const ENSEP2ClaimSummary = () => {
         <InnerContentBox>
           <SubsubTitle>You are claiming</SubsubTitle>
           <Gap height={2} />
-          <ClaimType>EP2 Airdrop</ClaimType>
+          <ClaimType>SEAM Airdrop</ClaimType>
         </InnerContentBox>
       </ContentBox>
       <Footer

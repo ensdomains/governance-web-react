@@ -14,7 +14,6 @@ const Logo = styled(SeamlessLogo)`
 
 const Symbol = styled.span`
   font-weight: 700;
-  color: #7e99f2;
   margin-left: 22px;
 `;
 

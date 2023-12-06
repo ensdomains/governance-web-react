@@ -66,7 +66,7 @@ const ENSEP2TokenClaim = ({ location }) => {
         <TransactionState
           transactionState={claimState.state}
           title="Claim tokens"
-          content="This transaction happens on-chain, and will require paying gas"
+          content="This transaction happens onchain, and will require paying gas"
         />
       </ContentBox>
       <Footer

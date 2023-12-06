@@ -93,7 +93,8 @@ const InputComponent = ({
     setValue(value);
 
     const run = async () => {
-      if (value.includes(".")) {
+      console.log("value", value);
+      if (value.endsWith(".eth")) {
         try {
           const result = await getEnsInstance().resolveName(value);
           if (result) {
