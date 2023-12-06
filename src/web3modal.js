@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { Bitski } from "bitski";
 
 import {
   addressReactive,
@@ -14,16 +13,17 @@ import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 export const rpcUrl =
   "https://rpc.tenderly.co/fork/c1626274-17a0-4b7e-9b8b-54a493cea145";
 
-export const mainnetRpc = "https://eth.llamarpc.com";
+export const mainnetRpc =
+  process.env.PRIVATE_RPC_URL || "https://eth.llamarpc.com";
 
-const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
+//const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
 let provider;
 let web3Modal;
 let ethersProvider;
 let ensInstance;
 
-const BITSKI_CLIENT_ID = "7a89f99f-8367-4821-86d8-124b059815f8";
+//const BITSKI_CLIENT_ID = "7a89f99f-8367-4821-86d8-124b059815f8";
 
 const option = {
   network: "mainnet", // optional
@@ -42,36 +42,36 @@ const option = {
       package: () => import("walletlink"),
       packageFactory: true,
       options: {
-        appName: "Ethereum name service",
+        appName: "Seamless Protocol",
         jsonRpcUrl: rpcUrl,
       },
     },
-    mewconnect: {
-      package: () => import("@myetherwallet/mewconnect-web-client"),
-      packageFactory: true,
-      options: {
-        rpc: rpcUrl,
-        description: " ",
-      },
-    },
-    portis: {
-      package: () => import("@portis/web3"),
-      packageFactory: true,
-      options: {
-        id: PORTIS_ID,
-      },
-    },
-    torus: {
-      package: () => import("@toruslabs/torus-embed"),
-      packageFactory: true,
-    },
-    bitski: {
-      package: Bitski, // required
-      options: {
-        clientId: BITSKI_CLIENT_ID, // required
-        callbackUrl: window.location.href + "bitski-callback.html", // required
-      },
-    },
+    // mewconnect: {
+    //   package: () => import("@myetherwallet/mewconnect-web-client"),
+    //   packageFactory: true,
+    //   options: {
+    //     rpc: rpcUrl,
+    //     description: " ",
+    //   },
+    // },
+    // portis: {
+    //   package: () => import("@portis/web3"),
+    //   packageFactory: true,
+    //   options: {
+    //     id: PORTIS_ID,
+    //   },
+    // },
+    // torus: {
+    //   package: () => import("@toruslabs/torus-embed"),
+    //   packageFactory: true,
+    // },
+    // bitski: {
+    //   package: Bitski, // required
+    //   options: {
+    //     clientId: BITSKI_CLIENT_ID, // required
+    //     callbackUrl: window.location.href + "bitski-callback.html", // required
+    //   },
+    // },
   },
 };
 

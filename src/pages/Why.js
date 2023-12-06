@@ -68,55 +68,60 @@ const Why = () => {
   return (
     <Container>
       <WhatIsENSContentBox>
-        <Header>What is SEAM?</Header>
+        <Header>What’s the latest with Seamless?</Header>
         <Gap height={3} />
         <Content>
-          Your SEAM Tokens name is for governance of the Seamless Protocol.
+          Seamless has been rapidly growing, thanks to users and community
+          participants like yourself! Here’s some fun stats, as of December 1,
+          2023:
         </Content>
         <Gap height={5} />
         <StatsSection>
           <StatsRow>
-            <RowLabel>Names</RowLabel>
+            <RowLabel>Unique wallets</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>&gt;400k</StatsNumber>
+              <StatsNumber>&gt;5,000</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
           <StatsRow>
-            <RowLabel>Years registered</RowLabel>
+            <RowLabel>TVL ranking among native Base projects</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>&gt;1,775,000</StatsNumber>
+              <StatsNumber>Top 5</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
           <Divider />
           <StatsRow>
-            <RowLabel>Integrations</RowLabel>
+            <RowLabel>Twitter followers</RowLabel>
             <NumberWithLogoContainer>
-              <StatsNumber>&gt;310</StatsNumber>
+              <StatsNumber>&gt;65,000</StatsNumber>
             </NumberWithLogoContainer>
           </StatsRow>
         </StatsSection>
       </WhatIsENSContentBox>
 
       <ContentBox>
-        <Header>Why launch a token?</Header>
+        <Header>How does SEAM work?</Header>
         <Gap height={3} />
         <Content>
-          <Token /> is an important step in further decentralizing governance of
-          the Seamless protocol.
+          <Token /> is the utility token that governs Seamless Protocol. The
+          community of SEAM holders may vote to adjust key protocol parameters,
+          create new technical integrations, distribute liquidity mining rewards
+          and MORE!
         </Content>
         <Gap height={5} />
         <Content>
-          It will empower community members to direct its development, community
-          treasury, and technical parameters.
+          Each SEAM token counts as one vote. To activate the voting power of
+          SEAM, a wallet must first delegate the tokens—this can be a
+          self-delegation or a delegation to another wallet.
         </Content>
       </ContentBox>
       <ContentBox>
-        <Header>Why launch it now?</Header>
+        <Header>How do I get started?</Header>
         <Gap height={3} />
         <Content>
-          Both SEAM and the DAO space have matured in the last year. We believe
-          now is the time for SEAM to further decentralize protocol governance.
+          Follow this easy wizard to set up your vote delegation and claim your
+          SEAM tokens.
         </Content>
       </ContentBox>
       <Footer

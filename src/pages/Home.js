@@ -31,7 +31,7 @@ const HomeContainer = styled.div`
 
 const WrappedTitle = styled.div`
   font-weight: bold;
-  font-size: 36px;
+  font-size: 24px;
   line-height: 118%;
 
   text-align: center;
@@ -69,14 +69,27 @@ const ButtonContainer = styled.div`
   gap: 8px;
 `;
 
-const ButtonCaption = styled.div`
-  font-weight: bold;
-  color: #717171;
-`;
-
 const DelegateButton = styled(Button)`
   width: 290px;
   background-color: ${theme.colors.gradients.seamless};
+`;
+
+const Base = styled.span`
+  color: #1051ff;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 118%;
+
+  text-align: center;
+  letter-spacing: -0.01em;
+  ${largerThan.mobile`
+    font-size: 44px;
+  `}
+`;
+
+const Container = styled.div`
+  display: flex;
+  gap: 10px;
 `;
 
 const Home = () => {
@@ -93,12 +106,17 @@ const Home = () => {
       <Gap height={4} />
       <SeamlessLogo />
       <Gap height={8} />
-      <WrappedTitle>Help decide</WrappedTitle>
-      <WrappedTitle>the future of Seamless</WrappedTitle>
+
+      <WrappedTitle>Seamless Protocol</WrappedTitle>
+      <WrappedTitle>is a decentralized, community-governed</WrappedTitle>
+      <Container>
+        <WrappedTitle>protocol built on</WrappedTitle>
+        <Base>Base</Base>
+      </Container>
       <Gap height={3} />
       <WrappedSubTitle fontSize={18}>
-        Delegate your <b>$SEAM</b> to participate and govern the Seamless
-        protocol.
+        Collect your <strong>SEAM</strong> and delegate your voting power to
+        govern and shape the future of Seamless Protocol.
       </WrappedSubTitle>
       <Gap height={4} />
 

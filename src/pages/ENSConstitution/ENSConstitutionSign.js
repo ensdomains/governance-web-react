@@ -149,7 +149,7 @@ const ENSConstitutionSign = ({ location }) => {
       <Footer
         leftButtonText="Back"
         leftButtonCallback={() => {
-          history.push("/constitution");
+          history.push("/governanace");
         }}
         rightButtonText={getRightButtonText(voteState.state)}
         rightButtonCallback={() => {

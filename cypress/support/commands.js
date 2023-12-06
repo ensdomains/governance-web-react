@@ -72,7 +72,7 @@ async function handleDelegate(params) {
   const { delegatee, nonce, expiry, v, r, s } = params;
   const address = await ethers.utils.verifyTypedData(
     {
-      name: "Ethereum Name Service",
+      name: "Seamless",
       version: "1",
       chainId: CHAIN_ID,
       verifyingContract: TOKEN_ADDRESS,
@@ -160,7 +160,6 @@ Cypress.Commands.add("interceptDelegateBySig", () => {
   db = Cypress.env("DELEGATE_WALLET").db;
   const { wallet, forkId } = Cypress.env("DELEGATE_WALLET");
   const rpcUrl = `https://rpc.tenderly.co/fork/${forkId}`;
-
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl, CHAIN_ID);
   signer = new ethers.Wallet(wallet, provider);

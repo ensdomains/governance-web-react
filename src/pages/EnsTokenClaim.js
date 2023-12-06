@@ -71,7 +71,7 @@ const ENSTokenClaim = ({ location }) => {
           transactionState={claimState.state}
           title={"Delegate & claim tokens"}
           content={
-            "This transaction happens on-chain, and will require paying gas"
+            "This transaction happens onchain, and will require paying gas"
           }
         />
       </ContentBox>

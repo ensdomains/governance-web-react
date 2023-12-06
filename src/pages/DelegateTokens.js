@@ -9,7 +9,7 @@ import { ContentBox, NarrowColumn } from "../components/layout";
 import Pill from "../components/Pill";
 import { Content, Header } from "../components/text";
 import TransactionState from "../components/TransactionState";
-import { delegate, delegateBySig } from "../utils/token";
+import { delegate } from "../utils/token";
 import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
 const ethereumjs = require("ethereumjs-util");
 
@@ -127,7 +127,7 @@ const ENSTokenClaim = () => {
           content={
             // delegateSigDetails?.canSign
             //   ? "This transaction happens on-chain, but is subsidised and does not require paying gas"
-            "This transaction happens on-chain, and will require paying gas"
+            "This transaction happens onchain, and will require paying gas"
           }
         />
       </ContentBox>

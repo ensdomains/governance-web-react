@@ -35,8 +35,9 @@ const SocialButtonContainer = styled.div`
   cursor: pointer;
 `;
 
-const TWITTER_INTENT =
-  "SEAM%20is%20decentralizing%20governance%21%20Seamless%20is%20an%20open%20public%20borrowing%20and%20protocol%20owned%20by%20the%20community.%0A%0AI%E2%80%99m%20a%20SEAM%20holder%20and%20just%20claimed%20my%20%24SEAM%20governance%20tokens.%20Claim%20yours%20%F0%9F%91%87%0A%0Aclaim.seamlessprotocol.com";
+const TWITTER_INTENT = encodeURIComponent(
+  "SEAM is decentralizing governance!\n\nSeamless is an open public borrowing and lending protocol owned by the community.\n\n🎥 Check out the video: https://www.youtube.com/watch?v=yH3hre0uryU\n\nI’m a SEAM holder and just claimed my $SEAM governance tokens. Claim yours 👇\n\nclaim.seamlessprotocol.com"
+);
 
 const SocialButton = ({ type, text }) => {
   return (
@@ -71,11 +72,14 @@ const ENSEP2ClaimSuccess = () => {
           <Header>Claim successful!</Header>
           <Gap height={3} />
           <Content>
-            Congratulations on claiming your <Token />! We encourage you to
-            share on Twitter and join the Seamless Discord to get involved in
-            governance.
+            Congratulations on claiming your <Token />!
           </Content>
-          <Gap height={10} />
+          <Gap height={6} />
+          <Content>
+            We encourage you to share on Twitter and join the Seamless Discord
+            to get involved in governance.
+          </Content>
+          <Gap height={8} />
           <SocialButton type={"Twitter"} text={"Share on Twitter"} />
           <Gap height={3} />
           <SocialButton type={"Discord"} text={"Join the Discord"} />

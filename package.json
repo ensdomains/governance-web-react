@@ -39,7 +39,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "REACT_APP_STAGE=testing react-scripts start",
+    "dev": "REACT_APP_STAGE=testing react-scripts start",
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build:testing": "REACT_APP_STAGE=testing yarn build",
     "serve": "serve -s build",
