@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";
-
+import SeamAidrop from "../assets/abis/SeamAirdrop.json";
 import {
   ContentBox,
   InnerContentBox,
@@ -18,6 +18,9 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
+import { Contract } from "ethers";
+import { getEthersProvider } from "../web3modal";
+import { maxVestingPercentage } from "../utils/consts";
 const merkleTreeData = require("../root.json");
 
 const ClaimEnsTokenContainer = styled.div`
@@ -99,8 +102,11 @@ const WrappedContent = styled(Content)`
   color: #1a1a1a;
 `;
 
-const Dashboard = () => {
+const Dashboard =  () => {
   const history = useHistory();
+  const [eligible, setEligible] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [vestingPercentage, setVestedPercentage] = useState(0);
 
   const {
     data: { address },
@@ -110,8 +116,20 @@ const Dashboard = () => {
     }
   `);
 
-  const eligible = merkleTreeData[address] !== undefined;
-  const balance = merkleTreeData[address];
+  useEffect(async() => {
+    const provider = await getEthersProvider();
+    const seamAirdrop = new Contract(
+      SeamAidrop.address,
+      SeamAidrop.abi,
+      provider
+    );
+
+    const isClaimed = await seamAirdrop.hasClaimed(address);
+    setEligible(merkleTreeData[address] !== undefined && !isClaimed);
+    setBalance(eligible ? merkleTreeData[address] : 0);
+    setVestedPercentage(await seamAirdrop.vestingPercentage());
+  }, []);
+
 
   const handleClick = () => {
     history.push("/why");
@@ -134,7 +152,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {(balance ?? 0) * 1}
+              {balance * (maxVestingPercentage - vestingPercentage) / maxVestingPercentage}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -143,7 +161,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Escrow SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {(balance ?? 0) * 0.0}
+              {balance * vestingPercentage / maxVestingPercentage}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>

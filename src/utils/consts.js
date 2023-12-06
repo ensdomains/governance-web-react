@@ -27,6 +27,7 @@ export const generateMerkleShardUrl = (address, type = "mainnet") =>
   }/${address?.slice(2, type === "mainnet" ? 4 : 3)}.json`;
 
 export const emptyAddress = "0x0000000000000000000000000000000000000000";
+export const maxVestingPercentage = 100_00;
 
 export const getDelegateRpcURL = () =>
   "https://us-central1-ens-delegator.cloudfunctions.net/delegate";

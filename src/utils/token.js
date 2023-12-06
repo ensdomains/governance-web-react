@@ -3,6 +3,7 @@ import { network } from "../apollo";
 import SeamTokenAbi from "../assets/abis/Seam.json";
 import SeamAirdrop from "../assets/abis/SeamAirdrop.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
+import EsSeamTokenAbi from "../assets/abis/EsSeam.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
