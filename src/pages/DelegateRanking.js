@@ -20,7 +20,7 @@ import { setDelegateChoice } from "./ENSConstitution/delegateHelpers";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import { getEnsInstance } from "../web3modal";
-
+const ethereumjs = require("ethereumjs-util");
 const merkleTreeData = require("../root.json");
 
 const USER_INFO_QUERY = gql`
@@ -368,8 +368,8 @@ function CurrentDelegation({
 
 const ChooseYourDelegate = () => {
   const { data: userData } = useQuery(USER_INFO_QUERY);
-  const balance = merkleTreeData[userData.address];
-
+  const balance = merkleTreeData[ethereumjs.toChecksumAddress(userData.address)];
+  
   const [selected, setSelected] = useState(null);
 
   const { delegates, isLoading } = useGetDelegates();

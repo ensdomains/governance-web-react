@@ -3,13 +3,12 @@ import { network } from "../apollo";
 import SeamTokenAbi from "../assets/abis/Seam.json";
 import SeamAirdrop from "../assets/abis/SeamAirdrop.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
+import EsSeamTokenAbi from "../assets/abis/EsSeam.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
 import merkleRoot from "../assets/root.json";
 import ShardedMerkleTree, { getIndex } from "../merkle";
 import { getEthersProvider } from "../web3modal";
 import {
-  DELEGATE_GAS_LIMIT,
-  GAS_LIMIT,
   generateMerkleShardUrl,
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
@@ -17,8 +16,9 @@ import {
 import { sendToDelegateJsonRpc } from "./utils";
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
-import { parseUnits, solidityKeccak256 } from "ethers/lib/utils";
-const merkleTreeData = require("../root.json");
+import {parseUnits, solidityKeccak256 } from "ethers/lib/utils";
+const ethereumjs = require("ethereumjs-util");
+const merkleTreeData = require('../root.json'); 
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -80,17 +80,13 @@ export const submitClaim = async (
   try {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
-    let claimTokensFunc = (claim) =>
-      claim(address, balance, proof, { gasLimit: GAS_LIMIT });
 
-    const airdropContract = new Contract(
-      SeamAirdrop.address,
-      SeamAirdrop.abi,
-      signer
-    );
-    airdropContract.connect(signer);
-    const result = await claimTokensFunc(airdropContract.claim);
+    const airdropContract = new Contract(SeamAirdrop.address, SeamAirdrop.abi, signer);
+     airdropContract.connect(signer);
+
+    const result = await airdropContract.claim(address,  BigNumber.from(balance), proof);
     await result.wait(1);
+
     setClaimState({
       state: "SUCCESS",
       message: "",
@@ -118,16 +114,12 @@ export async function delegate(address, setClaimState, history) {
     );
     SeamTokenContract.connect(signer);
 
-    const seamDelegate = await SeamTokenContract.delegates(address);
+    const seamDelegate = await SeamTokenContract.delegates(await signer.getAddress());
     if (seamDelegate === ZERO_ADDRESS) {
-      const result = await SeamTokenContract.delegate(address, {
-        gasLimit: DELEGATE_GAS_LIMIT,
-      });
+      const result = await SeamTokenContract.delegate(address);
       await result.wait(1);
     }
 
-    //TODO: uncomment if we want to airdrop EsSeam otherwise delete
-    /*
     const EsSeamTokenContract = new Contract(
       EsSeamTokenAbi.address,
       EsSeamTokenAbi.abi,
@@ -135,15 +127,12 @@ export async function delegate(address, setClaimState, history) {
     );
     EsSeamTokenContract.connect(signer);
 
-    const esSeamDelegate = await EsSeamTokenContract.delegates(address);
+    const esSeamDelegate = await EsSeamTokenContract.delegates(await signer.getAddress());
     if (esSeamDelegate === ZERO_ADDRESS) {
-      const result = await EsSeamTokenContract.delegate(address, {
-        gasLimit: DELEGATE_GAS_LIMIT,
-      });
+      const result = await EsSeamTokenContract.delegate(address);
       await result.wait(1);
     }
-    */
-
+    
     setClaimState({
       state: "SUCCESS",
       message: "",
@@ -242,7 +231,7 @@ export const handleClaim = async (
 
     const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
     const balance = parseUnits(
-      merkleTreeData[address].toString(),
+      merkleTreeData[ethereumjs.toChecksumAddress(address)].toString(),
       18
     ).toString();
     const proof = merkleTree.getHexProof(

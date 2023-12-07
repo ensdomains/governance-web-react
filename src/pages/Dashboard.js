@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import styled from "styled-components";
-
+import SeamAidrop from "../assets/abis/SeamAirdrop.json";
 import {
   ContentBox,
   InnerContentBox,
@@ -18,6 +18,10 @@ import Divider from "../components/Divider";
 import Pill from "../components/Pill";
 import { CTAButton } from "../components/buttons";
 import Profile from "../components/Profile";
+import { Contract } from "ethers";
+import { getEthersProvider } from "../web3modal";
+import { maxVestingPercentage } from "../utils/consts";
+const ethereumjs = require("ethereumjs-util");
 const merkleTreeData = require("../root.json");
 
 const ClaimEnsTokenContainer = styled.div`
@@ -99,8 +103,11 @@ const WrappedContent = styled(Content)`
   color: #1a1a1a;
 `;
 
-const Dashboard = () => {
+const Dashboard =  () => {
   const history = useHistory();
+  const [eligible, setEligible] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [vestingPercentage, setVestedPercentage] = useState(0);
 
   const {
     data: { address },
@@ -110,8 +117,22 @@ const Dashboard = () => {
     }
   `);
 
-  const eligible = merkleTreeData[address] !== undefined;
-  const balance = merkleTreeData[address];
+  useEffect(async() => {
+    const provider = await getEthersProvider();
+    const seamAirdrop = new Contract(
+      SeamAidrop.address,
+      SeamAidrop.abi,
+      provider
+    );
+
+    const checksumedAddress = ethereumjs.toChecksumAddress(address);
+    const isClaimed = await seamAirdrop.hasClaimed(checksumedAddress);
+    const isEligible = merkleTreeData[checksumedAddress] !== undefined && !isClaimed;
+    setEligible(isEligible);
+    setBalance(isEligible ? merkleTreeData[checksumedAddress] : 0);
+    setVestedPercentage(await seamAirdrop.vestingPercentage());
+  }, [address]);
+
 
   const handleClick = () => {
     history.push("/why");
@@ -122,10 +143,6 @@ const Dashboard = () => {
       <LeftContainer>
         {address && <Profile large {...{ address }} />}
         <Gap height={4} />
-
-        {/*
-    Hardcode 0.1 and 0.9 until we know exact proportions
-*/}
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
@@ -134,7 +151,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {(balance ?? 0) * 1}
+              {balance * (maxVestingPercentage - vestingPercentage) / maxVestingPercentage}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
@@ -143,7 +160,7 @@ const Dashboard = () => {
           <StatsRow>
             <RowLabel>Escrow SEAM</RowLabel>
             <NumberWithLogoContainer>
-              {(balance ?? 0) * 0.0}
+              {balance * vestingPercentage / maxVestingPercentage}
               <SmallSeamLogo />
             </NumberWithLogoContainer>
           </StatsRow>
