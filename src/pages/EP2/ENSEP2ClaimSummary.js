@@ -19,6 +19,7 @@ import styled from "styled-components";
 import { ReactComponent as SeamlessLogo } from "../../assets/imgs/SeamlessLogo.svg";
 import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
+const ethereumjs = require("ethereumjs-util");
 const balances = require("../../root.json");
 
 const SeamLogo = styled(SeamlessLogo)`
@@ -49,7 +50,7 @@ const ENSEP2ClaimSummary = () => {
       address
     }
   `);
-  const balance = balances[address];
+  const balance = balances[ethereumjs.toChecksumAddress(address)];
   const history = useHistory();
 
   return (

@@ -21,6 +21,7 @@ import Profile from "../components/Profile";
 import { Contract } from "ethers";
 import { getEthersProvider } from "../web3modal";
 import { maxVestingPercentage } from "../utils/consts";
+const ethereumjs = require("ethereumjs-util");
 const merkleTreeData = require("../root.json");
 
 const ClaimEnsTokenContainer = styled.div`
@@ -124,11 +125,13 @@ const Dashboard =  () => {
       provider
     );
 
-    const isClaimed = await seamAirdrop.hasClaimed(address);
-    setEligible(merkleTreeData[address] !== undefined && !isClaimed);
-    setBalance(eligible ? merkleTreeData[address] : 0);
+    const checksumedAddress = ethereumjs.toChecksumAddress(address);
+    const isClaimed = await seamAirdrop.hasClaimed(checksumedAddress);
+    const isEligible = merkleTreeData[checksumedAddress] !== undefined && !isClaimed;
+    setEligible(isEligible);
+    setBalance(isEligible ? merkleTreeData[checksumedAddress] : 0);
     setVestedPercentage(await seamAirdrop.vestingPercentage());
-  }, []);
+  }, [address]);
 
 
   const handleClick = () => {
@@ -140,10 +143,6 @@ const Dashboard =  () => {
       <LeftContainer>
         {address && <Profile large {...{ address }} />}
         <Gap height={4} />
-
-        {/*
-    Hardcode 0.1 and 0.9 until we know exact proportions
-*/}
         <StatsSection>
           <StatsRow>
             <StatsSubtitle>Rewards</StatsSubtitle>
