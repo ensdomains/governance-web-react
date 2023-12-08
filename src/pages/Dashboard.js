@@ -23,6 +23,7 @@ import { getEthersProvider } from "../web3modal";
 import { maxVestingPercentage } from "../utils/consts";
 const ethereumjs = require("ethereumjs-util");
 const merkleTreeData = require("../root.json");
+import { BigNumber } from "ethers";
 
 const ClaimEnsTokenContainer = styled.div`
   display: flex;
@@ -125,14 +126,13 @@ const Dashboard =  () => {
       provider
     );
 
-    const checksumedAddress = ethereumjs.toChecksumAddress(address);
+    const checksumedAddress = ethereumjs.toChecksumAddress(address.toString());
     const isClaimed = await seamAirdrop.hasClaimed(checksumedAddress);
     const isEligible = merkleTreeData[checksumedAddress] !== undefined && !isClaimed;
     setEligible(isEligible);
     setBalance(isEligible ? merkleTreeData[checksumedAddress] : 0);
     setVestedPercentage(await seamAirdrop.vestingPercentage());
   }, [address]);
-
 
   const handleClick = () => {
     history.push("/why");
@@ -148,22 +148,29 @@ const Dashboard =  () => {
             <StatsSubtitle>Rewards</StatsSubtitle>
           </StatsRow>
           <Divider />
-          <StatsRow>
-            <RowLabel>SEAM</RowLabel>
-            <NumberWithLogoContainer>
-              {balance * (maxVestingPercentage - vestingPercentage) / maxVestingPercentage}
-              <SmallSeamLogo />
-            </NumberWithLogoContainer>
-          </StatsRow>
-          <Divider />
-
-          <StatsRow>
-            <RowLabel>Escrow SEAM</RowLabel>
-            <NumberWithLogoContainer>
-              {balance * vestingPercentage / maxVestingPercentage}
-              <SmallSeamLogo />
-            </NumberWithLogoContainer>
-          </StatsRow>
+          {
+            vestingPercentage != maxVestingPercentage && 
+            <>
+            <StatsRow>
+              <RowLabel>SEAM</RowLabel>
+              <NumberWithLogoContainer>
+                {balance * (maxVestingPercentage - vestingPercentage) / maxVestingPercentage}
+                <SmallSeamLogo />
+              </NumberWithLogoContainer>
+            </StatsRow> 
+            <Divider />
+            </>
+          }
+          {
+            vestingPercentage != 0 &&
+            <StatsRow>
+              <RowLabel>Escrow SEAM</RowLabel>
+              <NumberWithLogoContainer>
+                {balance * vestingPercentage / maxVestingPercentage}
+                <SmallSeamLogo />
+              </NumberWithLogoContainer>
+            </StatsRow>
+          }
         </StatsSection>
       </LeftContainer>
 
@@ -181,8 +188,6 @@ const Dashboard =  () => {
               <Gap height={2} />
               <Statistic>
                 <IntegerBalance>{balance ?? 0}</IntegerBalance>
-                {/* <IntegerBalance>{balance?.split(".")[0]}</IntegerBalance>  */}
-                {/* <DecimalBalance>.{balance?.split(".")[1]}</DecimalBalance>  */}
                 <SeamLogo />
               </Statistic>
             </InnerContentBox>
