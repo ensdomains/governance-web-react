@@ -126,7 +126,7 @@ const Dashboard =  () => {
       provider
     );
 
-    const checksumedAddress = ethereumjs.toChecksumAddress(address);
+    const checksumedAddress = ethereumjs.toChecksumAddress(address.toString());
     const isClaimed = await seamAirdrop.hasClaimed(checksumedAddress);
     const isEligible = merkleTreeData[checksumedAddress] !== undefined && !isClaimed;
     setEligible(isEligible);
