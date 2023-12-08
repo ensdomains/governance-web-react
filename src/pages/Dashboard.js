@@ -125,12 +125,20 @@ const Dashboard =  () => {
       SeamAidrop.abi,
       provider
     );
+    console.log("address", address);
+    const signer = provider.getSigner();
+    console.log("signer", await signer.getAddress());
 
     const checksumedAddress = ethereumjs.toChecksumAddress(address.toString());
+    console.log("checksumedAddress", checksumedAddress);
     const isClaimed = await seamAirdrop.hasClaimed(checksumedAddress);
+    console.log("isClaimed", isClaimed);
     const isEligible = merkleTreeData[checksumedAddress] !== undefined && !isClaimed;
+    console.log("isEligible", isEligible);
     setEligible(isEligible);
     setBalance(isEligible ? merkleTreeData[checksumedAddress] : 0);
+    console.log("balance", balance);
+    console.log(merkleTreeData);
     setVestedPercentage(await seamAirdrop.vestingPercentage());
   }, [address]);
 
