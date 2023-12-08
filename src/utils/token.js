@@ -12,6 +12,7 @@ import {
   generateMerkleShardUrl,
   getENSTokenContractAddress,
   getMerkleAirdropContractAddress,
+  maxVestingPercentage,
 } from "./consts";
 import { sendToDelegateJsonRpc } from "./utils";
 import MerkleTree from "merkletreejs";
@@ -107,30 +108,42 @@ export async function delegate(address, setClaimState, history) {
   try {
     const provider = getEthersProvider();
     const signer = provider.getSigner();
-    const SeamTokenContract = new Contract(
-      SeamTokenAbi.address,
-      SeamTokenAbi.abi,
+
+    const seamAirdrop = new Contract(
+      SeamAirdrop.address,
+      SeamAirdrop.abi,
       signer
     );
-    SeamTokenContract.connect(signer);
+    const vestingPercentage = await seamAirdrop.vestingPercentage();
 
-    const seamDelegate = await SeamTokenContract.delegates(await signer.getAddress());
-    if (seamDelegate === ZERO_ADDRESS) {
-      const result = await SeamTokenContract.delegate(address);
-      await result.wait(1);
+    if (vestingPercentage != maxVestingPercentage) {
+      const SeamTokenContract = new Contract(
+        SeamTokenAbi.address,
+        SeamTokenAbi.abi,
+        signer
+      );
+      SeamTokenContract.connect(signer);
+
+      const seamDelegate = await SeamTokenContract.delegates(await signer.getAddress());
+      if (seamDelegate === ZERO_ADDRESS) {
+        const result = await SeamTokenContract.delegate(address);
+        await result.wait(1);
+      }
     }
 
-    const EsSeamTokenContract = new Contract(
-      EsSeamTokenAbi.address,
-      EsSeamTokenAbi.abi,
-      signer
-    );
-    EsSeamTokenContract.connect(signer);
+    if (vestingPercentage != 0) {
+      const EsSeamTokenContract = new Contract(
+        EsSeamTokenAbi.address,
+        EsSeamTokenAbi.abi,
+        signer
+      );
+      EsSeamTokenContract.connect(signer);
 
-    const esSeamDelegate = await EsSeamTokenContract.delegates(await signer.getAddress());
-    if (esSeamDelegate === ZERO_ADDRESS) {
-      const result = await EsSeamTokenContract.delegate(address);
-      await result.wait(1);
+      const esSeamDelegate = await EsSeamTokenContract.delegates(await signer.getAddress());
+      if (esSeamDelegate === ZERO_ADDRESS) {
+        const result = await EsSeamTokenContract.delegate(address);
+        await result.wait(1);
+      }
     }
     
     setClaimState({
