@@ -23,6 +23,9 @@ import {
   getReverseRecordsAddress,
 } from "./consts";
 import { getCanDelegateBySig } from "./utils";
+import { BigNumber } from "ethers/lib";
+
+const ETH_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export function useQueryString() {
   return new URLSearchParams(useLocation().search);
@@ -83,19 +86,23 @@ const processENSDelegateContractResults = (
       );
     });
     return {
-      avatar: data.avatar,
-      profile: data.profile,
-      address: data.addr,
-      votes: data.votes,
+      avatar: data?.avatar,
+      profile: data?.profile,
+      address: data?.addr,
+      votes: data?.votes || BigNumber.from(0),
       name: reverseRecordOnlyResult?.domain?.name,
     };
   });
 
 const filterDelegateData = (results) => {
   return results
-    .filter((data) => data.addr?.id)
-    .filter((data) => data.texts?.includes("avatar"))
-    .filter((data) => data.address === data.domain.resolver.address);
+    .filter((data) => {
+      return data.addr?.id || data.addr?.id === ETH_ZERO_ADDRESS;
+    })
+    .filter((data) => {
+      return data?.texts?.includes("avatar");
+    })
+    .filter((data) => data?.address === data?.domain?.resolver?.address);
 };
 
 const bigNumberToDecimal = (bigNumber) =>

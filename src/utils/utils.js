@@ -16,7 +16,7 @@ export const formatTokenAmount = (tokenAmount, length = 6) =>
 export function imageUrl(url, name, networkId) {
   const _network = networkIdToName(networkId);
   const _protocol = supportedAvatarProtocols.find((proto) =>
-    url.startsWith(proto)
+    url?.startsWith(proto)
   );
   // check if given uri is supported
   // provided network name is valid,
