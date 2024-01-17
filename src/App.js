@@ -23,6 +23,30 @@ import Home from "./pages/Home";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
 import { hasClaimed } from "./utils/token";
 import { initWeb3Read } from "./web3modal";
+import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
+
+const PROJECT_ID = "02f438d1701ea8029113972850066224";
+
+const mainnet = {
+  chainId: 1,
+  name: "Ethereum",
+  currency: "ETH",
+  explorerUrl: "https://etherscan.io",
+  rpcUrl: "https://cloudflare-eth.com",
+};
+
+const metadata = {
+  name: "My Website",
+  description: "My Website description",
+  url: "https://mywebsite.com",
+  icons: ["https://avatars.mywebsite.com/"],
+};
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: [mainnet],
+  projectId: PROJECT_ID,
+});
 
 const AppContainer = styled.div`
   margin: auto;

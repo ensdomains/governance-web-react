@@ -4,7 +4,7 @@ import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
 import ep2MerkleRoot from "../assets/root-ep2.json";
 import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree, { getIndex } from "../merkle";
+// import ShardedMerkleTree, { getIndex } from "../merkle";
 import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
 import {
@@ -23,44 +23,40 @@ const testingMerkleRoot = {
 };
 
 export const hasClaimed = async (address, type = "mainnet") => {
-  try {
-    const response = await fetch(generateMerkleShardUrl(address, type));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    let root, shardNybbles, total;
-
-    if (process.env.REACT_APP_STAGE === "testing" && type === "ep2")
-      ({ root, shardNybbles, total } = testingMerkleRoot);
-    else if (type === "ep2") ({ root, shardNybbles, total } = ep2MerkleRoot);
-    else ({ root, shardNybbles, total } = merkleRoot);
-
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
-    );
-
-    const provider = getEthersProvider();
-    const signer = provider.getSigner();
-    const airdropContract =
-      type === "mainnet"
-        ? new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer)
-        : new Contract(
-            getMerkleAirdropContractAddress(),
-            MerkleAirdropAbi.abi,
-            signer
-          );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
-    const index = getIndex(address, entry, proof);
-    const result = await airdropContract.isClaimed(index);
-    return result;
-  } catch (error) {
-    return false;
-  }
+  // try {
+  //   const response = await fetch(generateMerkleShardUrl(address, type));
+  //   if (!response.ok) {
+  //     throw new Error("error getting shard data");
+  //   }
+  //   const shardJson = await response.json({ encoding: "utf-8" });
+  //   let root, shardNybbles, total;
+  //   if (process.env.REACT_APP_STAGE === "testing" && type === "ep2")
+  //     ({ root, shardNybbles, total } = testingMerkleRoot);
+  //   else if (type === "ep2") ({ root, shardNybbles, total } = ep2MerkleRoot);
+  //   else ({ root, shardNybbles, total } = merkleRoot);
+  //   const shardedMerkleTree = new ShardedMerkleTree(
+  //     () => shardJson,
+  //     shardNybbles,
+  //     root,
+  //     BigNumber.from(total)
+  //   );
+  //   const provider = getEthersProvider();
+  //   const signer = provider.getSigner();
+  //   const airdropContract =
+  //     type === "mainnet"
+  //       ? new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer)
+  //       : new Contract(
+  //           getMerkleAirdropContractAddress(),
+  //           MerkleAirdropAbi.abi,
+  //           signer
+  //         );
+  //   const [entry, proof] = shardedMerkleTree.getProof(address);
+  //   const index = getIndex(address, entry, proof);
+  //   const result = await airdropContract.isClaimed(index);
+  //   return result;
+  // } catch (error) {
+  //   return false;
+  // }
 };
 
 export const submitClaim = async (
@@ -201,58 +197,53 @@ export const handleClaim = async (
   history,
   type = "mainnet"
 ) => {
-  try {
-    setClaimState({
-      state: "LOADING",
-      message: "",
-    });
-
-    let outputAddress;
-    let provider = getEthersProvider();
-    let displayName;
-
-    if (type === "mainnet") {
-      displayName = getDelegateChoice(address);
-      if (!displayName) {
-        throw "No chosen delegate";
-      }
-    } else {
-      displayName = address;
-    }
-
-    if (displayName.includes(".eth")) {
-      outputAddress = await provider.resolveName(displayName);
-    } else {
-      outputAddress = displayName;
-    }
-
-    const response = await fetch(generateMerkleShardUrl(address, type));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } = merkleRoot;
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
-    );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
-    return await submitClaim(
-      entry.balance,
-      proof,
-      outputAddress,
-      setClaimState,
-      history,
-      type
-    );
-  } catch (error) {
-    console.error(error);
-    setClaimState({
-      state: "ERROR",
-      message: error,
-    });
-  }
+  // try {
+  //   setClaimState({
+  //     state: "LOADING",
+  //     message: "",
+  //   });
+  //   let outputAddress;
+  //   let provider = getEthersProvider();
+  //   let displayName;
+  //   if (type === "mainnet") {
+  //     displayName = getDelegateChoice(address);
+  //     if (!displayName) {
+  //       throw "No chosen delegate";
+  //     }
+  //   } else {
+  //     displayName = address;
+  //   }
+  //   if (displayName.includes(".eth")) {
+  //     outputAddress = await provider.resolveName(displayName);
+  //   } else {
+  //     outputAddress = displayName;
+  //   }
+  //   const response = await fetch(generateMerkleShardUrl(address, type));
+  //   if (!response.ok) {
+  //     throw new Error("error getting shard data");
+  //   }
+  //   const shardJson = await response.json({ encoding: "utf-8" });
+  //   const { root, shardNybbles, total } = merkleRoot;
+  //   const shardedMerkleTree = new ShardedMerkleTree(
+  //     () => shardJson,
+  //     shardNybbles,
+  //     root,
+  //     BigNumber.from(total)
+  //   );
+  //   const [entry, proof] = shardedMerkleTree.getProof(address);
+  //   return await submitClaim(
+  //     entry.balance,
+  //     proof,
+  //     outputAddress,
+  //     setClaimState,
+  //     history,
+  //     type
+  //   );
+  // } catch (error) {
+  //   console.error(error);
+  //   setClaimState({
+  //     state: "ERROR",
+  //     message: error,
+  //   });
+  // }
 };

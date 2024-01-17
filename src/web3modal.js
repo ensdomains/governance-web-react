@@ -1,4 +1,3 @@
-import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { ethers } from "ethers";
 import { Bitski } from "bitski";
 
@@ -15,8 +14,6 @@ import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 export const rpcUrl = "https://web3.ens.domains/v1/mainnet";
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
-
-const PROJECT_ID = "02f438d1701ea8029113972850066224";
 
 let provider;
 let web3Modal;
@@ -129,27 +126,6 @@ export const initWeb3Read = async () => {
     network(net.chainId);
   }
 };
-
-const mainnet = {
-  chainId: 1,
-  name: "Ethereum",
-  currency: "ETH",
-  explorerUrl: "https://etherscan.io",
-  rpcUrl: "https://cloudflare-eth.com",
-};
-
-const metadata = {
-  name: "My Website",
-  description: "My Website description",
-  url: "https://mywebsite.com",
-  icons: ["https://avatars.mywebsite.com/"],
-};
-
-createWeb3Modal({
-  ethersConfig: defaultConfig({ metadata }),
-  chains: [mainnet],
-  projectId: PROJECT_ID,
-});
 
 export const initWeb3 = async (showPrompt = true) => {
   //Need to get web3 provider

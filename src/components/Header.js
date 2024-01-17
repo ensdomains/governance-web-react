@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components/macro";
 import { gql } from "graphql-tag";
 import { useQuery } from "@apollo/client";
+import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers5/react";
 
 import { initWeb3 } from "../web3modal";
 import Profile from "./Profile";
@@ -100,6 +101,12 @@ const DelegateLink = styled(Link)`
 `;
 
 const Header = () => {
+  const { open, close } = useWeb3Modal();
+  const bla = useRef();
+  const { chainId } = useWeb3ModalAccount();
+
+  console.log("chainId: ", chainId);
+
   const {
     data: { isConnected, address, network },
   } = useQuery(gql`
@@ -129,7 +136,7 @@ const Header = () => {
           ) : (
             <Button
               data-testid="header-connect-button"
-              onClick={initWeb3}
+              onClick={open}
               text={"Connect"}
             />
           )}
