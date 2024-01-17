@@ -1,4 +1,3 @@
-import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 import { ethers } from "ethers";
 import { Bitski } from "bitski";
 
@@ -15,8 +14,6 @@ import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 export const rpcUrl = "https://web3.ens.domains/v1/mainnet";
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
-
-const PROJECT_ID = "02f438d1701ea8029113972850066224";
 
 let provider;
 let web3Modal;
@@ -117,11 +114,6 @@ export const initWeb3Read = async () => {
   if (localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER")) {
     await initWeb3(false);
   }
-  console.log(
-    "initWeb3Read: ",
-    localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER")
-  );
-
   if (!ethersProvider) {
     ethersProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
     isConnected(true);
@@ -130,31 +122,61 @@ export const initWeb3Read = async () => {
   }
 };
 
-const mainnet = {
-  chainId: 1,
-  name: "Ethereum",
-  currency: "ETH",
-  explorerUrl: "https://etherscan.io",
-  rpcUrl: "https://cloudflare-eth.com",
-};
-
-const metadata = {
-  name: "My Website",
-  description: "My Website description",
-  url: "https://mywebsite.com",
-  icons: ["https://avatars.mywebsite.com/"],
-};
-
-createWeb3Modal({
-  ethersConfig: defaultConfig({ metadata }),
-  chains: [mainnet],
-  projectId: PROJECT_ID,
-});
-
 export const initWeb3 = async (showPrompt = true) => {
-  //Need to get web3 provider
+  // fix for web3 modal only showing walletconnect prompt if cached
   if (showPrompt) {
+    const cached = localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER");
+    const walletconnect = localStorage.getItem("walletconnect");
+    if (
+      cached &&
+      cached === `"walletconnect"` &&
+      (!walletconnect || !walletconnect.connected)
+    ) {
+      localStorage.removeItem("WEB3_CONNECT_CACHED_PROVIDER");
+    }
   }
+  const web3Provider = await connect(showPrompt);
+
+  web3Provider?.on("chainChanged", async (_chainId) => {
+    window.location.reload();
+  });
+
+  web3Provider?.on("accountsChanged", async (accounts) => {
+    window.location.reload();
+  });
+
+  try {
+    ethersProvider = new ethers.providers.Web3Provider(web3Provider);
+  } catch (e) {
+    console.error(e);
+  }
+
+  const signer = ethersProvider?.getSigner();
+  let address;
+
+  if (signer) {
+    try {
+      address = (await signer.getAddress()).toLowerCase();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  if (address) {
+    initLocalStorage(address);
+    isConnected(true);
+    addressReactive(address);
+    const net = await ethersProvider.getNetwork();
+    network(net.chainId);
+    const claimData = await getClaimData(address);
+    addressDetails(claimData);
+    const ep2ClaimData = await getClaimData(address, "ep2");
+    ep2AddressDetails(ep2ClaimData);
+
+    return;
+  }
+  isConnected(false);
+  addressReactive(null);
 };
 
 export const getProvider = () => provider;
