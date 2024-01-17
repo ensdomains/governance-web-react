@@ -1,11 +1,8 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components/macro";
-import { gql } from "graphql-tag";
-import { useQuery } from "@apollo/client";
 import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers5/react";
 
-import { initWeb3 } from "../web3modal";
 import Profile from "./Profile";
 import { largerThan } from "../utils/styledComponents";
 

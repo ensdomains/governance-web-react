@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers5/react";
 import { utils } from "ethers";
 import { gql } from "graphql-tag";
 import React, { Fragment, useState } from "react";
@@ -26,13 +27,10 @@ import {
 } from "../utils/hooks";
 import { largerThan } from "../utils/styledComponents";
 import { imageUrl } from "../utils/utils";
-import { initWeb3 } from "../web3modal";
 
 const DELEGATE_RANKING_QUERY = gql`
   query delegateRankingQuery @client {
     addressDetails
-    isConnected
-    address
     delegates
     tokensOwned
     delegatedTo
@@ -408,10 +406,12 @@ function CurrentDelegation({
 }
 
 const ChooseYourDelegate = () => {
+  const { open, close } = useWeb3Modal();
+  const { chainId, address, isConnected } = useWeb3ModalAccount();
   const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
-  useGetTokens(chooseData.address);
-  useGetDelegatedTo(chooseData.address);
-  useGetDelegateBySigStatus(chooseData.address);
+  useGetTokens(address);
+  useGetDelegatedTo(address);
+  useGetDelegateBySigStatus(address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
   const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
@@ -492,23 +492,23 @@ const ChooseYourDelegate = () => {
           </CopyContainer>
 
           <div>
-            {chooseData.address ? (
+            {address ? (
               <WrappedCTAButton
                 text={"Enter ENS or address"}
                 type={"deny"}
                 onClick={() => {
-                  if (chooseData?.address) {
+                  if (address) {
                     history.push("/manual-delegates-no-claim");
                   }
                 }}
-                account={chooseData?.address}
-                disabled={chooseData?.address && selectedDelegate.name}
+                account={address}
+                disabled={address && selectedDelegate.name}
               />
             ) : (
               <WrappedCTAButton
                 text={"Connect to Enter ENS or address"}
                 onClick={() => {
-                  initWeb3();
+                  open();
                 }}
               />
             )}
@@ -544,7 +544,7 @@ const ChooseYourDelegate = () => {
                 selectedDelegate={selectedDelegate}
                 key={d.name}
                 address={d.address}
-                userAccount={chooseData.address}
+                userAccount={address}
                 delegatedTo={delegatedTo}
                 search={d.name.includes(search)}
               />
@@ -552,7 +552,7 @@ const ChooseYourDelegate = () => {
           </DelegatesContainer>
         )}
       </ContentBox>
-      {chooseData?.address &&
+      {address &&
         (!delegateSigDetailsLoading ? (
           <Footer
             rightButtonText={"Delegate"}
