@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { utils } from "ethers";
+import { useDisconnect } from "@web3modal/ethers5/react";
 
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
@@ -188,7 +189,7 @@ const StyledProfileArrow = styled(ProfileArrow)(({ hasOpened }) => ({
 const Profile = ({ address, size, hasDropdown }) => {
   const [profileDetails, setProfileDetails] = useState({});
   const [navOpen, setNavOpen] = useState(false);
-  const navSizeRef = useRef(null);
+  const { disconnect } = useDisconnect();
   let isAddress;
   try {
     isAddress = utils.getAddress(address);

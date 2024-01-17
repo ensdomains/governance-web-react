@@ -101,21 +101,9 @@ const DelegateLink = styled(Link)`
 `;
 
 const Header = () => {
-  const { open, close } = useWeb3Modal();
-  const bla = useRef();
-  const { chainId } = useWeb3ModalAccount();
-
-  console.log("chainId: ", chainId);
-
-  const {
-    data: { isConnected, address, network },
-  } = useQuery(gql`
-    query getHeaderData @client {
-      address
-      isConnected
-      network
-    }
-  `);
+  const { open } = useWeb3Modal();
+  const { chainId, address, isConnected } = useWeb3ModalAccount();
+  const network = chainId;
 
   let match = useRouteMatch("/delegate-ranking");
 
