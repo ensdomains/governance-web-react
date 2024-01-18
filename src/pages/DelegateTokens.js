@@ -16,7 +16,6 @@ import Pill from "../components/Pill";
 import { Content, Header } from "../components/text";
 import TransactionState from "../components/TransactionState";
 import { delegate, delegateBySig } from "../utils/token";
-import { getEthersProvider } from "../web3modal";
 
 const delegateToAddress = async (
   setClaimState,
@@ -48,7 +47,7 @@ const delegateToAddress = async (
             history,
             walletProvider
           );
-    selectedDelegateReactive("");
+    // selectedDelegateReactive("");
     return tx;
   } catch (error) {
     console.error(error);
@@ -73,7 +72,7 @@ const getRightButtonText = (state) => {
 };
 
 const ENSTokenClaim = ({ location }) => {
-  const { address, isConnected } = useWeb3ModalAccount();
+  const { address } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
   const {
@@ -90,6 +89,8 @@ const ENSTokenClaim = ({ location }) => {
     state: "LOADING",
     message: "",
   });
+
+  console.log("selectedDelegate: ", selectedDelegate);
 
   useEffect(() => {
     let timeout;

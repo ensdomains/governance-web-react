@@ -7,7 +7,6 @@ import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
 import GradientAvatar from "../assets/imgs/Gradient.svg";
 import { ReactComponent as ProfileArrow } from "../assets/imgs/ProfileArrow.svg";
-import { disconnect } from "../web3modal";
 import DropdownWrapper from "./Dropdown";
 
 const ProfileContainer = styled.div`
