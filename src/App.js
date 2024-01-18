@@ -2,6 +2,11 @@ import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import React, { useEffect } from "react";
 import {
+  createWeb3Modal,
+  defaultConfig,
+  useWeb3ModalAccount,
+} from "@web3modal/ethers5/react";
+import {
   BrowserRouter as Router,
   Route,
   Switch,
@@ -23,7 +28,8 @@ import Home from "./pages/Home";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
 import { hasClaimed } from "./utils/token";
 import { initWeb3Read } from "./web3modal";
-import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
+import { addressDetails, ep2AddressDetails } from "./apollo";
+import { getClaimData } from "./utils/utils";
 
 const PROJECT_ID = "02f438d1701ea8029113972850066224";
 
@@ -80,14 +86,13 @@ const PRIVATE_ROUTE_QUERY = gql`
   query privateRouteQuery @client {
     addressDetails
     ep2AddressDetails
-    address
-    isConnected
   }
 `;
 
 function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
   const { data } = useQuery(PRIVATE_ROUTE_QUERY);
   const history = useHistory();
+  const { address, isConnected } = useWeb3ModalAccount();
 
   useEffect(() => {
     let finalAddressDetails =
@@ -101,7 +106,7 @@ function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
           history.push("/dashboard");
           return;
         }
-        const isClaimed = await hasClaimed(data.address, type);
+        const isClaimed = await hasClaimed(address, type);
         if (isClaimed) {
           history.push("/dashboard");
         }
@@ -111,34 +116,26 @@ function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
       }
     };
 
-    if (
-      data.isConnected &&
-      data.address &&
-      data.addressDetails.eligible !== undefined
-    ) {
+    if (isConnected && address && data.addressDetails.eligible !== undefined) {
       run();
     }
 
-    if (!data.address && data.isConnected) {
+    if (!address && isConnected) {
       history.push("/");
     }
-  }, [
-    data.address,
-    data.isConnected,
-    data.addressDetails,
-    data.ep2AddressDetails,
-  ]);
+  }, [address, isConnected, data.addressDetails, data.ep2AddressDetails]);
 
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
 function ConnectedRoute({ component: Component, ...rest }) {
-  const { data } = useQuery(PRIVATE_ROUTE_QUERY);
+  const { address, isConnected } = useWeb3ModalAccount();
+
   const history = useHistory();
   useEffect(() => {
     function run() {
       try {
-        if (!data.address) {
+        if (!address) {
           history.push("/");
         }
       } catch (error) {
@@ -147,23 +144,17 @@ function ConnectedRoute({ component: Component, ...rest }) {
       }
     }
 
-    if (data.isConnected && data.address) {
+    if (isConnected && address) {
       run();
     }
-  }, [data.address, data.isConnected]);
+  }, [address, isConnected]);
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 }
 
 function App() {
   const query = useQueryString();
-  const {
-    data: { address, isConnected },
-  } = useQuery(gql`
-    query getAddress @client {
-      address
-      isConnected
-    }
-  `);
+  const { address, isConnected } = useWeb3ModalAccount();
+
   useEffect(() => {
     const delegate = query.get("delegate");
     if (delegate && address) {

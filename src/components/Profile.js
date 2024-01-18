@@ -277,10 +277,7 @@ const Profile = ({ address, size, hasDropdown }) => {
 
   return (
     <DropdownWrapper
-      dropdownItems={[
-        { name: "Dashboard", link: "/dashboard" },
-        { name: "Disconnect", type: "deny", action: disconnect },
-      ]}
+      dropdownItems={[{ name: "Disconnect", type: "deny", action: disconnect }]}
       isOpen={navOpen}
       setIsOpen={setNavOpen}
       testId="profile-dropdown"
