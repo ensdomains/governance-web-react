@@ -11,7 +11,10 @@ import {
 import { getClaimData } from "./utils/utils";
 import { initLocalStorage } from "./pages/ENSConstitution/constitutionHelpers";
 
-export const rpcUrl = "https://web3.ens.domains/v1/mainnet";
+// export const rpcUrl = "https://web3.ens.domains/v1/mainnet";
+
+export const rpcUrl =
+  "https://mainnet.infura.io/v3/4d6e2605d0b1497fad8373ba11ddee8c";
 
 const PORTIS_ID = "57e5d6ca-e408-4925-99c4-e7da3bdb8bf5";
 
@@ -118,7 +121,6 @@ export const initWeb3Read = async () => {
     "initWeb3Read: ",
     localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER")
   );
-
   if (!ethersProvider) {
     ethersProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
     isConnected(true);

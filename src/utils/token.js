@@ -1,4 +1,4 @@
-import { BigNumber, Contract, utils } from "ethers";
+import { BigNumber, Contract, utils, ethers } from "ethers";
 import { network } from "../apollo";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
@@ -104,9 +104,15 @@ export const submitClaim = async (
   }
 };
 
-export async function delegate(address, setClaimState, history) {
+export async function delegate(
+  address,
+  setClaimState,
+  history,
+  walletProvider
+) {
   try {
-    const provider = getEthersProvider();
+    // const provider = getEthersProvider();
+    const provider = new ethers.providers.Web3Provider(walletProvider);
     const signer = provider.getSigner();
     const ENSTokenContract = new Contract(
       getENSTokenContractAddress(),
