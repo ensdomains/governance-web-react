@@ -32,8 +32,25 @@ describe("Token claim site", () => {
   it("Should allow the user navigate to delegate and delegate tokens gas-free", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
-    cy.contains("MetaMask").click();
-    cy.acceptMetamaskAccess();
+    //350, 60
+    // cy.get("body").click(350, 60);
+    // cy.wait(30000);
+    cy.get("w3m-modal")
+      .shadow()
+      .find("wui-flex")
+      .find("wui-card")
+      .find("w3m-router")
+      .shadow()
+      .find("div")
+      .find("w3m-connect-view")
+      .shadow()
+      .find("wui-flex")
+      .find('[name="Browser Wallet"]')
+      .click();
+    // cy.contains("Browser Wallet").click();
+    // cy.get("w3m-modal").click(340, 60);
+    cy.wait(30000);
+    // cy.acceptMetamaskAccess();
     cy.contains("Delegates").click();
 
     cy.contains("You have delegated 11.18 votes to", {
