@@ -22,7 +22,8 @@ const delegateToAddress = async (
   history,
   delegateAddress,
   sigDetails,
-  walletProvider
+  walletProvider,
+  chainId
 ) => {
   try {
     setClaimState({
@@ -33,13 +34,16 @@ const delegateToAddress = async (
     if (!delegateAddress || delegateAddress === "") {
       throw "No chosen delegate";
     }
+    console.log("probe");
     const tx =
       sigDetails && sigDetails.canSign
         ? await delegateBySig(
             delegateAddress,
             setClaimState,
             history,
-            sigDetails.nonce
+            sigDetails.nonce,
+            walletProvider,
+            chainId
           )
         : await delegate(
             delegateAddress,
@@ -47,7 +51,7 @@ const delegateToAddress = async (
             history,
             walletProvider
           );
-    // selectedDelegateReactive("");
+    selectedDelegateReactive("");
     return tx;
   } catch (error) {
     console.error(error);
@@ -72,7 +76,7 @@ const getRightButtonText = (state) => {
 };
 
 const ENSTokenClaim = ({ location }) => {
-  const { address } = useWeb3ModalAccount();
+  const { address, chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
 
   const {
@@ -90,7 +94,7 @@ const ENSTokenClaim = ({ location }) => {
     message: "",
   });
 
-  console.log("selectedDelegate: ", selectedDelegate);
+  console.log("address: ", address);
 
   useEffect(() => {
     let timeout;
@@ -101,7 +105,8 @@ const ENSTokenClaim = ({ location }) => {
           history,
           selectedDelegate.address,
           delegateSigDetails,
-          walletProvider
+          walletProvider,
+          chainId
         );
       }
     };

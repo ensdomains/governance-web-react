@@ -95,7 +95,7 @@
     "test": "node scripts/test.js",
     "cypress:ci:all": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome",
     "cypress:ci:testSpec": "yarn run cypress:ci:all --spec ./cypress/integration/testSpec.spec.js",
-    "cypress:ci": "yarn run cypress:ci:testSpec --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de",
+    "cypress:ci": "yarn run cypress:ci:testSpec --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de --browser chromium",
     "cypress:ci:local": "yarn run cypress:ci:testSpec",
     "cypress:ci:local:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress run --headed --browser chrome --spec ./cypress/integration/testSpec.spec.js",
     "cypress:version": "cypress -v",

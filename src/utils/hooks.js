@@ -24,6 +24,7 @@ import {
 } from "./consts";
 import { getCanDelegateBySig } from "./utils";
 import { BigNumber } from "ethers/lib";
+import { useWeb3ModalProvider } from "@web3modal/ethers5/react";
 
 const ETH_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -282,7 +283,7 @@ export const useGetTokens = (address) => {
   useEffect(() => {
     async function run() {
       const balance = await ENSTokenContract.balanceOf(address);
-      console.log(balance);
+      console.log("contract balance: ", balance);
       setBalance(balance);
       setLoading(false);
     }
@@ -307,6 +308,7 @@ export const useGetDelegatedTo = (address) => {
   useEffect(() => {
     async function run() {
       const delegatedToAddress = await ENSTokenContract.delegates(address);
+      console.log("delegatedToAddress: ", delegatedToAddress);
       setDelegatedToAddress(delegatedToAddress);
       setLoading(false);
     }
@@ -345,7 +347,7 @@ export const useGetTransactionDone = (txHash) => {
     async function run() {
       if (!provider) return;
       const tx = await provider.getTransaction(txHash);
-      setTransactionDone(tx.blockNumber !== null);
+      setTransactionDone(tx?.blockNumber !== null);
       setLoading(false);
     }
     if (txHash) {

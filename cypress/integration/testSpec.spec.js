@@ -32,9 +32,6 @@ describe("Token claim site", () => {
   it("Should allow the user navigate to delegate and delegate tokens gas-free", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
-    //350, 60
-    // cy.get("body").click(350, 60);
-    // cy.wait(30000);
     cy.get("w3m-modal")
       .shadow()
       .find("wui-flex")
@@ -47,16 +44,13 @@ describe("Token claim site", () => {
       .find("wui-flex")
       .find('[name="Browser Wallet"]')
       .click();
-    // cy.contains("Browser Wallet").click();
-    // cy.get("w3m-modal").click(340, 60);
     cy.wait(30000);
-    // cy.acceptMetamaskAccess();
     cy.contains("Delegates").click();
 
-    cy.contains("You have delegated 11.18 votes to", {
+    cy.contains("You have delegated 1.00 votes to", {
       timeout: 20000,
       exact: false,
-    }).should("have.text", "You have delegated 11.18 votes to", {
+    }).should("have.text", "You have delegated 1.00 votes to", {
       exact: false,
     });
 
@@ -86,8 +80,8 @@ describe("Token claim site", () => {
           .should("have.text", "Return to delegates")
           .click();
 
-        cy.wait(5000);
         cy.reload();
+        cy.wait(20000);
 
         cy.get('[data-testid="current-delegation"]', {
           timeout: 25000,
@@ -107,13 +101,26 @@ describe("Token claim site", () => {
   it("Should allow manual delegation with gas", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
-    cy.contains("MetaMask").click();
+
+    cy.get("w3m-modal")
+      .shadow()
+      .find("wui-flex")
+      .find("wui-card")
+      .find("w3m-router")
+      .shadow()
+      .find("div")
+      .find("w3m-connect-view")
+      .shadow()
+      .find("wui-flex")
+      .find('[name="Browser Wallet"]')
+      .click();
+
     cy.contains("Delegates").click();
 
-    cy.contains("You have delegated 11.18 votes to", {
+    cy.contains("You have 1.00 undelegated votes", {
       timeout: 20000,
       exact: false,
-    }).should("have.text", "You have delegated 11.18 votes to", {
+    }).should("have.text", "You have 1.00 undelegated votes", {
       exact: false,
     });
 

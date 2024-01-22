@@ -118,6 +118,7 @@ async function handleDelegateRequest(req) {
   };
 
   console.log(contract);
+  console.log("req: ", req);
 
   if (req.method === "OPTIONS") {
     response.headers["Access-Control-Allow-Methods"] = "POST";

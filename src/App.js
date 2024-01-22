@@ -161,6 +161,16 @@ function App() {
       setDelegateChoice(address, delegate);
       setDelegateReferral(delegate);
     }
+
+    // const run = async () => {
+    //   if (address) {
+    //     const claimData = await getClaimData(address);
+    //     addressDetails(claimData);
+    //     const ep2ClaimData = await getClaimData(address, "ep2");
+    //     ep2AddressDetails(ep2ClaimData);
+    //   }
+    // };
+    // run();
   }, [address]);
 
   useGetDelegates(isConnected);

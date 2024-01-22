@@ -362,6 +362,7 @@ function CurrentDelegation({
   delegatedTo,
   setRenderKey,
 }) {
+  console.log("delegatedTo: ", delegatedTo);
   let text = (
     <>
       <span>
@@ -418,6 +419,9 @@ const ChooseYourDelegate = () => {
   const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
+
+  console.log("chooseData: ", chooseData);
+  console.log("balanceLoading: ", balanceLoading);
 
   const history = useHistory();
   const location = useLocation();
@@ -514,11 +518,11 @@ const ChooseYourDelegate = () => {
             )}
           </div>
         </HeaderContainer>
-        <SubHeader account={chooseData?.address}>
-          {chooseData?.address &&
+        <SubHeader account={address}>
+          {address &&
             (balanceLoading ? null : (
               <CurrentDelegation
-                account={chooseData?.address}
+                account={address}
                 tokens={
                   balance ? Number(utils.formatEther(balance)).toFixed(2) : 0
                 }
@@ -528,7 +532,7 @@ const ChooseYourDelegate = () => {
               />
             ))}
           <Input
-            account={chooseData?.address}
+            account={address}
             type="text"
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."

@@ -67,41 +67,41 @@ export const submitClaim = async (
   history,
   type = "mainnet"
 ) => {
-  try {
-    const provider = getEthersProvider();
-    const signer = provider.getSigner();
-    let airdropContractAddress;
-    let abi;
-    let claimTokensFunc;
-    if (type === "mainnet") {
-      airdropContractAddress = getENSTokenContractAddress();
-      abi = ENSTokenAbi.abi;
-      claimTokensFunc = (claimTokens) =>
-        claimTokens(balance, address, proof, { gasLimit: GAS_LIMIT });
-    } else {
-      airdropContractAddress = getMerkleAirdropContractAddress();
-      abi = MerkleAirdropAbi.abi;
-      claimTokensFunc = (claimTokens) =>
-        claimTokens(address, balance, proof, { gasLimit: GAS_LIMIT });
-    }
-    const airdropContract = new Contract(airdropContractAddress, abi, signer);
-    airdropContract.connect(signer);
-    const result = await claimTokensFunc(airdropContract.claimTokens);
-    await result.wait(1);
-    setClaimState({
-      state: "SUCCESS",
-      message: "",
-    });
-    return setTimeout(() => {
-      history.push((type === "mainnet" ? "" : "/ep2") + "/success");
-    }, 2000);
-  } catch (error) {
-    console.error(error);
-    setClaimState({
-      state: "ERROR",
-      message: error,
-    });
-  }
+  // try {
+  //   const provider = getEthersProvider();
+  //   const signer = provider.getSigner();
+  //   let airdropContractAddress;
+  //   let abi;
+  //   let claimTokensFunc;
+  //   if (type === "mainnet") {
+  //     airdropContractAddress = getENSTokenContractAddress();
+  //     abi = ENSTokenAbi.abi;
+  //     claimTokensFunc = (claimTokens) =>
+  //       claimTokens(balance, address, proof, { gasLimit: GAS_LIMIT });
+  //   } else {
+  //     airdropContractAddress = getMerkleAirdropContractAddress();
+  //     abi = MerkleAirdropAbi.abi;
+  //     claimTokensFunc = (claimTokens) =>
+  //       claimTokens(address, balance, proof, { gasLimit: GAS_LIMIT });
+  //   }
+  //   const airdropContract = new Contract(airdropContractAddress, abi, signer);
+  //   airdropContract.connect(signer);
+  //   const result = await claimTokensFunc(airdropContract.claimTokens);
+  //   await result.wait(1);
+  //   setClaimState({
+  //     state: "SUCCESS",
+  //     message: "",
+  //   });
+  //   return setTimeout(() => {
+  //     history.push((type === "mainnet" ? "" : "/ep2") + "/success");
+  //   }, 2000);
+  // } catch (error) {
+  //   console.error(error);
+  //   setClaimState({
+  //     state: "ERROR",
+  //     message: error,
+  //   });
+  // }
 };
 
 export async function delegate(
@@ -140,7 +140,14 @@ export async function delegate(
   }
 }
 
-export async function delegateBySig(address, setClaimState, history, nonce) {
+export async function delegateBySig(
+  address,
+  setClaimState,
+  history,
+  nonce,
+  walletProvider,
+  chainId
+) {
   const expiry = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7; // set expiry of signature to 7 days from now
   const message = {
     delegatee: address,
@@ -182,6 +189,8 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
     });
     if (!delegateSigResponseData)
       throw new Error("Didn't get response from server");
+
+    console.log("delegateSigResponseData: ", delegateSigResponseData);
 
     setClaimState({
       state: "QUEUED",
