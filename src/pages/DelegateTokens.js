@@ -34,7 +34,6 @@ const delegateToAddress = async (
     if (!delegateAddress || delegateAddress === "") {
       throw "No chosen delegate";
     }
-    console.log("probe");
     const tx =
       sigDetails && sigDetails.canSign
         ? await delegateBySig(
@@ -93,8 +92,6 @@ const ENSTokenClaim = ({ location }) => {
     state: "LOADING",
     message: "",
   });
-
-  console.log("address: ", address);
 
   useEffect(() => {
     let timeout;

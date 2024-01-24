@@ -195,7 +195,6 @@ export const useGetDelegates = (isConnected) => {
 
   useEffect(() => {
     const provider = getEthersProvider(walletProvider);
-    console.log("walletProvider: ", walletProvider);
 
     const run = async () => {
       const delegateDataRaw = await Promise.all([
@@ -288,7 +287,6 @@ export const useGetTokens = (address) => {
   useEffect(() => {
     async function run() {
       const balance = await ENSTokenContract.balanceOf(address);
-      console.log("contract balance: ", balance);
       setBalance(balance);
       setLoading(false);
     }
@@ -313,11 +311,7 @@ export const useGetDelegatedTo = (address) => {
 
   useEffect(() => {
     async function run() {
-      console.log("delegatedToAddressContract: ", ENSTokenContract);
-      console.log("delegatedToAddressInput: ", address);
-      console.log("delegatedToAddressWallet: ", walletProvider);
       const delegatedToAddress = await ENSTokenContract.delegates(address);
-      console.log("delegatedToAddress: ", delegatedToAddress);
       setDelegatedToAddress(delegatedToAddress);
       setLoading(false);
     }
@@ -358,8 +352,8 @@ export const useGetTransactionDone = (txHash) => {
       try {
         const tx = await provider.getTransaction(txHash);
         setTransactionDone(tx?.blockNumber !== null);
-      } catch {
-        console.log("caught error");
+      } catch (e) {
+        console.error(e);
       }
     }
     if (txHash) {

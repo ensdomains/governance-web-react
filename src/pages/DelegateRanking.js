@@ -355,14 +355,7 @@ const FreeDelegationContentBox = styled(ContentBox)`
   justify-content: space-between;
 `;
 
-function CurrentDelegation({
-  account,
-  tokens,
-  selection,
-  delegatedTo,
-  setRenderKey,
-}) {
-  console.log("delegatedTo: ", delegatedTo);
+function CurrentDelegation({ tokens, selection, delegatedTo }) {
   let text = (
     <>
       <span>
@@ -419,9 +412,6 @@ const ChooseYourDelegate = () => {
   const { details: delegateSigDetails, loading: delegateSigDetailsLoading } =
     chooseData.delegateSigDetails;
   const { selectedDelegate } = chooseData;
-
-  console.log("chooseData: ", chooseData);
-  console.log("balanceLoading: ", balanceLoading);
 
   const history = useHistory();
   const location = useLocation();

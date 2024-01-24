@@ -26,10 +26,7 @@ import {
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import Home from "./pages/Home";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
-import { hasClaimed } from "./utils/token";
 import { initWeb3Read } from "./web3modal";
-import { addressDetails, ep2AddressDetails } from "./apollo";
-import { getClaimData } from "./utils/utils";
 
 const PROJECT_ID = "02f438d1701ea8029113972850066224";
 
@@ -106,10 +103,6 @@ function PrivateRoute({ component: Component, type = "mainnet", ...rest }) {
           history.push("/dashboard");
           return;
         }
-        const isClaimed = await hasClaimed(address, type);
-        if (isClaimed) {
-          history.push("/dashboard");
-        }
       } catch (error) {
         console.error("Private Route error: ", error);
         history.push("/dashboard");
@@ -161,16 +154,6 @@ function App() {
       setDelegateChoice(address, delegate);
       setDelegateReferral(delegate);
     }
-
-    // const run = async () => {
-    //   if (address) {
-    //     const claimData = await getClaimData(address);
-    //     addressDetails(claimData);
-    //     const ep2ClaimData = await getClaimData(address, "ep2");
-    //     ep2AddressDetails(ep2ClaimData);
-    //   }
-    // };
-    // run();
   }, [address]);
 
   useGetDelegates(isConnected);

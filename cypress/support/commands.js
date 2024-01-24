@@ -107,7 +107,6 @@ async function handleDelegate(params) {
   const tx = await contract.delegateBySig(delegatee, nonce, expiry, v, r, s, {
     gasPrice: "0",
   });
-  console.log("tx: ", tx);
   return tx.hash;
 }
 
@@ -117,9 +116,6 @@ async function handleDelegateRequest(req) {
       "Access-Control-Allow-Origin": "*",
     },
   };
-
-  console.log(contract);
-  console.log("req: ", req);
 
   if (req.method === "OPTIONS") {
     response.headers["Access-Control-Allow-Methods"] = "POST";
@@ -168,8 +164,6 @@ Cypress.Commands.add("interceptDelegateBySig", () => {
   db = Cypress.env("DELEGATE_WALLET").db;
   const { wallet, forkId } = Cypress.env("DELEGATE_WALLET");
   const rpcUrl = `https://rpc.tenderly.co/fork/${forkId}`;
-
-  console.log("wallt and rpcUrl", wallet, rpcUrl);
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl, CHAIN_ID);
   signer = new ethers.Wallet(wallet, provider);

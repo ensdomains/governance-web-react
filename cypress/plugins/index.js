@@ -39,12 +39,6 @@ module.exports = (on, config) => {
       process.env.NETWORK = network;
       process.env.PASSWORD = password;
 
-      console.log("setMetamaskData: ", {
-        secretWords,
-        network,
-        password,
-      });
-
       return true;
     },
   });
