@@ -1,6 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
 import { utils } from "ethers";
-import { useWeb3ModalAccount } from "@web3modal/ethers5/react";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers5/react";
 import debounce from "lodash.debounce";
 import React, { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -89,6 +92,8 @@ const InputComponent = ({
   defaultValue,
   ...props
 }) => {
+  const { walletProvider } = useWeb3ModalProvider();
+
   const onChange = (event) => {
     const value = event.target.value;
     setValue(value);
@@ -97,7 +102,9 @@ const InputComponent = ({
       console.log("run");
       if (value.includes(".")) {
         try {
-          const result = await getEthersProvider().resolveName(value);
+          const result = await getEthersProvider(walletProvider).resolveName(
+            value
+          );
           if (result) {
             setEnsNameAddress(result);
             if (result === delegatedTo) {

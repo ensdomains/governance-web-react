@@ -23,6 +23,9 @@ export const initWeb3Read = async () => {
   }
 };
 
-export const getProvider = () => provider;
-export const getEthersProvider = () => ethersProvider;
+// export const getEthersProvider = () => ethersProvider;
+export const getEthersProvider = (walletProvider) =>
+  walletProvider
+    ? new ethers.providers.Web3Provider(walletProvider)
+    : ethersProvider;
 export const getEnsInstance = () => ensInstance;

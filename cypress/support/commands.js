@@ -107,6 +107,7 @@ async function handleDelegate(params) {
   const tx = await contract.delegateBySig(delegatee, nonce, expiry, v, r, s, {
     gasPrice: "0",
   });
+  console.log("tx: ", tx);
   return tx.hash;
 }
 
@@ -168,7 +169,7 @@ Cypress.Commands.add("interceptDelegateBySig", () => {
   const { wallet, forkId } = Cypress.env("DELEGATE_WALLET");
   const rpcUrl = `https://rpc.tenderly.co/fork/${forkId}`;
 
-  console.log(wallet, rpcUrl);
+  console.log("wallt and rpcUrl", wallet, rpcUrl);
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl, CHAIN_ID);
   signer = new ethers.Wallet(wallet, provider);

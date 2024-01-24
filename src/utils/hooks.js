@@ -191,8 +191,12 @@ export const rankDelegates = (
 export const useGetDelegates = (isConnected) => {
   const [delegates, setDelegates] = useState({});
   const [loading, setLoading] = useState(true);
+  const { walletProvider } = useWeb3ModalProvider();
+
   useEffect(() => {
-    const provider = getEthersProvider();
+    const provider = getEthersProvider(walletProvider);
+    console.log("walletProvider: ", walletProvider);
+
     const run = async () => {
       const delegateDataRaw = await Promise.all([
         apolloClientInstance.query({
@@ -273,7 +277,8 @@ export const useGetDelegates = (isConnected) => {
 export const useGetTokens = (address) => {
   const [balance, setBalance] = useState();
   const [loading, setLoading] = useState(true);
-  const provider = getEthersProvider();
+  const { walletProvider } = useWeb3ModalProvider();
+  const provider = getEthersProvider(walletProvider);
   const ENSTokenContract = new Contract(
     getENSTokenContractAddress(),
     ENSTokenAbi.abi,
@@ -298,7 +303,8 @@ export const useGetTokens = (address) => {
 export const useGetDelegatedTo = (address) => {
   const [delegatedToAddress, setDelegatedToAddress] = useState();
   const [loading, setLoading] = useState(true);
-  const provider = getEthersProvider();
+  const { walletProvider } = useWeb3ModalProvider();
+  const provider = getEthersProvider(walletProvider);
   const ENSTokenContract = new Contract(
     getENSTokenContractAddress(),
     ENSTokenAbi.abi,
@@ -307,6 +313,9 @@ export const useGetDelegatedTo = (address) => {
 
   useEffect(() => {
     async function run() {
+      console.log("delegatedToAddressContract: ", ENSTokenContract);
+      console.log("delegatedToAddressInput: ", address);
+      console.log("delegatedToAddressWallet: ", walletProvider);
       const delegatedToAddress = await ENSTokenContract.delegates(address);
       console.log("delegatedToAddress: ", delegatedToAddress);
       setDelegatedToAddress(delegatedToAddress);
@@ -340,15 +349,18 @@ export const useGetDelegateBySigStatus = (address) => {
 
 export const useGetTransactionDone = (txHash) => {
   const [transactionDone, setTransactionDone] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const provider = getEthersProvider();
+  const { walletProvider } = useWeb3ModalProvider();
+  const provider = getEthersProvider(walletProvider);
 
   useEffect(() => {
     async function run() {
       if (!provider) return;
-      const tx = await provider.getTransaction(txHash);
-      setTransactionDone(tx?.blockNumber !== null);
-      setLoading(false);
+      try {
+        const tx = await provider.getTransaction(txHash);
+        setTransactionDone(tx?.blockNumber !== null);
+      } catch {
+        console.log("caught error");
+      }
     }
     if (txHash) {
       run();

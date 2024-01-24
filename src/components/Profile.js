@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { utils } from "ethers";
-import { useDisconnect } from "@web3modal/ethers5/react";
+import { useDisconnect, useWeb3ModalProvider } from "@web3modal/ethers5/react";
 
 import { getEthersProvider } from "../web3modal";
 import { imageUrl, shortenAddress } from "../utils/utils";
@@ -189,6 +189,7 @@ const Profile = ({ address, size, hasDropdown }) => {
   const [profileDetails, setProfileDetails] = useState({});
   const [navOpen, setNavOpen] = useState(false);
   const { disconnect } = useDisconnect();
+  const { walletProvider } = useWeb3ModalProvider();
   let isAddress;
   try {
     isAddress = utils.getAddress(address);
@@ -198,7 +199,7 @@ const Profile = ({ address, size, hasDropdown }) => {
 
   useEffect(() => {
     const run = async () => {
-      const ethersProvider = getEthersProvider();
+      const ethersProvider = getEthersProvider(walletProvider);
 
       if (!ethersProvider) {
         console.error("no ethers provider");

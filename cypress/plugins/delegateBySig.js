@@ -9,6 +9,8 @@ module.exports = (on) => {
         accounts: {},
       };
 
+      console.log("forkId: ", forkId);
+
       const wallet = ethers.Wallet.createRandom();
 
       await fetch(

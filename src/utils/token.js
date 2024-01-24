@@ -111,7 +111,6 @@ export async function delegate(
   walletProvider
 ) {
   try {
-    // const provider = getEthersProvider();
     const provider = new ethers.providers.Web3Provider(walletProvider);
     const signer = provider.getSigner();
     const ENSTokenContract = new Contract(
@@ -155,7 +154,7 @@ export async function delegateBySig(
     expiry,
   };
   try {
-    const provider = getEthersProvider();
+    const provider = getEthersProvider(walletProvider);
     const signer = provider.getSigner();
     const chainId = network();
     const sig = await signer._signTypedData(
