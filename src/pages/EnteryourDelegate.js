@@ -99,7 +99,6 @@ const InputComponent = ({
     setValue(value);
 
     const run = async () => {
-      console.log("run");
       if (value.includes(".")) {
         try {
           const result = await getEthersProvider(walletProvider).resolveName(

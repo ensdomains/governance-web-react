@@ -101,8 +101,6 @@ export async function delegateBySig(
     if (!delegateSigResponseData)
       throw new Error("Didn't get response from server");
 
-    console.log("delegateSigResponseData: ", delegateSigResponseData);
-
     setClaimState({
       state: "QUEUED",
       message: delegateSigResponseData,

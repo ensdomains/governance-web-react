@@ -20,7 +20,6 @@ before(() => {
     )
     .then((res) => Cypress.env("DELEGATE_WALLET", res))
     .then(() => {
-      console.log("env: ", process.env.NETWORK_NAME);
       cy.setupMetamask("");
     });
 });
