@@ -15,7 +15,7 @@ import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
-import { getEthersProvider } from "../web3modal";
+import { getEthersProvider, rpcUrl } from "../web3modal";
 import {
   ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
@@ -188,13 +188,15 @@ export const rankDelegates = (
   return sortedList;
 };
 
-export const useGetDelegates = (isConnected) => {
+export const useGetDelegates = () => {
   const [delegates, setDelegates] = useState({});
   const [loading, setLoading] = useState(true);
   const { walletProvider } = useWeb3ModalProvider();
 
   useEffect(() => {
-    const provider = getEthersProvider(walletProvider);
+    const provider =
+      getEthersProvider(walletProvider) ||
+      new ethers.providers.JsonRpcProvider(rpcUrl);
 
     const run = async () => {
       const delegateDataRaw = await Promise.all([
@@ -262,14 +264,11 @@ export const useGetDelegates = (isConnected) => {
     };
 
     try {
-      if (isConnected) {
-        run();
-      }
+      run();
     } catch (error) {
       console.error("Error getting delegates: ", error);
     }
-  }, [isConnected]);
-
+  }, []);
   delegatesReactive({ delegates, loading });
 };
 

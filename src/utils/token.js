@@ -1,19 +1,8 @@
-import { BigNumber, Contract, utils, ethers } from "ethers";
+import { Contract, utils, ethers } from "ethers";
 import { network } from "../apollo";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
-import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
-import ep2MerkleRoot from "../assets/root-ep2.json";
-import merkleRoot from "../assets/root.json";
-// import ShardedMerkleTree, { getIndex } from "../merkle";
-import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
-import {
-  DELEGATE_GAS_LIMIT,
-  GAS_LIMIT,
-  generateMerkleShardUrl,
-  getENSTokenContractAddress,
-  getMerkleAirdropContractAddress,
-} from "./consts";
+import { DELEGATE_GAS_LIMIT, getENSTokenContractAddress } from "./consts";
 import { sendToDelegateJsonRpc } from "./utils";
 
 export async function delegate(

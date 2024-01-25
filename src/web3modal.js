@@ -2,7 +2,8 @@ import { ethers } from "ethers";
 
 import { isConnected, network } from "./apollo";
 
-export const rpcUrl = "https://web3.ens.domains/v1/mainnet";
+export const rpcUrl =
+  "https://mainnet.infura.io/v3/4d6e2605d0b1497fad8373ba11ddee8c";
 
 let ethersProvider;
 let ensInstance;

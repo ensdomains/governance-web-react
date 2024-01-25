@@ -26,7 +26,7 @@ import {
 import EnteryourDelegate from "./pages/EnteryourDelegate";
 import Home from "./pages/Home";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
-import { initWeb3Read } from "./web3modal";
+import { initWeb3Read, rpcUrl } from "./web3modal";
 
 const PROJECT_ID = "02f438d1701ea8029113972850066224";
 
@@ -35,14 +35,14 @@ const mainnet = {
   name: "Ethereum",
   currency: "ETH",
   explorerUrl: "https://etherscan.io",
-  rpcUrl: "https://cloudflare-eth.com",
+  rpcUrl: rpcUrl,
 };
 
 const metadata = {
-  name: "My Website",
-  description: "My Website description",
-  url: "https://mywebsite.com",
-  icons: ["https://avatars.mywebsite.com/"],
+  name: "ENS Delegation App",
+  description: "Delegate your ENS name to a delegate of your choice",
+  url: "https://delegate.ens.domains",
+  icons: ["https://delegate.ens.domains/favicon-32x32.png"],
 };
 
 createWeb3Modal({
@@ -156,8 +156,6 @@ function App() {
     }
   }, [address]);
 
-  useGetDelegates(isConnected);
-
   return (
     <>
       <Header />
@@ -196,6 +194,7 @@ function App() {
 
 function Index() {
   useInit();
+  useGetDelegates();
   return (
     <Router>
       <App />

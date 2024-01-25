@@ -127,7 +127,7 @@ const Header = () => {
           )}
         </RightContainer>
       </HeaderContainerInner>
-      {network !== null && network !== 1 && <NetworkWarning />}
+      {isConnected && network !== null && network !== 1 && <NetworkWarning />}
     </HeaderContainer>
   );
 };
