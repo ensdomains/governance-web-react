@@ -27,6 +27,7 @@ import EnteryourDelegate from "./pages/EnteryourDelegate";
 import Home from "./pages/Home";
 import { useGetDelegates, useQueryString } from "./utils/hooks";
 import { initWeb3Read, rpcUrl } from "./web3modal";
+import { usePrevious } from "react-use";
 
 const PROJECT_ID = "02f438d1701ea8029113972850066224";
 
@@ -146,13 +147,18 @@ function ConnectedRoute({ component: Component, ...rest }) {
 
 function App() {
   const query = useQueryString();
-  const { address, isConnected } = useWeb3ModalAccount();
+  const { address } = useWeb3ModalAccount();
+  const previousAddress = usePrevious(address);
 
   useEffect(() => {
     const delegate = query.get("delegate");
     if (delegate && address) {
       setDelegateChoice(address, delegate);
       setDelegateReferral(delegate);
+    }
+
+    if (previousAddress && address && previousAddress !== address) {
+      window.location.reload();
     }
   }, [address]);
 

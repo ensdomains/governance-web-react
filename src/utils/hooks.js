@@ -2,7 +2,7 @@ import { normalize } from "@ensdomains/eth-ens-namehash";
 import { Contract, ethers } from "ethers";
 import { gql } from "graphql-tag";
 import { keccak_256 as sha3 } from "js-sha3";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   apolloClientInstance,
