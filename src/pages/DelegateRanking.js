@@ -223,6 +223,8 @@ const DelegatesContainer = styled.div`
   justify-content: center;
   max-height: calc(100vh / 3);
   overflow-y: auto;
+  pointer-events: ${(props) => (props.balance === 0 ? "none" : "auto")};
+  opacity: ${(props) => (props.balance === 0 ? 0.4 : 1)};
 `;
 
 const HeaderContainer = styled.div`
@@ -364,6 +366,7 @@ function CurrentDelegation({ tokens, selection, delegatedTo }) {
       <Profile address={delegatedTo} size="small" />
     </>
   );
+
   if (selection) {
     text = (
       <>
@@ -380,6 +383,14 @@ function CurrentDelegation({ tokens, selection, delegatedTo }) {
       <span>
         You have <strong>{tokens}</strong> undelegated votes
       </span>
+    );
+  }
+
+  if (tokens === "0.00") {
+    text = (
+      <>
+        <span>You have no tokens to delegate.</span>
+      </>
     );
   }
 
@@ -422,6 +433,9 @@ const ChooseYourDelegate = () => {
 
   const [renderKey, setRenderKey] = useState(0);
   const [search, setSearch] = useState("");
+
+  const simpleBalance =
+    !balanceLoading && balance ? Number(utils.formatEther(balance)) : 0;
 
   return (
     <WrappedNarrowColumn>
@@ -489,7 +503,7 @@ const ChooseYourDelegate = () => {
             {address ? (
               <WrappedCTAButton
                 text={"Enter ENS or address"}
-                type={"deny"}
+                type={simpleBalance === 0 ? "disabled" : "deny"}
                 onClick={() => {
                   if (address) {
                     history.push("/manual-delegates-no-claim");
@@ -531,7 +545,10 @@ const ChooseYourDelegate = () => {
         {delegatesLoading ? (
           <Loader center large />
         ) : (
-          <DelegatesContainer data-testid="delegates-list-container">
+          <DelegatesContainer
+            data-testid="delegates-list-container"
+            balance={simpleBalance}
+          >
             {delegates.map((d) => (
               <DelegateBox
                 {...d}
