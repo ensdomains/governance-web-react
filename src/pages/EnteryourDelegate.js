@@ -1,5 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
 import { utils } from "ethers";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers5/react";
 import debounce from "lodash.debounce";
 import React, { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -88,15 +92,18 @@ const InputComponent = ({
   defaultValue,
   ...props
 }) => {
+  const { walletProvider } = useWeb3ModalProvider();
+
   const onChange = (event) => {
     const value = event.target.value;
     setValue(value);
 
     const run = async () => {
-      console.log("run");
       if (value.includes(".")) {
         try {
-          const result = await getEthersProvider().resolveName(value);
+          const result = await getEthersProvider(walletProvider).resolveName(
+            value
+          );
           if (result) {
             setEnsNameAddress(result);
             if (result === delegatedTo) {
@@ -185,6 +192,7 @@ const InputComponent = ({
 
 const EnteryourDelegate = () => {
   const history = useHistory();
+  const { address } = useWeb3ModalAccount();
   const [validationMessage, setValidationMessage] = useState({
     message: "",
     isError: false,
@@ -192,13 +200,11 @@ const EnteryourDelegate = () => {
   let noClaim = useRouteMatch("/manual-delegates-no-claim");
   const {
     data: {
-      address,
       delegateSigDetails: _delegateSigDetails,
       delegatedTo: { delegatedTo, loading: delegatedToLoading },
     },
   } = useQuery(gql`
     query customDelegateQuery @client {
-      address
       delegateSigDetails
       delegatedTo
     }

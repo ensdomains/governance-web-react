@@ -26,6 +26,7 @@ import { CTAButton } from "../components/buttons";
 import { ReactComponent as SplashENSLogo } from "../assets/imgs/SplashENSLogo.svg";
 import { getDelegateChoice } from "./ENSConstitution/delegateHelpers";
 import Pill from "../components/Pill";
+import { useWeb3ModalProvider } from "@web3modal/ethers5/react";
 
 const ENSLogo = styled(SplashENSLogo)`
   width: 40px;
@@ -80,6 +81,7 @@ const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
       address
     }
   `);
+  const { walletProvider } = useWeb3ModalProvider();
   const [delegateInfo, setDelegateInfo] = useState({
     avatar: "",
     displayName: "",
@@ -96,7 +98,9 @@ const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
       }
 
       if (delegateChoice.includes(".")) {
-        const resolver = await getEthersProvider().getResolver(delegateChoice);
+        const resolver = await getEthersProvider(walletProvider).getResolver(
+          delegateChoice
+        );
         try {
           const addr = await resolver.getAddress(60);
           utils.getAddress(addr);
@@ -112,9 +116,13 @@ const DelegateConfirmation = ({ isDelegateValid, setIsDelegateValid }) => {
         return;
       }
 
-      const ethName = await getEthersProvider().lookupAddress(delegateChoice);
+      const ethName = await getEthersProvider(walletProvider).lookupAddress(
+        delegateChoice
+      );
       if (ethName) {
-        const resolver = await getEthersProvider().getResolver(ethName);
+        const resolver = await getEthersProvider(walletProvider).getResolver(
+          ethName
+        );
         const avatar = await resolver.getText("avatar");
         setDelegateInfo({
           avatar,

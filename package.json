@@ -5,48 +5,97 @@
   "author": "ENS Team (@ensdomains)",
   "dependencies": {
     "@apollo/client": "3.4.11",
+    "@babel/core": "^7.16.0",
     "@ensdomains/eth-ens-namehash": "2.0.15",
     "@ensdomains/thorin": "0.2.0",
     "@ensdomains/web3modal": "1.10.1",
     "@ethersproject/bytes": "latest",
-    "@myetherwallet/mewconnect-web-client": "2.2.0-beta.14",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@portis/web3": "4.0.5",
     "@sentry/react": "6.14.1",
     "@sentry/tracing": "6.14.1",
     "@snapshot-labs/snapshot.js": "0.2.9",
+    "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@toruslabs/torus-embed": "1.13.3",
     "@walletconnect/web3-provider": "1.6.5",
+    "@web3modal/ethers5": "^3.5.6",
+    "babel-jest": "^27.4.2",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-named-asset-import": "^0.3.8",
+    "babel-preset-react-app": "^10.0.1",
+    "bfj": "^7.0.2",
     "bitski": "^0.11.0-beta.5",
-    "ethers": "5.4.6",
+    "browserslist": "^4.18.1",
+    "camelcase": "^6.2.1",
+    "case-sensitive-paths-webpack-plugin": "^2.4.0",
+    "css-loader": "^6.5.1",
+    "css-minimizer-webpack-plugin": "^3.2.0",
+    "dotenv": "^10.0.0",
+    "dotenv-expand": "^5.1.0",
+    "eslint": "^8.3.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-webpack-plugin": "^3.1.1",
+    "ethers": "5.7.2",
+    "file-loader": "^6.2.0",
+    "fs-extra": "^10.0.0",
     "graphql": "15.5.3",
+    "html-webpack-plugin": "^5.5.0",
+    "https-browserify": "^1.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.4.3",
+    "jest-resolve": "^27.4.2",
+    "jest-watch-typeahead": "^1.0.0",
     "js-sha3": "0.8.0",
     "keccak256": "1.0.3",
     "lodash.debounce": "4.0.8",
     "merkletreejs": "0.2.24",
-    "react": "^17.0.2",
+    "mini-css-extract-plugin": "^2.4.5",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "postcss": "^8.4.4",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-loader": "^6.2.1",
+    "postcss-normalize": "^10.0.1",
+    "postcss-preset-env": "^7.0.1",
+    "prompts": "^2.4.2",
+    "react": "^18.2.0",
+    "react-app-polyfill": "^3.0.0",
     "react-confetti": "6.0.1",
-    "react-dom": "^17.0.2",
+    "react-dev-utils": "^12.0.1",
+    "react-dom": "^18.2.0",
+    "react-refresh": "^0.11.0",
     "react-router-dom": "5.3.0",
-    "react-scripts": "4.0.3",
     "react-use": "17.3.1",
+    "resolve": "^1.20.0",
+    "resolve-url-loader": "^4.0.0",
+    "sass-loader": "^12.3.0",
+    "semver": "^7.3.5",
+    "source-map-loader": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "style-loader": "^3.3.1",
     "styled-components": "5.3.3",
+    "tailwindcss": "^3.0.2",
+    "terser-webpack-plugin": "^5.2.5",
     "walletlink": "2.1.11",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "webpack": "^5.64.4",
+    "webpack-dev-server": "^4.6.0",
+    "webpack-manifest-plugin": "^4.0.2",
+    "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
-    "start": "REACT_APP_STAGE=testing react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "start": "REACT_APP_STAGE=testing node scripts/start.js",
+    "build": "DISABLE_ESLINT_PLUGIN=true node scripts/build.js",
     "build:testing": "REACT_APP_STAGE=testing yarn build",
     "serve": "serve -s build",
     "deploy": "DISABLE_ESLINT_PLUGIN=true yarn build && cp _headers ./build && cp _redirects ./build && rm -rf ./build/airdrops/testing",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "test": "node scripts/test.js",
     "cypress:ci:all": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress run --headed --browser chrome",
     "cypress:ci:testSpec": "yarn run cypress:ci:all --spec ./cypress/integration/testSpec.spec.js",
-    "cypress:ci": "yarn run cypress:ci:testSpec --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de",
+    "cypress:ci": "yarn run cypress:ci:testSpec --record --key 460c115f-3fdb-4fd4-b4a1-23def2b9a3de --browser chromium",
     "cypress:ci:local": "yarn run cypress:ci:testSpec",
     "cypress:ci:local:win": "set CYPRESS_REMOTE_DEBUGGING_PORT=9222 && cypress run --headed --browser chrome --spec ./cypress/integration/testSpec.spec.js",
     "cypress:version": "cypress -v",
@@ -73,7 +122,7 @@
     ]
   },
   "devDependencies": {
-    "@ensdomains/cypress-metamask": "ensdomains/cypress-metamask#fix-sign-buttons",
+    "@ensdomains/cypress-metamask": "ensdomains/cypress-metamask#main",
     "babel-plugin-styled-components": "1.13.2",
     "concurrently": "6.3.0",
     "cypress": "8.7.0",
@@ -84,5 +133,64 @@
     "prettier": "2.4.1",
     "pretty-quick": "3.1.1",
     "serve": "12.0.1"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts"
+    ],
+    "setupFiles": [
+      "react-app-polyfill/jsdom"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
+    ],
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ],
+    "modulePaths": [],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web",
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "web.ts",
+      "ts",
+      "web.tsx",
+      "tsx",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "resetMocks": true
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      "babel-plugin-styled-components"
+    ]
   }
 }

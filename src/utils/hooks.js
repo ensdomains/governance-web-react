@@ -2,7 +2,7 @@ import { normalize } from "@ensdomains/eth-ens-namehash";
 import { Contract, ethers } from "ethers";
 import { gql } from "graphql-tag";
 import { keccak_256 as sha3 } from "js-sha3";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   apolloClientInstance,
@@ -15,7 +15,7 @@ import ENSDelegateAbi from "../assets/abis/ENSDelegate.json";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
 import ReverseRecordsAbi from "../assets/abis/ReverseRecords.json";
 import { getDelegateReferral } from "../pages/ENSConstitution/delegateHelpers";
-import { getEthersProvider } from "../web3modal";
+import { getEthersProvider, rpcUrl } from "../web3modal";
 import {
   ALLOCATION_ENDPOINT,
   getENSDelegateContractAddress,
@@ -23,6 +23,10 @@ import {
   getReverseRecordsAddress,
 } from "./consts";
 import { getCanDelegateBySig } from "./utils";
+import { BigNumber } from "ethers/lib";
+import { useWeb3ModalProvider } from "@web3modal/ethers5/react";
+
+const ETH_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export function useQueryString() {
   return new URLSearchParams(useLocation().search);
@@ -83,19 +87,23 @@ const processENSDelegateContractResults = (
       );
     });
     return {
-      avatar: data.avatar,
-      profile: data.profile,
-      address: data.addr,
-      votes: data.votes,
+      avatar: data?.avatar,
+      profile: data?.profile,
+      address: data?.addr,
+      votes: data?.votes || BigNumber.from(0),
       name: reverseRecordOnlyResult?.domain?.name,
     };
   });
 
 const filterDelegateData = (results) => {
   return results
-    .filter((data) => data.addr?.id)
-    .filter((data) => data.texts?.includes("avatar"))
-    .filter((data) => data.address === data.domain.resolver.address);
+    .filter((data) => {
+      return data.addr?.id || data.addr?.id === ETH_ZERO_ADDRESS;
+    })
+    .filter((data) => {
+      return data?.texts?.includes("avatar");
+    })
+    .filter((data) => data?.address === data?.domain?.resolver?.address);
 };
 
 const bigNumberToDecimal = (bigNumber) =>
@@ -180,11 +188,16 @@ export const rankDelegates = (
   return sortedList;
 };
 
-export const useGetDelegates = (isConnected) => {
+export const useGetDelegates = () => {
   const [delegates, setDelegates] = useState({});
   const [loading, setLoading] = useState(true);
+  const { walletProvider } = useWeb3ModalProvider();
+
   useEffect(() => {
-    const provider = getEthersProvider();
+    const provider =
+      getEthersProvider(walletProvider) ||
+      new ethers.providers.JsonRpcProvider(rpcUrl);
+
     const run = async () => {
       const delegateDataRaw = await Promise.all([
         apolloClientInstance.query({
@@ -251,21 +264,19 @@ export const useGetDelegates = (isConnected) => {
     };
 
     try {
-      if (isConnected) {
-        run();
-      }
+      run();
     } catch (error) {
       console.error("Error getting delegates: ", error);
     }
-  }, [isConnected]);
-
+  }, []);
   delegatesReactive({ delegates, loading });
 };
 
 export const useGetTokens = (address) => {
   const [balance, setBalance] = useState();
   const [loading, setLoading] = useState(true);
-  const provider = getEthersProvider();
+  const { walletProvider } = useWeb3ModalProvider();
+  const provider = getEthersProvider(walletProvider);
   const ENSTokenContract = new Contract(
     getENSTokenContractAddress(),
     ENSTokenAbi.abi,
@@ -275,7 +286,6 @@ export const useGetTokens = (address) => {
   useEffect(() => {
     async function run() {
       const balance = await ENSTokenContract.balanceOf(address);
-      console.log(balance);
       setBalance(balance);
       setLoading(false);
     }
@@ -290,7 +300,8 @@ export const useGetTokens = (address) => {
 export const useGetDelegatedTo = (address) => {
   const [delegatedToAddress, setDelegatedToAddress] = useState();
   const [loading, setLoading] = useState(true);
-  const provider = getEthersProvider();
+  const { walletProvider } = useWeb3ModalProvider();
+  const provider = getEthersProvider(walletProvider);
   const ENSTokenContract = new Contract(
     getENSTokenContractAddress(),
     ENSTokenAbi.abi,
@@ -331,15 +342,18 @@ export const useGetDelegateBySigStatus = (address) => {
 
 export const useGetTransactionDone = (txHash) => {
   const [transactionDone, setTransactionDone] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const provider = getEthersProvider();
+  const { walletProvider } = useWeb3ModalProvider();
+  const provider = getEthersProvider(walletProvider);
 
   useEffect(() => {
     async function run() {
       if (!provider) return;
-      const tx = await provider.getTransaction(txHash);
-      setTransactionDone(tx.blockNumber !== null);
-      setLoading(false);
+      try {
+        const tx = await provider.getTransaction(txHash);
+        setTransactionDone(tx?.blockNumber !== null);
+      } catch (e) {
+        console.error(e);
+      }
     }
     if (txHash) {
       run();

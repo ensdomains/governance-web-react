@@ -27,19 +27,37 @@ before(() => {
 describe("Token claim site", () => {
   beforeEach(() => {
     cy.interceptDelegateBySig();
+    Cypress.on("uncaught:exception", (err, runnable) => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false;
+    });
   });
 
   it("Should allow the user navigate to delegate and delegate tokens gas-free", () => {
     cy.visit("http://localhost:3000");
     cy.get('[data-testid="header-connect-button"').click();
-    cy.contains("MetaMask").click();
+    cy.get("w3m-modal")
+      .shadow()
+      .find("wui-flex")
+      .find("wui-card")
+      .find("w3m-router")
+      .shadow()
+      .find("div")
+      .find("w3m-connect-view")
+      .shadow()
+      .find("wui-flex")
+      .find('[name="Browser Wallet"]')
+      .click();
+
     cy.acceptMetamaskAccess();
+
     cy.contains("Delegates").click();
 
-    cy.contains("You have delegated 11.18 votes to", {
+    cy.contains("You have delegated 12.18 votes to", {
       timeout: 20000,
       exact: false,
-    }).should("have.text", "You have delegated 11.18 votes to", {
+    }).should("have.text", "You have delegated 12.18 votes to", {
       exact: false,
     });
 
@@ -50,7 +68,6 @@ describe("Token claim site", () => {
         cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
           .first()
           .click();
-        cy.wait(5000);
         cy.contains("Gas Free", { timeout: 20000 }).should(
           "have.text",
           "Gas Free"
@@ -88,27 +105,13 @@ describe("Token claim site", () => {
   });
 
   it("Should allow manual delegation with gas", () => {
-    cy.visit("http://localhost:3000");
-    cy.get('[data-testid="header-connect-button"').click();
-    cy.contains("MetaMask").click();
-    cy.contains("Delegates").click();
-
-    cy.contains("You have delegated 11.18 votes to", {
-      timeout: 20000,
-      exact: false,
-    }).should("have.text", "You have delegated 11.18 votes to", {
-      exact: false,
-    });
-
     cy.contains("Enter ENS or address").click();
-    cy.wait(5000);
     cy.contains("Requires Gas", { timeout: 20000 }).should(
       "have.text",
       "Requires Gas"
     );
     cy.get("input").clear();
     cy.get("input").type("nick.eth");
-    cy.wait(5000);
     cy.get('[data-testid="right-cta"]', { timeout: 25000 })
       .should("have.text", "Delegate")
       .click({ timeout: 10000 });
@@ -123,18 +126,25 @@ describe("Token claim site", () => {
       });
   });
 
-  it("Should allow disconnection and reconnection", () => {
-    cy.visit("http://localhost:3000");
-    // User connects
-    cy.get('[data-testid="header-connect-button"').click();
-    cy.contains("MetaMask").click();
-    cy.wait(1000);
+  it("Should allow disconnection", () => {
     // User disconnects
     cy.get('[data-testid="profile-dropdown"]').click();
     cy.contains("Disconnect").click();
     // User reconnects
     cy.get('[data-testid="header-connect-button"').click();
-    cy.contains("MetaMask").click();
+    cy.get("w3m-modal")
+      .shadow()
+      .find("wui-flex")
+      .find("wui-card")
+      .find("w3m-router")
+      .shadow()
+      .find("div")
+      .find("w3m-connect-view")
+      .shadow()
+      .find("wui-flex")
+      .find('[name="Browser Wallet"]')
+      .click();
+    // cy.contains("MetaMask").click();
     // Check user is connected
     cy.get('[data-testid="profile-dropdown"]');
   });

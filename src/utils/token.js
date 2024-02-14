@@ -1,116 +1,18 @@
-import { BigNumber, Contract, utils } from "ethers";
+import { Contract, utils, ethers } from "ethers";
 import { network } from "../apollo";
 import ENSTokenAbi from "../assets/abis/ENSToken.json";
-import MerkleAirdropAbi from "../assets/abis/MerkleAirdrop.json";
-import ep2MerkleRoot from "../assets/root-ep2.json";
-import merkleRoot from "../assets/root.json";
-import ShardedMerkleTree, { getIndex } from "../merkle";
-import { getDelegateChoice } from "../pages/ENSConstitution/delegateHelpers";
 import { getEthersProvider } from "../web3modal";
-import {
-  DELEGATE_GAS_LIMIT,
-  GAS_LIMIT,
-  generateMerkleShardUrl,
-  getENSTokenContractAddress,
-  getMerkleAirdropContractAddress,
-} from "./consts";
+import { DELEGATE_GAS_LIMIT, getENSTokenContractAddress } from "./consts";
 import { sendToDelegateJsonRpc } from "./utils";
 
-const testingMerkleRoot = {
-  root: "0xdc11fa9fd3249811b64f70f9e0e8fd906652eece35cc97ea99fec6e5eeb7946c",
-  shardNybbles: 1,
-  total: "25000000000000000000000000",
-};
-
-export const hasClaimed = async (address, type = "mainnet") => {
-  try {
-    const response = await fetch(generateMerkleShardUrl(address, type));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    let root, shardNybbles, total;
-
-    if (process.env.REACT_APP_STAGE === "testing" && type === "ep2")
-      ({ root, shardNybbles, total } = testingMerkleRoot);
-    else if (type === "ep2") ({ root, shardNybbles, total } = ep2MerkleRoot);
-    else ({ root, shardNybbles, total } = merkleRoot);
-
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
-    );
-
-    const provider = getEthersProvider();
-    const signer = provider.getSigner();
-    const airdropContract =
-      type === "mainnet"
-        ? new Contract(getENSTokenContractAddress(), ENSTokenAbi.abi, signer)
-        : new Contract(
-            getMerkleAirdropContractAddress(),
-            MerkleAirdropAbi.abi,
-            signer
-          );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
-    const index = getIndex(address, entry, proof);
-    const result = await airdropContract.isClaimed(index);
-    return result;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const submitClaim = async (
-  balance,
-  proof,
+export async function delegate(
   address,
   setClaimState,
   history,
-  type = "mainnet"
-) => {
+  walletProvider
+) {
   try {
-    const provider = getEthersProvider();
-    const signer = provider.getSigner();
-    let airdropContractAddress;
-    let abi;
-    let claimTokensFunc;
-    if (type === "mainnet") {
-      airdropContractAddress = getENSTokenContractAddress();
-      abi = ENSTokenAbi.abi;
-      claimTokensFunc = (claimTokens) =>
-        claimTokens(balance, address, proof, { gasLimit: GAS_LIMIT });
-    } else {
-      airdropContractAddress = getMerkleAirdropContractAddress();
-      abi = MerkleAirdropAbi.abi;
-      claimTokensFunc = (claimTokens) =>
-        claimTokens(address, balance, proof, { gasLimit: GAS_LIMIT });
-    }
-    const airdropContract = new Contract(airdropContractAddress, abi, signer);
-    airdropContract.connect(signer);
-    const result = await claimTokensFunc(airdropContract.claimTokens);
-    await result.wait(1);
-    setClaimState({
-      state: "SUCCESS",
-      message: "",
-    });
-    return setTimeout(() => {
-      history.push((type === "mainnet" ? "" : "/ep2") + "/success");
-    }, 2000);
-  } catch (error) {
-    console.error(error);
-    setClaimState({
-      state: "ERROR",
-      message: error,
-    });
-  }
-};
-
-export async function delegate(address, setClaimState, history) {
-  try {
-    const provider = getEthersProvider();
+    const provider = new ethers.providers.Web3Provider(walletProvider);
     const signer = provider.getSigner();
     const ENSTokenContract = new Contract(
       getENSTokenContractAddress(),
@@ -138,7 +40,14 @@ export async function delegate(address, setClaimState, history) {
   }
 }
 
-export async function delegateBySig(address, setClaimState, history, nonce) {
+export async function delegateBySig(
+  address,
+  setClaimState,
+  history,
+  nonce,
+  walletProvider,
+  chainId
+) {
   const expiry = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7; // set expiry of signature to 7 days from now
   const message = {
     delegatee: address,
@@ -146,7 +55,7 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
     expiry,
   };
   try {
-    const provider = getEthersProvider();
+    const provider = getEthersProvider(walletProvider);
     const signer = provider.getSigner();
     const chainId = network();
     const sig = await signer._signTypedData(
@@ -194,65 +103,3 @@ export async function delegateBySig(address, setClaimState, history, nonce) {
     });
   }
 }
-
-export const handleClaim = async (
-  address,
-  setClaimState,
-  history,
-  type = "mainnet"
-) => {
-  try {
-    setClaimState({
-      state: "LOADING",
-      message: "",
-    });
-
-    let outputAddress;
-    let provider = getEthersProvider();
-    let displayName;
-
-    if (type === "mainnet") {
-      displayName = getDelegateChoice(address);
-      if (!displayName) {
-        throw "No chosen delegate";
-      }
-    } else {
-      displayName = address;
-    }
-
-    if (displayName.includes(".eth")) {
-      outputAddress = await provider.resolveName(displayName);
-    } else {
-      outputAddress = displayName;
-    }
-
-    const response = await fetch(generateMerkleShardUrl(address, type));
-    if (!response.ok) {
-      throw new Error("error getting shard data");
-    }
-
-    const shardJson = await response.json({ encoding: "utf-8" });
-    const { root, shardNybbles, total } = merkleRoot;
-    const shardedMerkleTree = new ShardedMerkleTree(
-      () => shardJson,
-      shardNybbles,
-      root,
-      BigNumber.from(total)
-    );
-    const [entry, proof] = shardedMerkleTree.getProof(address);
-    return await submitClaim(
-      entry.balance,
-      proof,
-      outputAddress,
-      setClaimState,
-      history,
-      type
-    );
-  } catch (error) {
-    console.error(error);
-    setClaimState({
-      state: "ERROR",
-      message: error,
-    });
-  }
-};

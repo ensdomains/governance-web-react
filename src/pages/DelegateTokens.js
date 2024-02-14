@@ -2,6 +2,11 @@ import { useQuery } from "@apollo/client";
 import { gql } from "graphql-tag";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers5/react";
+
 import { selectedDelegateReactive } from "../apollo";
 import EtherscanBox from "../components/EtherscanBox";
 import Footer from "../components/Footer";
@@ -11,13 +16,14 @@ import Pill from "../components/Pill";
 import { Content, Header } from "../components/text";
 import TransactionState from "../components/TransactionState";
 import { delegate, delegateBySig } from "../utils/token";
-import { getEthersProvider } from "../web3modal";
 
 const delegateToAddress = async (
   setClaimState,
   history,
   delegateAddress,
-  sigDetails
+  sigDetails,
+  walletProvider,
+  chainId
 ) => {
   try {
     setClaimState({
@@ -25,21 +31,25 @@ const delegateToAddress = async (
       message: "",
     });
 
-    let provider = getEthersProvider();
-
     if (!delegateAddress || delegateAddress === "") {
       throw "No chosen delegate";
     }
-
     const tx =
       sigDetails && sigDetails.canSign
         ? await delegateBySig(
             delegateAddress,
             setClaimState,
             history,
-            sigDetails.nonce
+            sigDetails.nonce,
+            walletProvider,
+            chainId
           )
-        : await delegate(delegateAddress, setClaimState, history);
+        : await delegate(
+            delegateAddress,
+            setClaimState,
+            history,
+            walletProvider
+          );
     selectedDelegateReactive("");
     return tx;
   } catch (error) {
@@ -65,17 +75,13 @@ const getRightButtonText = (state) => {
 };
 
 const ENSTokenClaim = ({ location }) => {
+  const { address, chainId } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+
   const {
-    data: {
-      isConnected,
-      address,
-      selectedDelegate,
-      delegateSigDetails: _delegateSigDetails,
-    },
+    data: { selectedDelegate, delegateSigDetails: _delegateSigDetails },
   } = useQuery(gql`
     query privateRouteQuery @client {
-      isConnected
-      address
       selectedDelegate
       delegateSigDetails
     }
@@ -95,7 +101,9 @@ const ENSTokenClaim = ({ location }) => {
           setClaimState,
           history,
           selectedDelegate.address,
-          delegateSigDetails
+          delegateSigDetails,
+          walletProvider,
+          chainId
         );
       }
     };
@@ -162,7 +170,8 @@ const ENSTokenClaim = ({ location }) => {
             setClaimState,
             history,
             selectedDelegate.address,
-            delegateSigDetails
+            delegateSigDetails,
+            walletProvider
           );
         }}
         disabled={claimState.state === "LOADING" ? "disabled" : ""}
