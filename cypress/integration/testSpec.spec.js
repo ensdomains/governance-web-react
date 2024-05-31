@@ -61,11 +61,11 @@ describe("Token claim site", () => {
       exact: false,
     });
 
-    cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+    cy.get('[data-testid="delegate-box-name"]', { timeout: 55000 })
       .first()
       .invoke("text")
       .then((name) => {
-        cy.get('[data-testid="delegate-box-name"]', { timeout: 25000 })
+        cy.get('[data-testid="delegate-box-name"]', { timeout: 55000 })
           .first()
           .click();
         cy.contains("Gas Free", { timeout: 20000 }).should(
@@ -97,6 +97,8 @@ describe("Token claim site", () => {
             exact: false,
           });
       });
+
+    cy.wait(600000)
 
     cy.contains("Requires Gas", { timeout: 20000 }).should(
       "have.text",

@@ -90,7 +90,7 @@ const typePolicies = {
   },
 };
 
-const ENS_GRAPH_API_KEY = '13ef776c0372f7c14eb7c019a0f80272'
+const ENS_GRAPH_API_KEY = 'fb9b07f6c149fbdbe946149837a1d673'
 
 const getGraphqlUri = (operation) => {
   const { operationName } = operation;
