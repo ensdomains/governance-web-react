@@ -90,12 +90,14 @@ const typePolicies = {
   },
 };
 
+const ENS_GRAPH_API_KEY = '13ef776c0372f7c14eb7c019a0f80272'
+
 const getGraphqlUri = (operation) => {
   const { operationName } = operation;
   if (operationName === "Votes") {
     return "https://hub.snapshot.org/graphql";
   }
-  return "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
+  return `https://gateway-arbitrum.network.thegraph.com/api/${ENS_GRAPH_API_KEY}/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH`;
 };
 
 export const initApolloClient = () => {
