@@ -22,7 +22,7 @@ jobs:
       - name: Install chrome
         uses: browser-actions/setup-chrome@latest
         with:
-          chrome-version: 124
+          chrome-version: 123
       - run: chrome --version
       - run: yarn install
       - run: yarn build:testing
