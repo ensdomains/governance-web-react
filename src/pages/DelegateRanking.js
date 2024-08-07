@@ -416,7 +416,7 @@ const ChooseYourDelegate = () => {
   const { data: chooseData } = useQuery(DELEGATE_RANKING_QUERY);
   useGetTokens(address);
   useGetDelegatedTo(address);
-  useGetDelegateBySigStatus(address);
+  // useGetDelegateBySigStatus(address);
   const { delegates, loading: delegatesLoading } = chooseData.delegates;
   const { balance, loading: balanceLoading } = chooseData.tokensOwned;
   const { delegatedTo, loading: delegatedToLoading } = chooseData.delegatedTo;
