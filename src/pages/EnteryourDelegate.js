@@ -210,7 +210,7 @@ const EnteryourDelegate = () => {
     }
   `);
   useGetDelegatedTo(address);
-  useGetDelegateBySigStatus(address);
+  // useGetDelegateBySigStatus(address);
 
   const delegateSigDetails = _delegateSigDetails.details;
 
